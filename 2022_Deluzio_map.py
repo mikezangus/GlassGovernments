@@ -19,8 +19,8 @@ state_mapping = {"AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkans
                  "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina", "ND": "North Dakota",
                  "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island",
                  "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah",
-                 "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin",
-                 "WY": "Wyoming"}
+                 "VT": "Vermont", "VA": "Virginia", "VI": "Virign Islands", "WA": "Washington", "WV": "West Virginia",
+                 "WI": "Wisconsin", "WY": "Wyoming"}
 
 data["state_name"]=data["contributor_state"].map(state_mapping)
 state_contributions=dict(zip(data["state_name"],data["total_contribution_amount"]))
