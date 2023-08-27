@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+  }
+  
+  h1 {
+    text-align: center;
+    padding: 20px 0;
+  }
+  
+  #state-data {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .state-info {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+  }
+  
+  .state-info h2 {
+    margin-top: 0;
+  }
+  
+  .state-info p {
+    margin: 5px 0;
+  }
+  
