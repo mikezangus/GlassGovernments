@@ -1,45 +1,56 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #000000;
-}
-  
-h1 {
-  text-align: center;
-  padding: 20px 0;
-}
-  
-#state-data {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-  
-.state-info {
-  background-color: #000000;
-  border: 1px solid #404040;
-  border-radius: 5px;
-  margin: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 300px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-  
-.state-info h2 {
-  margin-top: 0;
-}
-  
-.state-info p {
-  margin: 5px 0;
+    margin: 0;
+    padding: 0;
 }
 
-.state-info:hover {
-  background-color: #000000;
+.circle-crop {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 20px;
 }
 
-.hidden {
-  display: none;
+.politician-info {
+    display: flex;
+    align-items: center;
+    margin: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.photo {
+    display: flex;
+    align-items: center;
+}
+
+.info {
+    flex: 1;
+    padding-left: 20px;
+}
+
+.name {
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.party,
+.constituency {
+    display: inline-block;
+}
+
+.funding-amount {
+    margin: 5px 0;
+}
+
+.photo img {
+    max-width: 100%;
+    height: auto;
+}
+
+body {
+    font-family: "Mukta Mahee", sans-serif;
 }
