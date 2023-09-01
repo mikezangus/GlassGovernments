@@ -3,6 +3,7 @@ import pandas as pd
 
 last_name = "Lee"
 year = "2022"
+
 data_file = f"{year}_{last_name}_source.csv"
 output_csv_file = f"{year}_{last_name}_output.csv"
 output_excel_file = f"{year}_{last_name}_output.xlsx"
