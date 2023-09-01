@@ -96,7 +96,26 @@ function toggleSort() {
     sortPoliticians();
 }
 
+// function sortPoliticians() {
+//     politicians.sort((a, b) => {
+//         const fundingA = a.totalFundingOutsidePA;
+//         const fundingB = b.totalFundingOutsidePA;
+//         if (sortByMostFunding) {
+//             return fundingB - fundingA;
+//         } else {
+//             return fundingA - fundingB;
+//         }
+//     });
+//     politicians.forEach((politician, index) => {
+//         const position = index + 1;
+//         updateUI(politician, politician.totalFundingOutsidePA, position);
+//     });
+// }
+
 function sortPoliticians() {
+    const politicianContainer = document.getElementById('politicians-container');
+    politicianContainer.innerHTML = '';
+
     politicians.sort((a, b) => {
         const fundingA = a.totalFundingOutsidePA;
         const fundingB = b.totalFundingOutsidePA;
@@ -106,27 +125,48 @@ function sortPoliticians() {
             return fundingA - fundingB;
         }
     });
+
     politicians.forEach((politician, index) => {
-        updateUI(politician, politician.totalFundingOutsidePA, index + 1);
+        const position = index + 1;
+        updateUI(politician, politician.totalFundingOutsidePA, position);
     });
 }
 
-function updateUI(politician, totalFundingOutsidePA) {
-    const politicianInfo = document.getElementById(`politician-info-${politician.id}`);
-    politicianInfo.querySelector(".name").textContent = politician.name;
-    politicianInfo.querySelector(".incumbency").textContent = politician.incumbency;
-    politicianInfo.querySelector(".party").textContent = politician.party;
-    politicianInfo.querySelector(".constituency").textContent = politician.constituency;
+// function updateUI(politician, totalFundingOutsidePA, position) {
+//     const politicianInfo = document.getElementById(`politician-info-${politician.id}`);
+//     politicianInfo.querySelector(".name").textContent = politician.name;
+//     politicianInfo.querySelector(".incumbency").textContent = politician.incumbency;
+//     politicianInfo.querySelector(".party").textContent = politician.party;
+//     politicianInfo.querySelector(".constituency").textContent = politician.constituency;
 
-    const fundingAmountElement = politicianInfo.querySelector(".funding-amount");
-    const formattedAmount = formatAmountWithCommas(totalFundingOutsidePA);
-    fundingAmountElement.textContent = `$${formattedAmount} in foreign funding`;
+//     const fundingAmountElement = politicianInfo.querySelector(".funding-amount");
+//     const formattedAmount = formatAmountWithCommas(totalFundingOutsidePA);
+//     fundingAmountElement.textContent = `$${formattedAmount} in foreign funding`;
 
-    const photoElement = politicianInfo.querySelector(".photo img");
-    photoElement.src = politician.photoUrl;
+//     const photoElement = politicianInfo.querySelector(".photo img");
+//     photoElement.src = politician.photoUrl;
 
-    const positionElement = politicianInfo.querySelector(".position");
-    positionElement.textContent = `Position: ${position}`;
+//     const positionElement = politicianInfo.querySelector(".position");
+//     positionElement.textContent = `Position: ${position}`;
+// }
+
+function updateUI(politician, totalFundingOutsidePA, position) {
+    const politicianContainer = document.getElementById('politicians-container');
+
+    const politicianElement = document.createElement('div');
+    politicianElement.id = `politician-info-${politician.id}`;
+
+    politicianElement.innerHTML = `
+        <div class="name">${politician.name}</div>
+        <div class="incumbency">${politician.incumbency}</div>
+        <div class="party">${politician.party}</div>
+        <div class="constituency">${politician.constituency}</div>
+        <div class="funding-amount">$${formatAmountWithCommas(totalFundingOutsidePA)} in foreign funding</div>
+        <img class="photo" src="${politician.photoUrl}" />
+        <div class="position">Position: ${position}</div>
+    `;
+
+    politicianContainer.appendChild(politicianElement);
 }
 
 function formatAmountWithCommas(amount) {
