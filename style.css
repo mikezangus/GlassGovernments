@@ -30,20 +30,38 @@ body {
 .info {
     flex: 1;
     padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-left: 20px;
 }
 
 .name {
     font-weight: bold;
-    margin: 5px 0;
+    margin: 0;
+    font-size: 1.5rem
 }
 
+.row1,
+.row2,
+.row3 {
+    display: flex;
+    align-items: left;
+    margin-top: 5px;
+}
+
+.incumbency,
 .party,
 .constituency {
-    display: inline-block;
+    margin: 0;
+    font-size: 1rem;
+    margin-right: 5px;
 }
 
 .funding-amount {
-    margin: 5px 0;
+    margin: 0;
+    font-size: 1rem;
 }
 
 .photo img {

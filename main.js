@@ -17,10 +17,12 @@ function handleCSVData(csvData) {
             const data = results.data;
             const { totalFundingOutsidePA } = extractData(data);
             const name = "Chris Deluzio";
+            const incumbency = "Incumbent";
             const party = "Democrat, ";
             const constituency = "PA-17";
             updatePhoto(totalFundingOutsidePA);
             updateName(name);
+            updateIncumbency(incumbency);
             updateParty(party);
             updateConstituency(constituency);
             updateFundingAmount(totalFundingOutsidePA);
@@ -30,12 +32,14 @@ function handleCSVData(csvData) {
 
 function extractData(data) {
     let name = "";
+    let incumbency = "";
     let constituency = "";
     let party = "";
     let totalFundingOutsidePA = 0;
     if (data.length > 0) {
         const firstEntry = data[0];
         name = firstEntry.name;
+        incumbency = firstEntry.incumbency;
         constituency = firstEntry.constituency;
         party = firstEntry.party;
         data.forEach(state => {
@@ -45,7 +49,7 @@ function extractData(data) {
             }
         });
     }
-    return { name, constituency, party, totalFundingOutsidePA };
+    return { name, incumbency, constituency, party, totalFundingOutsidePA };
 }
 
 function updatePhoto(totalFundingOutsidePA) {
@@ -58,6 +62,10 @@ function updateName(name) {
     document.querySelector(".name").textContent = name;
 }
 
+function updateIncumbency(incumbency) {
+    document.querySelector(".incumbency").textContent = incumbency;
+}
+
 function updateParty(party) {
     document.querySelector(".party").textContent = party;
 }
@@ -67,7 +75,9 @@ function updateConstituency(constituency) {
 }
 
 function updateFundingAmount(totalFundingOutsidePA) {
-    document.querySelector(".funding-amount").textContent = formatAmountWithCommas(totalFundingOutsidePA);
+    const fundingAmountElement = document.querySelector(".funding-amount");
+    const formattedAmount = formatAmountWithCommas(totalFundingOutsidePA);
+    fundingAmountElement.textContent = `$${formattedAmount} in foreign funding`;
 }
 
 
