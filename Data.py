@@ -1,9 +1,12 @@
 import os
 import pandas as pd
 
-data_file = "2022_Deluzio_source.csv"
-output_csv_file = "2022_Deluzio_output.csv"
-output_excel_file = "2022_Deluzio_output.xlsx"
+last_name = input("Enter candidate's last name: ")
+year = input("Enter election year: ")
+
+data_file = f"{year}_{last_name}_source.csv"
+output_csv_file = f"{year}_{last_name}_output.csv"
+output_excel_file = f"{year}_{last_name}_output.xlsx"
 
 data = pd.read_csv(filepath_or_buffer = data_file, sep = ",")
 relevant_columns = ["transaction_id", "entity_type", "contributor_state", "contribution_receipt_amount"]

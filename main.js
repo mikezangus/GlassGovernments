@@ -1,31 +1,58 @@
 document.addEventListener("DOMContentLoaded", function() {
-    fetchCSVData("2022_Deluzio_output.csv");
+    const politicians = [
+        {
+            id: 1,
+            name: "Chris Deluzio",
+            csvFile: "2022_Deluzio_output.csv",
+            incumbency: "Incumbent",
+            party: "Democrat",
+            constituency: "PA-17",
+            photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Rep._Chris_Deluzio_-_118th_Congress.jpg/1280px-Rep._Chris_Deluzio_-_118th_Congress.jpg",
+        },
+        {
+            id: 2,
+            name: "Summer Lee",
+            csvFile: "2022_Lee_output.csv",
+            incumbency: "Incumbent",
+            party: "Democrat",
+            constituency: "PA-18",
+            photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Rep._Summer_Lee_-_118th_Congress.jpg/1280px-Rep._Summer_Lee_-_118th_Congress.jpg",
+        },
+        {
+            id: 3,
+            name: "Mike Kelly",
+            csvFile: "2022_Kelly_output.csv",
+            incumbency: "Incumbent",
+            party: "Republican",
+            constituency: "PA-16",
+            photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Mike_Kelly%2C_Official_Portrait%2C_112th_Congress.jpg/1024px-Mike_Kelly%2C_Official_Portrait%2C_112th_Congress.jpg",
+        },
+    ];
+    politicians.forEach(politician => {
+        fetchCSVData(politician.csvFile, politician);
+    });
 });
 
-function fetchCSVData(csvFile) {
+function fetchCSVData(csvFile, politician) {
     fetch(csvFile)
         .then(response => response.text())
         .then(csvData => {
-            handleCSVData(csvData);
+            handleCSVData(csvData, politician);
         });
 }
 
-function handleCSVData(csvData) {
+function handleCSVData(csvData, politician) {
     Papa.parse(csvData, {
         header: true,
         complete: function(results) {
             const data = results.data;
             const { totalFundingOutsidePA } = extractData(data);
-            const name = "Chris Deluzio";
-            const incumbency = "Incumbent";
-            const party = "Democrat, ";
-            const constituency = "PA-17";
-            updatePhoto(totalFundingOutsidePA);
-            updateName(name);
-            updateIncumbency(incumbency);
-            updateParty(party);
-            updateConstituency(constituency);
-            updateFundingAmount(totalFundingOutsidePA);
+            updatePhoto(politician.photoUrl, politician);
+            updateName(politician.name, politician);
+            updateIncumbency(politician.incumbency, politician);
+            updateParty(politician.party, politician);
+            updateConstituency(politician.constituency, politician);
+            updateFundingAmount(totalFundingOutsidePA, politician);
         }
     });
 }
@@ -52,34 +79,36 @@ function extractData(data) {
     return { name, incumbency, constituency, party, totalFundingOutsidePA };
 }
 
-function updatePhoto(totalFundingOutsidePA) {
-    const photoElement = document.getElementById("photo");
-    const wikipediaPhotoUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Rep._Chris_Deluzio_-_118th_Congress.jpg/1280px-Rep._Chris_Deluzio_-_118th_Congress.jpg";
-    photoElement.src = wikipediaPhotoUrl;
+function updatePhoto(photoUrl, politician) {
+    const photoElement = document.getElementById(`photo-${politician.id}`);
+    photoElement.src = photoUrl;
 }
 
-function updateName(name) {
-    document.querySelector(".name").textContent = name;
+function updateName(name, politician) {
+    const nameElement = document.querySelector(`#politician-info-${politician.id} .name`);
+    nameElement.textContent = name;
 }
 
-function updateIncumbency(incumbency) {
-    document.querySelector(".incumbency").textContent = incumbency;
+function updateIncumbency(incumbency, politician) {
+    const incumbencyElement = document.querySelector(`#politician-info-${politician.id} .incumbency`);
+    incumbencyElement.textContent = incumbency;
 }
 
-function updateParty(party) {
-    document.querySelector(".party").textContent = party;
+function updateParty(party, politician) {
+    const partyElement = document.querySelector(`#politician-info-${politician.id} .party`);
+    partyElement.textContent = party;
 }
 
-function updateConstituency(constituency) {
-    document.querySelector(".constituency").textContent = constituency;
+function updateConstituency(constituency, politician) {
+    const constituencyElement = document.querySelector(`#politician-info-${politician.id} .constituency`);
+    constituencyElement.textContent = constituency;
 }
 
-function updateFundingAmount(totalFundingOutsidePA) {
-    const fundingAmountElement = document.querySelector(".funding-amount");
+function updateFundingAmount(totalFundingOutsidePA, politician) {
+    const fundingAmountElement = document.querySelector(`#politician-info-${politician.id} .funding-amount`);
     const formattedAmount = formatAmountWithCommas(totalFundingOutsidePA);
     fundingAmountElement.textContent = `$${formattedAmount} in foreign funding`;
 }
-
 
 function formatAmountWithCommas(amount) {
     return amount.toLocaleString("en-US", {maximumFractionDigits: 2});
