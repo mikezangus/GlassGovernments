@@ -1,3 +1,14 @@
+.header {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.header h1 {
+    font-weight: bold;
+    color: black;
+    text-decoration: none !important;
+}
+
 body {
     margin: 0;
     padding: 0;

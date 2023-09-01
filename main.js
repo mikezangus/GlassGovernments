@@ -1,44 +1,67 @@
+const politicians = [
+    {
+        id: 1,
+        name: "Chris Deluzio",
+        csvFile: "2022_Deluzio_output.csv",
+        incumbency: "Incumbent",
+        party: "Democrat",
+        constituency: "PA-17",
+        photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Rep._Chris_Deluzio_-_118th_Congress.jpg/1280px-Rep._Chris_Deluzio_-_118th_Congress.jpg",
+    },
+    {
+        id: 2,
+        name: "Summer Lee",
+        csvFile: "2022_Lee_output.csv",
+        incumbency: "Incumbent",
+        party: "Democrat",
+        constituency: "PA-18",
+        photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Rep._Summer_Lee_-_118th_Congress.jpg/1280px-Rep._Summer_Lee_-_118th_Congress.jpg",
+    },
+    {
+        id: 3,
+        name: "Mike Kelly",
+        csvFile: "2022_Kelly_output.csv",
+        incumbency: "Incumbent",
+        party: "Republican",
+        constituency: "PA-16",
+        photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Mike_Kelly%2C_Official_Portrait%2C_112th_Congress.jpg/1024px-Mike_Kelly%2C_Official_Portrait%2C_112th_Congress.jpg",
+    },
+    {
+        id: 4,
+        name: "Brian Fitzpatrick",
+        csvFile: "2022_Fitzpatrick_output.csv",
+        incumbency: "Incumbent",
+        party: "Republican",
+        constituency: "PA-01",
+        photoUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Brian_Fitzpatrick_official_congressional_photo.jpg",
+    },
+    {
+        id: 5,
+        name: "Brendan Boyle",
+        csvFile: "2022_Boyle_output.csv",
+        incumbency: "Incumbent",
+        party: "Democrat",
+        constituency: "PA-02",
+        photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Brendan_Boyle_-_2018-05-21_ec_0004.jpg/1024px-Brendan_Boyle_-_2018-05-21_ec_0004.jpg",
+    },
+];
+
 document.addEventListener("DOMContentLoaded", function() {
-    const politicians = [
-        {
-            id: 1,
-            name: "Chris Deluzio",
-            csvFile: "2022_Deluzio_output.csv",
-            incumbency: "Incumbent",
-            party: "Democrat",
-            constituency: "PA-17",
-            photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Rep._Chris_Deluzio_-_118th_Congress.jpg/1280px-Rep._Chris_Deluzio_-_118th_Congress.jpg",
-        },
-        {
-            id: 2,
-            name: "Summer Lee",
-            csvFile: "2022_Lee_output.csv",
-            incumbency: "Incumbent",
-            party: "Democrat",
-            constituency: "PA-18",
-            photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Rep._Summer_Lee_-_118th_Congress.jpg/1280px-Rep._Summer_Lee_-_118th_Congress.jpg",
-        },
-        {
-            id: 3,
-            name: "Mike Kelly",
-            csvFile: "2022_Kelly_output.csv",
-            incumbency: "Incumbent",
-            party: "Republican",
-            constituency: "PA-16",
-            photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Mike_Kelly%2C_Official_Portrait%2C_112th_Congress.jpg/1024px-Mike_Kelly%2C_Official_Portrait%2C_112th_Congress.jpg",
-        },
-    ];
     politicians.forEach(politician => {
-        fetchCSVData(politician.csvFile, politician);
+        fetchCSVData(politician);
     });
+    const sortButton = document.getElementById("sort-button");
+    sortButton.addEventListener("click", toggleSort);
 });
 
-function fetchCSVData(csvFile, politician) {
-    fetch(csvFile)
-        .then(response => response.text())
-        .then(csvData => {
-            handleCSVData(csvData, politician);
-        });
+async function fetchCSVData(politician) {
+    try {
+        const response = await fetch(politician.csvFile);
+        const csvData = await response.text();
+        handleCSVData(csvData, politician);
+    } catch (error) {
+        console.error(`Error fetching CSV data for ${politician.name}: ${error}`);
+    }
 }
 
 function handleCSVData(csvData, politician) {
@@ -47,28 +70,15 @@ function handleCSVData(csvData, politician) {
         complete: function(results) {
             const data = results.data;
             const { totalFundingOutsidePA } = extractData(data);
-            updatePhoto(politician.photoUrl, politician);
-            updateName(politician.name, politician);
-            updateIncumbency(politician.incumbency, politician);
-            updateParty(politician.party, politician);
-            updateConstituency(politician.constituency, politician);
-            updateFundingAmount(totalFundingOutsidePA, politician);
+            politician.totalFundingOutsidePA = totalFundingOutsidePA;
+            updateUI(politician, totalFundingOutsidePA);
         }
     });
 }
 
 function extractData(data) {
-    let name = "";
-    let incumbency = "";
-    let constituency = "";
-    let party = "";
     let totalFundingOutsidePA = 0;
-    if (data.length > 0) {
-        const firstEntry = data[0];
-        name = firstEntry.name;
-        incumbency = firstEntry.incumbency;
-        constituency = firstEntry.constituency;
-        party = firstEntry.party;
+    if (data && data.length > 0) {
         data.forEach(state => {
             const totalContributionAmount = parseFloat(state.total_contribution_amount);
             if(!isNaN(totalContributionAmount) && state.contributor_state !== "PA") {
@@ -76,38 +86,47 @@ function extractData(data) {
             }
         });
     }
-    return { name, incumbency, constituency, party, totalFundingOutsidePA };
+    return { totalFundingOutsidePA };
 }
 
-function updatePhoto(photoUrl, politician) {
-    const photoElement = document.getElementById(`photo-${politician.id}`);
-    photoElement.src = photoUrl;
+let sortByMostFunding = true;
+
+function toggleSort() {
+    sortByMostFunding = !sortByMostFunding;
+    sortPoliticians();
 }
 
-function updateName(name, politician) {
-    const nameElement = document.querySelector(`#politician-info-${politician.id} .name`);
-    nameElement.textContent = name;
+function sortPoliticians() {
+    politicians.sort((a, b) => {
+        const fundingA = a.totalFundingOutsidePA;
+        const fundingB = b.totalFundingOutsidePA;
+        if (sortByMostFunding) {
+            return fundingB - fundingA;
+        } else {
+            return fundingA - fundingB;
+        }
+    });
+    politicians.forEach((politician, index) => {
+        updateUI(politician, politician.totalFundingOutsidePA, index + 1);
+    });
 }
 
-function updateIncumbency(incumbency, politician) {
-    const incumbencyElement = document.querySelector(`#politician-info-${politician.id} .incumbency`);
-    incumbencyElement.textContent = incumbency;
-}
+function updateUI(politician, totalFundingOutsidePA) {
+    const politicianInfo = document.getElementById(`politician-info-${politician.id}`);
+    politicianInfo.querySelector(".name").textContent = politician.name;
+    politicianInfo.querySelector(".incumbency").textContent = politician.incumbency;
+    politicianInfo.querySelector(".party").textContent = politician.party;
+    politicianInfo.querySelector(".constituency").textContent = politician.constituency;
 
-function updateParty(party, politician) {
-    const partyElement = document.querySelector(`#politician-info-${politician.id} .party`);
-    partyElement.textContent = party;
-}
-
-function updateConstituency(constituency, politician) {
-    const constituencyElement = document.querySelector(`#politician-info-${politician.id} .constituency`);
-    constituencyElement.textContent = constituency;
-}
-
-function updateFundingAmount(totalFundingOutsidePA, politician) {
-    const fundingAmountElement = document.querySelector(`#politician-info-${politician.id} .funding-amount`);
+    const fundingAmountElement = politicianInfo.querySelector(".funding-amount");
     const formattedAmount = formatAmountWithCommas(totalFundingOutsidePA);
     fundingAmountElement.textContent = `$${formattedAmount} in foreign funding`;
+
+    const photoElement = politicianInfo.querySelector(".photo img");
+    photoElement.src = politician.photoUrl;
+
+    const positionElement = politicianInfo.querySelector(".position");
+    positionElement.textContent = `Position: ${position}`;
 }
 
 function formatAmountWithCommas(amount) {
