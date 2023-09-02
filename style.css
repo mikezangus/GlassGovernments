@@ -28,9 +28,11 @@ body {
     margin: 20px;
     padding: 10px;
     background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid #b1b1b1;
+    border-radius: 150px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 150px;
+    width: 450px;
 }
 
 .photo {
@@ -48,31 +50,32 @@ body {
     padding-left: 20px;
 }
 
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .name {
     font-weight: bold;
     margin: 0;
-    font-size: 1.5rem
-}
-
-.row1,
-.row2,
-.row3 {
-    display: flex;
-    align-items: left;
-    margin-top: 5px;
+    font-size: 1.5rem;
+    line-height: 1.2;
 }
 
 .incumbency,
 .party,
-.constituency {
+.constituency,
+.funding-amount,
+.total-funding-amount,
+.funding-percentage {
     margin: 0;
     font-size: 1rem;
     margin-right: 5px;
-}
-
-.funding-amount {
-    margin: 0;
-    font-size: 1rem;
+    line-height: 1.2;
 }
 
 .photo img {
