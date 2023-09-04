@@ -1,5 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://zangus:vmtCdi3DsLV1fk9X@cluster0.vbtb9b1.mongodb.net/?retryWrites=true&w=majority";
+const { mongoUsername, mongoPassword, mongoServerName} = require ("./credentials");
+const uri = `mongodb+srv://${mongoUsername}:${mongoPassword}@${mongoServerName}.vbtb9b1.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
     serverApi: {

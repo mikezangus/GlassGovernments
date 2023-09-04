@@ -3,41 +3,40 @@ let sortByMostFunding = true;
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-    await fetchPoliticians();
     document.getElementById("sort-button").addEventListener("click", toggleSort);
     sortPoliticians();
 }
 
-async function fetchPoliticians() {
-    try {
-        const response = await fetch("");
-        const politicians = await response.json();
-        updatePoliticians(politicians);
-    } catch (error) {
-        console.error(`Error fetching polliticians: ${error}`);
-    }
-}
+// async function fetchPoliticians() {
+//     try {
+//         const response = await fetch("");
+//         const politicians = await response.json();
+//         updatePoliticians(politicians);
+//     } catch (error) {
+//         console.error(`Error fetching polliticians: ${error}`);
+//     }
+// }
 
-function updatePoliticians() {
-    politicians.forEach(updateUI);
-}
+// function updatePoliticians() {
+//     politicians.forEach(updateUI);
+// }
 
-function extractData(data) {
-    let totalFunding = 0;
-    let totalFundingOutsidePA = data.reduce((total, state) => {
-        const amount = parseFloat(state.total_contribution_amount);
-        totalFunding += (!isNaN(amount)) ? amount : 0;
-        if (!isNaN(amount) && state.contributor_state !== "PA") {
-            total += amount;
-        }
-            return total
-    }, 0);
-    return {
-        totalFunding,
-        totalFundingOutsidePA,
-        percentFundingOutsidePA: (totalFundingOutsidePA / totalFunding) * 100
-    }
-}
+// function extractData(data) {
+//     let totalFunding = 0;
+//     let totalFundingOutsidePA = data.reduce((total, state) => {
+//         const amount = parseFloat(state.total_contribution_amount);
+//         totalFunding += (!isNaN(amount)) ? amount : 0;
+//         if (!isNaN(amount) && state.contributor_state !== "PA") {
+//             total += amount;
+//         }
+//             return total
+//     }, 0);
+//     return {
+//         totalFunding,
+//         totalFundingOutsidePA,
+//         percentFundingOutsidePA: (totalFundingOutsidePA / totalFunding) * 100
+//     }
+// }
 
 function toggleSort() {
     sortByMostFunding = !sortByMostFunding;
