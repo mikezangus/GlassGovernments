@@ -1,34 +1,25 @@
-
 let sortByMostFunding = true;
 
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-    await Promise.all(politicians.map(fetchCSVData));
+    await fetchPoliticians();
     document.getElementById("sort-button").addEventListener("click", toggleSort);
     sortPoliticians();
 }
 
-async function fetchCSVData(politician) {
+async function fetchPoliticians() {
     try {
-        const response = await fetch(politician.csvFile);
-        const csvData = await response.text();
-        handleCSVData(csvData, politician);
+        const response = await fetch("");
+        const politicians = await response.json();
+        updatePoliticians(politicians);
     } catch (error) {
-        console.error(`Error fetching CSV data for ${politician.name}: ${error}`);
+        console.error(`Error fetching polliticians: ${error}`);
     }
 }
 
-function handleCSVData(csvData, politician) {
-    Papa.parse(csvData, {
-        header: true,
-        complete: results => {
-            const { totalFunding, totalFundingOutsidePA, percentFundingOutsidePA } = extractData(results.data);
-            politician.totalFunding = totalFunding;
-            politician.totalFundingOutsidePA = totalFundingOutsidePA;
-            politician.percentFundingOutsidePA = percentFundingOutsidePA;
-        }
-    });
+function updatePoliticians() {
+    politicians.forEach(updateUI);
 }
 
 function extractData(data) {

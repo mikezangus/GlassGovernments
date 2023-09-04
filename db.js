@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/my_database', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://zangus:vmtCdi3DsLV1fk9X@cluster0.vbtb9b1.mongodb.net/?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true});
 
 const Politician = mongoose.model('Politician', new mongoose.Schema({
   id: Number,
@@ -10,3 +10,5 @@ const Politician = mongoose.model('Politician', new mongoose.Schema({
   constituency: String,
   photoUrl: String,
 }));
+
+module.exports = Politician;

@@ -1,0 +1,16 @@
+{
+  "name": "project_cream",
+  "version": "1.0.0",
+  "description": "Cash Rules Everyone Around Me",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "6.0"
+  }
+}
