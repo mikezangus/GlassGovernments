@@ -1,0 +1,22 @@
+2023-10-10 17:45:56,644 - INFO - Export button disabled for candidate: JOYCE-MARIE GRIGGS, State: GA, District: 01
+2023-10-10 17:59:05,945 - INFO - Export button disabled for candidate: BLAKE HARBIN, State: GA, District: 06
+2023-10-10 18:06:16,140 - INFO - Export button disabled for candidate: EUGENE YU, State: GA, District: 06
+2023-10-10 18:15:59,017 - INFO - Export button disabled for candidate: LISA-NOEL-DR. BABBAGE, State: GA, District: 07
+2023-10-10 18:18:51,115 - INFO - Export button disabled for candidate: MARK MOSLEY, State: GA, District: 08
+2023-10-10 19:47:51,137 - INFO - Export button disabled for candidate: CAESAR GONZALES, State: GA, District: 13
+2023-10-10 19:54:46,232 - INFO - Export button disabled for candidate: ERIC-B CUNNINGHAM, State: GA, District: 14
+2023-10-10 20:48:17,857 - INFO - Export button disabled for candidate: PHILANISE WHITE, State: IL, District: 01
+2023-10-10 20:52:51,498 - INFO - Export button disabled for candidate: JUAN-ENRIQUE AGUIRRE, State: IL, District: 03
+2023-10-10 20:55:20,731 - INFO - Export button disabled for candidate: TOMMY HANSON, State: IL, District: 05
+2023-10-10 23:55:15,352 - INFO - Check for funding data failed for candidate: CASSANDRA-TANNER MILLER, State: IL, District: 11
+2023-10-11 01:04:42,637 - INFO - Check for funding data failed for candidate: NATHAN GOTSCH, State: IN, District: 03
+2023-10-11 01:21:56,826 - INFO - Export button disabled for candidate: FORREST-ANTHONY BOWER, State: IN, District: 03
+2023-10-11 02:00:03,478 - INFO - Export button disabled for candidate: BARTON-WAYNE TEETERS, State: IN, District: 06
+2023-10-11 02:53:37,487 - ERROR - Reached maximium retry attempts, exiting
+2023-10-11 02:55:07,639 - ERROR -            Reached maximium retry attempts, exiting
+2023-10-11 03:44:07,009 - INFO - Export button disabled for candidate: JONATHON-DALE COLE, State: IN, District: 09
+2023-10-11 05:14:12,915 - INFO - Export button disabled for candidate: MARY-ANN HANUSA, State: IA, District: 03
+2023-10-11 05:31:16,738 - INFO - Export button disabled for candidate: RHONDA-RAYE PALAZZO, State: KY, District: 03
+2023-10-11 07:50:50,617 - INFO - Export button disabled for candidate: STEVE-MR SCALISE, State: LA, District: 01
+2023-10-11 08:11:14,764 - INFO - Export button disabled for candidate: MIA MASON, State: MD, District: 01
+2023-10-11 10:47:15,358 - INFO - Download failed for candidate: RICHARD-E-MR. NEAL, State: MA, District: 01

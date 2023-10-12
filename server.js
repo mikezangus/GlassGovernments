@@ -1,18 +1,34 @@
-const express = require('express');
+const express = require("express");
+const { MongoClient } = require("mongodb");
+const path = require("path");
 const app = express();
+
 const port = 3000;
-const Politician = require('./db');
+const config = require("./config");
+const mongoURI = config.uri;
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+const client = new MongoClient(mongoURI);
 
-app.get('/', async (req, res) => {
+async function startServer() {
     try {
-        const politicians = await Politician.find({});
-        res.json(politicians);
-    } catch (error) {
-        console.error(`Error fetching politicians: ${error}`);
-        res.status(500).json({ error: `Internal Server Error`})
+        await client.connect();
+        console.log("Connected to MongoDB");
+        app.get("/", (req, res) => {
+            res.sendFile(path.jooin(__dirname, "index.html"));
+        });
+        app.use(express.static(__dirname));
+        app.get("/data", async (req, res) => {
+            const db = client.db(config.database);
+            const collection = db.collection(config.collection);
+            const data = await collection.find().toArray();
+            res.json(data);
+        });
+        app.listen(port, () => {
+            console.log(`Server is running on http://localhost:${port}`);
+        });
+    } catch (err) {
+        console.error(err);
     }
-});
+}
+
+startServer();
