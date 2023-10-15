@@ -11,15 +11,14 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 DOWNLOADS_CONTAINER = os.path.abspath(os.path.join("data", "downloads_container"))
 
 STATE_CODES = {
-    # "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA",
-    # "colorado": "CO", "connecticut": "CT", "delaware": "DE", "florida": "FL", "georgia": "GA",
-    # "hawaii": "HI", "idaho": "ID", "illinois": "IL", "indiana": "IN", "iowa": "IA",
-    # "kansas": "KS", "kentucky": "KY", "louisiana": "LA", "maine": "ME", "maryland": "MD",
-    # "massachusetts": "MA", "michigan": "MI", "minnesota": "MN", "mississippi": "MS",
-    "missouri": "MO",
-    "montana": "MT", "nebraska": "NE", "nevada": "NV", "new hampshire": "NH", "new jersey": "NJ", "new mexico": "NM",
-    "new york": "NY", "north carolina": "NC", "north dakota": "ND", "ohio": "OH", "oklahoma": "OK",
-    "oregon": "OR", "pennsylvania": "PA", "rhode island": "RI", "south carolina": "SC",
+    "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA",
+    "colorado": "CO", "connecticut": "CT", "delaware": "DE", "florida": "FL", "georgia": "GA",
+    "hawaii": "HI", "idaho": "ID", "illinois": "IL", "indiana": "IN", "iowa": "IA",
+    "kansas": "KS", "kentucky": "KY", "louisiana": "LA", "maine": "ME", "maryland": "MD",
+    "massachusetts": "MA", "michigan": "MI", "minnesota": "MN", "mississippi": "MS", "missouri": "MO",
+    "montana": "MT", "nebraska": "NE", "nevada": "NV", "new hampshire": "NH", "new jersey": "NJ",
+    "new mexico": "NM", "new york": "NY", "north carolina": "NC", "north dakota": "ND", "ohio": "OH",
+    "oklahoma": "OK", "oregon": "OR", "pennsylvania": "PA", "rhode island": "RI", "south carolina": "SC",
     "south dakota": "SD", "tennessee": "TN", "texas": "TX", "utah": "UT", "vermont": "VT",
     "virginia": "VA", "washington": "WA", "west virginia": "WV", "wisconsin": "WI", "wyoming": "WY"
 }
@@ -29,7 +28,7 @@ AT_LARGE_STATES = ["AK", "DE", "ND", "SD", "VT", "WY"]
 
 def firefox_driver():
     options = Options()
-    options.headless = False
+    options.headless = True
     firefox_preferences = {
         "browser.privatebrowsing.autostart": True,
         "browser.cache.disk.enable": False,
@@ -200,23 +199,29 @@ class Scraper:
                     print(indent + f"Exception: {e}\nAttempt {attempt + 1}/{max_attempts}. Retrying...")
                     break
             else:
-                full_name_element, party_element, total_receipts_element = data_elements
-                full_name = full_name_element.split(", ")
-                last_name, first_name = full_name[0].rstrip(",").replace(" ", "-"), full_name[1].replace(" ", "-")
-                total_receipts = float(re.sub("[,$]", "", total_receipts_element))
-                if total_receipts == 0:
-                    print(f"{self.state}-{str(district).zfill(2)} {i + 1}/{candidate_count}: {first_name} {last_name} received ${total_receipts:.2f} in donations, skipping")
+                try:
+                    full_name_element, party_element, total_receipts_element = data_elements
+                    full_name = full_name_element.split(", ")
+                    last_name, first_name = full_name[0].rstrip(",").replace(" ", "-"), full_name[1].replace(" ", "-")
+                    total_receipts = float(re.sub("[,$]", "", total_receipts_element))
+                    if total_receipts == 0:
+                        print(f"{self.state}-{str(district).zfill(2)} {i + 1}/{candidate_count}: {first_name} {last_name} received ${total_receipts:.2f} in donations, skipping")
+                        return
+                    else:
+                        party = party_element.split(" ")[0] if party_element else "NO-PARTY-FOUND"
+                        print(f"{self.state}-{str(district).zfill(2)} {i + 1}/{candidate_count}: Scraping for {first_name} {last_name} ({party}), who received ${total_receipts:,.2f} in donations")
+                        candidate_locator = (By.CSS_SELECTOR, candidate_css_base + "> td:nth-child(1) > a:nth-child(1)")
+                        candidate_element = WebDriverWait(driver, 15).until(EC.presence_of_element_located(candidate_locator))
+                        candidate_element.click()
+                    break
+                except Exception:
+                    print(f"{self.state}-{str(district).zfill(2)} {i + 1}/{candidate_count}: Candidate has abnormal naming structure, skipping")
+                    logging.info(f"Candidate with abnormal naming structure in {self.state}-{str(district).zfill(2)}")
                     return
-                else:
-                    party = party_element.split(" ")[0] if party_element else "NO-PARTY-FOUND"
-                    print(f"{self.state}-{str(district).zfill(2)} {i + 1}/{candidate_count}: Scraping for {first_name} {last_name} ({party}), who received ${total_receipts:,.2f} in donations")
-                    candidate_locator = (By.CSS_SELECTOR, candidate_css_base + "> td:nth-child(1) > a:nth-child(1)")
-                    candidate_element = WebDriverWait(driver, 15).until(EC.presence_of_element_located(candidate_locator))
-                    candidate_element.click()
-                break
         else:
             print(indent + f"Failed after {max_attempts} attempts. Moving to next candidate")
             logging.info(f"Failed to find candidate. State: {self.state}, District: {str(district).zfill(2)}")
+            return
 
         # Check if candidate has funding data
         for attempt in range(max_attempts):
