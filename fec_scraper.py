@@ -124,7 +124,7 @@ class FileManager:
         for downloaded_file in os.listdir(DOWNLOADS_CONTAINER):
             src_path = os.path.join(DOWNLOADS_CONTAINER, downloaded_file)
             if os.path.isfile(src_path):
-                dst_path = os.path.join("data", year, state, district)
+                dst_path = os.path.join("data", "source", year, state, district)
                 os.makedirs(dst_path, exist_ok = True)
                 file_name = f"{year}_{state}_{district}_{last_name}_{first_name}_{party}_source.csv"
                 dst_path = os.path.join(dst_path, file_name)

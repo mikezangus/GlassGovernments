@@ -3,7 +3,6 @@ import geopandas as gpd
 import json
 import os
 import pandas as pd
-from folium.features import DivIcon
 from folium.plugins import FeatureGroupSubGroup, HeatMap
 from pymongo import MongoClient
 from shapely.geometry import Point
@@ -13,6 +12,7 @@ base_directory = "/Users/zangus/Documents/Projects/Project_CREAM"
 counties_gdf = gpd.read_file(os.path.join(base_directory, "census", "cb_2022_us_county_500k", "cb_2022_us_county_500k.shp"))
 districts_gdf = gpd.read_file(os.path.join(base_directory, "census", "cb_2022_us_cd118_500k", "cb_2022_us_cd118_500k.shp"))
 district_pa_17 = districts_gdf[(districts_gdf["STATEFP"] == "42") & (districts_gdf["CD118FP"] == "17")]
+
 
 with open(os.path.join(base_directory, "config.json"), "r") as file:
     config = json.load(file)
@@ -104,4 +104,6 @@ folium.GeoJson(
 ).add_to(m2)
 HeatMap(heat_data, radius = 20).add_to(m2)
 folium.LayerControl(collapsed = False).add_to(m2)
-m2.save(f"heatmap_{candidate_name}.html")
+output_path = os.path.join(base_directory, "maps", f"heatmap_{candidate_name}.html")
+m2.save(os.path.join(output_path))
+print(f"{candidate_name}'s map saved to path: {output_path}")
