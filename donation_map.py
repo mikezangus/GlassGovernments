@@ -40,28 +40,6 @@ donation_summary = joined.groupby(["STATEFP", "COUNTYFP"])["contribution_receipt
 merged = counties_gdf.merge(donation_summary, left_on = ["STATEFP", "COUNTYFP"], right_on = ["STATEFP", "COUNTYFP"], how = "left")
 merged.fillna(0, inplace = True)
 
-# m1 = folium.Map(location = [40.0, -80.0], zoom_start = 8)
-
-# folium.Choropleth(
-#     geo_data = merged,
-#     name = "choropleth",
-#     data = merged,
-#     columns = ["COUNTYFP", "contribution_receipt_amount"],
-#     key_on = "feature.properties.COUNTYFP",
-#     fill_color = "YlGnBu",
-#     fill_opacity = 0.7,
-#     line_opacity = 0.2,
-#     legend_name = "Donations per county for Chris Deluzio (PA-17)"
-# ).add_to(m1)
-# folium.GeoJson(
-#     district_pa_17,
-#     style_function = lambda feature: {
-#         "color": "black",  
-#         "weight": 2
-#     }
-# ).add_to(m1)
-# m1.save("Deluzio_donations_by_district.html")
-
 m2 = folium.Map(location = [39.8283, -98.5795], zoom_start = 5)
 main_group = folium.FeatureGroup(name = "All Entities").add_to(m2)
 

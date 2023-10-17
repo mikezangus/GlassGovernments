@@ -11,7 +11,8 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 DOWNLOADS_CONTAINER = os.path.abspath(os.path.join("data", "downloads_container"))
 
 STATE_CODES = {
-    "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA",
+    # "alabama": "AL", "alaska": "AK",
+    "arizona": "AZ", "arkansas": "AR", "california": "CA",
     "colorado": "CO", "connecticut": "CT", "delaware": "DE", "florida": "FL", "georgia": "GA",
     "hawaii": "HI", "idaho": "ID", "illinois": "IL", "indiana": "IN", "iowa": "IA",
     "kansas": "KS", "kentucky": "KY", "louisiana": "LA", "maine": "ME", "maryland": "MD",
