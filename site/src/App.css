@@ -1,0 +1,91 @@
+main {
+    padding: 25px;
+}
+
+.header {
+    display: flex;
+    color: #ffffff;
+    background: linear-gradient(0deg, #191919 10%, #000000 33%);
+    height: 75px;
+    padding: 20px;
+    align-items: center;
+}
+  
+.header--title {
+    margin-right: auto;
+}
+  
+.header--author {
+    margin-left: auto;
+}
+
+.list-container {
+    position: relative;
+    display: inline-block;
+}
+
+.list-title {
+    font-family: "Anonymous Pro", monospace;
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.dropdown {
+    width: 100%;
+}
+
+.list-container button {
+    font-family: "Anonymous Pro", monospace;
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none;
+    width: 100%;
+    text-align: left;
+}
+
+.list-container button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #191919;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 4px;
+    margin-top: 2px;
+    border: 1px solid #fff;
+    padding: 10px;
+}
+
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+    background-color: transparent;
+    border: none;
+    text-align: left;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 16px;
+    font-family: "Anonymous Pro", monospace;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu button:hover {
+    background-color: #f1f1f1;
+    color: #000;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
