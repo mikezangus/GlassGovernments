@@ -3,6 +3,10 @@ body {
     font-family: "Anonymous Pro", monospace;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: white;
-    background-color: rgb(0, 0, 0);
+    color: #ffffff;
+    background-color: #000000;
+}
+
+main {
+    padding: 25px;
 }

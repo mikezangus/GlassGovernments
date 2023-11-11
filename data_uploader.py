@@ -47,7 +47,7 @@ def process_upload(upload_path, db):
         lambda coord_string: [float(x) for x in coord_string[1:-1].split(", ")] if isinstance(coord_string, str) else coord_string
     )
     collection_name = os.path.basename(upload_path)[:7]
-    print(collection_name)
+    print(f"\nUploading file to collection: {collection_name}")
     collection = db[collection_name]
 
     records = data.to_dict(orient = "records")
@@ -57,6 +57,7 @@ def process_upload(upload_path, db):
             {"$set": record},
             upsert = True
         )
+        
 
 year, state, district, candidate = get_user_choices()
 
@@ -67,17 +68,18 @@ else:
 
 for district in districts:
     path = os.path.join(clean_directory, year, state, district)
-    print(f"Checking path: {path}")
+    print(f"\nChecking path: {path}")
     all_files = os.listdir(path)
-    print(f"All files in directory: {all_files}")
+    print(f"\nAll files in directory: {all_files}")
     if candidate == "ALL":
         files = [f for f in all_files if f.endswith("_clean.csv")]
     else:
         files = [f for f in all_files if candidate in f.upper()]
 
-    print(f"Files to be processed: {files}")
+    print(f"\nFiles to be processed: {files}")
     for file in files:
-        print(f"Processing file {file}")
+        print(f"\nProcessing file {file}")
         process_upload(os.path.join(path, file), db)
+        print(f"\nFinished uploading file {file}")
 
-print("Data uploading completed")
+print("\nFinished uploading data")
