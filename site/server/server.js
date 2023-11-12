@@ -52,7 +52,18 @@ app.get("/api/lastnames", async (req, res) => {
     try {
         const db = client.db(config.mongoDatabase);
         const collection = db.collection("2022_PA");
-        const aggregation = await collection.aggregate([
+        const { state, district } = req.query;
+        let matchStage = {};
+        if (state && district) {
+            matchStage = {
+                $match: {
+                    candidate_state: state,
+                    candidate_district: district
+                }
+            };
+        };
+        const aggregationStages = [
+            matchStage,
             {
                 $group: {
                     _id: {
@@ -63,7 +74,8 @@ app.get("/api/lastnames", async (req, res) => {
                     totalFunding: { $sum: "$contribution_receipt_amount" }
                 }
             }
-        ]).toArray();
+        ].filter(stage => Object.keys(stage).length > 0);
+        const aggregation = await collection.aggregate(aggregationStages).toArray();
         res.json(aggregation);
     } catch (err) {
         console.error("Error fetching data from mongo:", err);

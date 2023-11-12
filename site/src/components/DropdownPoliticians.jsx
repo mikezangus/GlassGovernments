@@ -12,41 +12,56 @@ function formatAmount(amount) {
     );
 };
 
-export default function DropdownPoliticians() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [options, setOptions] = useState([]);
-    useEffect(() => {
-        fetch("http://localhost:4000/api/lastnames")
-            .then(response => response.json())
-            .then(data => {
-                const sortedData = [...data].sort((a, b) => b.totalFunding - a.totalFunding)
-                setOptions(sortedData)
-            })
-            .catch(error => console.error("Error fetching data:", error));
-    }, []);
+export default function DropdownPoliticians({ district }) {
 
-    const toggleDropdown = () => {
-        setIsOpen(prevState => !prevState)
+    const [lastNames, setLastNames] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const fetchLastNames = async () => {
+        try {
+            const queryParams = new URLSearchParams({
+                state: district ? district.state : "",
+                district: district ? district.district : ""
+            }).toString();
+            const response = await fetch(`http://localhost:4000/api/lastnames?${queryParams}`);
+            if (!response.ok) throw new Error("Network response was not ok");
+            const data = await response.json();
+            setLastNames(data);
+        } catch (error) {
+            console.error("Error fetching data", error);
+        }
     };
+    useEffect(() => {
+        if (district) {
+            fetchLastNames();
+        }
+    }, [district]);
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
     return (
         <main>
-            <div className="list-container">
-                <h2 className="list-title">Politicians</h2>
-                <div className="dropdown">
-                    <button onClick={toggleDropdown}>
-                        Click to select a politician
-                    </button>
-                    {isOpen && (
-                        <div className="dropdown-menu">
-                            {options.map(option => (
-                                <button key={`${option._id.lastName}-${option._id.state}-${option._id.district}`} onClick={toggleDropdown}>
-                                    {console.log(option._id, option.totalFunding.toLocaleString())}
-                                    {option._id.lastName} ({option._id.state}-{option._id.district}) - ${formatAmount(option.totalFunding)}
+            <div className="dropdown">
+                <h2 className="dropdown__title">Politicians from {district && district._id ? `${district._id.state}-${district._id.district}` : ""} </h2>
+                <button className="dropdown__button" onClick={toggleDropdown}>
+                    Click to select a politician
+                </button>
+                {isOpen && (
+                    <div className="dropdown__menu" style={{ display: "block" }}>
+                        {lastNames.map((lastName) => {
+                            const keyId = `${lastName._id.lastName}-${lastName._id.state}-${lastName._id.district}`;
+                            return (
+                                <button
+                                    className="dropdown__item"
+                                    key={keyId}
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    {lastName._id.lastName} ({lastName._id.state}-{lastName._id.district}) - ${formatAmount(lastName.totalFunding)}
                                 </button>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
         </main>
     );

@@ -1,57 +1,69 @@
-.list-container {
-    position: relative;
-    display: inline-block;
+/* Define CSS variables for consistency and easy theme management */
+:root {
+    --font-family: "Anonymous Pro", monospace;
+    --color-white: #fff;
+    --color-dropdown-bg: #191919;
+    --transition-duration: 0.3s;
 }
 
-.list-title {
-    font-family: "Anonymous Pro", monospace;
+/* Dropdown Block */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Title Element of Dropdown */
+.dropdown__title {
+    font-family: var(--font-family);
     font-size: 24px;
-    color: #fff;
+    color: var(--color-white);
     margin-bottom: 10px;
 }
 
-.dropdown {
-    width: 100%;
-}
-
-.list-container button {
-    font-family: "Anonymous Pro", monospace;
+/* Button Element of Dropdown */
+.dropdown__button {
+    font-family: var(--font-family);
     background-color: transparent;
-    border: 1px solid #fff;
-    color: #fff;
+    border: 1px solid var(--color-white);
+    color: var(--color-white);
     padding: 10px 15px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-duration) ease;
     outline: none;
-    width: 100%;
+    width: auto;
+    display: inline-block;
+    margin: 0 auto;
     text-align: left;
 }
 
-.dropdown-menu {
-    display: none;
+/* Menu Element of Dropdown */
+.dropdown__menu {
+    display: none; /* Controlled by JavaScript */
     position: absolute;
-    background-color: #191919;
+    background-color: var(--color-dropdown-bg);
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 4px;
     margin-top: 2px;
-    border: 1px solid #fff;
+    border: 1px solid var(--color-white);
     padding: 10px;
 }
 
-.dropdown-menu button {
+/* Item Element of Dropdown Menu */
+.dropdown__item {
     display: block;
     width: 100%;
     margin-bottom: 5px;
     background-color: transparent;
     border: none;
     text-align: left;
-    color: #fff;
+    color: var(--color-white);
     text-decoration: none;
     padding: 8px 16px;
-    font-family: "Anonymous Pro", monospace;
+    font-family: var(--font-family);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-duration) ease;
 }

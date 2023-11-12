@@ -1,21 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./components/Header";
 import DropdownDistricts from "./components/DropdownDistricts";
 import DropdownPoliticians from "./components/DropdownPoliticians";
 
 export default function App() {
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+    const handleSelectDistrict = (districtData) => {
+        setSelectedDistrict(districtData);
+    };
     return (
         <div className="appContainer">
             <Header />
-            <div className="contentContainer">
-                <div className="leftHalf">
-                    <DropdownDistricts />
-                    <DropdownPoliticians />
-                </div>
-                <div className="rightHalf">
-
-                </div>
-            </div>
+            <DropdownDistricts onSelectedDistrict={handleSelectDistrict} />
+            {selectedDistrict ? (
+                <DropdownPoliticians district={selectedDistrict}/>
+            ) : null }
         </div>
-    )
-}
+    );
+};

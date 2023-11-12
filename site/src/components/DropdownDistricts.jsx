@@ -1,59 +1,58 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./Dropdown.css";
 
-export default function DropdownDistricts() {
-    const [isOpen, setIsOpen] = useState(false);
+export default function DropdownDistricts({ onSelectedDistrict }) {
+
     const [districts, setDistricts] = useState([]);
-    const dropdownRef = useRef(null);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const fetchDistricts = async () => {
+        try {
+            const response = await fetch("http://localhost:4000/api/districts");
+            if (!response.ok) throw new Error("Network response was not ok");
+            const data = await response.json();
+            setDistricts(data);
+        } catch (error) {
+            console.error("Error fetching data", error);
+        }
+    };
     useEffect(() => {
-        fetch("http://localhost:4000/api/districts")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then(data => setDistricts(data))
-            .catch(error => console.error("Error fetchind data:", error));
+        fetchDistricts();
     }, []);
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
-        };
-        if (isOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        };
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isOpen]);
-    const toggleDropdown = () => {
-        setIsOpen(prevState => !prevState)
+    const handleDistrictClick = (districtObject) => {
+        
+        const state = districtObject._id.state;
+        const districtNumber = districtObject._id.district;
+        onSelectedDistrict({ state, district: districtNumber});
+        setIsOpen(false);
     };
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
     return (
         <main>
-            <div className="list-container">
-                <h2 className="list-title">Districts</h2>
-                <div className="dropdown" ref={dropdownRef}>
-                    <button onClick={toggleDropdown}>
-                        Click to select a district
-                    </button>
-                    {isOpen && (
-                        <div className="dropdown-menu">
-                            {districts.map(district => (
+            <div className="dropdown">
+                <h2 className="dropdown__title">Districts</h2>
+                <button className="dropdown__button" onClick={toggleDropdown}>
+                    Click to select a district
+                </button>
+                {isOpen && (
+                    <div className="dropdown__menu" style={{ display: "block" }}>
+                        {districts.map(district => {
+                            const keyId = `${district._id.state}-${district._id.district}`;
+                            return (
                                 <button
-                                    key={`${district._id.state}-${district._id.district}`}
-                                    onClick={() => setIsOpen(false)}
+                                    className="dropdown__item"
+                                    key={keyId}
+                                    onClick={() => handleDistrictClick(district)}
                                 >
                                     {district._id.state}-{district._id.district}
                                 </button>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
         </main>
     );
