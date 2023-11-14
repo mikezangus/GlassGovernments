@@ -1,0 +1,13 @@
+:root {
+    --font-family: "Anonymous Pro", monospace;
+    --color-white: #fff;
+    --color-dropdown-bg: #191919;
+    --transition-duration: 0.3s;
+}
+
+.panel {
+    position: relative;
+    display: block;
+    max-width: 50%;
+    margin-left: auto;
+}

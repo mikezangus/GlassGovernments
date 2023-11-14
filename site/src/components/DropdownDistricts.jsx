@@ -20,11 +20,8 @@ export default function DropdownDistricts({ onSelectedDistrict }) {
         fetchDistricts();
     }, []);
 
-    const handleDistrictClick = (districtObject) => {
-        
-        const state = districtObject._id.state;
-        const districtNumber = districtObject._id.district;
-        onSelectedDistrict({ state, district: districtNumber});
+    const handleDistrictClick = (district) => {
+        onSelectedDistrict(district);
         setIsOpen(false);
     };
 
@@ -39,15 +36,15 @@ export default function DropdownDistricts({ onSelectedDistrict }) {
                 </button>
                 {isOpen && (
                     <div className="dropdown__menu" style={{ display: "block" }}>
-                        {districts.map(district => {
-                            const keyId = `${district._id.state}-${district._id.district}`;
+                        {districts.map((districtObject, index) => {
+                            const districtString = `${districtObject._id.state}-${districtObject._id.district}`;
                             return (
                                 <button
                                     className="dropdown__item"
-                                    key={keyId}
-                                    onClick={() => handleDistrictClick(district)}
+                                    key={index}
+                                    onClick={() => handleDistrictClick(districtString)}
                                 >
-                                    {district._id.state}-{district._id.district}
+                                    {districtString}
                                 </button>
                             );
                         })}

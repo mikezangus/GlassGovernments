@@ -1,20 +1,32 @@
 import React, { useState } from "react";
-import Header from "./components/Header";
 import DropdownDistricts from "./components/DropdownDistricts";
-import DropdownPoliticians from "./components/DropdownPoliticians";
+import DropdownCandidates from "./components/DropdownCandidates";
+import PanelCandidate from "./components/PanelCandidate";
 
 export default function App() {
+
     const [selectedDistrict, setSelectedDistrict] = useState(null);
-    const handleSelectDistrict = (districtData) => {
-        setSelectedDistrict(districtData);
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
+
+    const handleDistrictSelection = (district) => {
+        setSelectedDistrict(district);
+        setSelectedCandidate(null);
     };
+
+    const handleCandidateSelection = (candidate) => {
+        setSelectedCandidate(candidate);
+    };
+
     return (
-        <div className="appContainer">
-            <Header />
-            <DropdownDistricts onSelectedDistrict={handleSelectDistrict} />
-            {selectedDistrict ? (
-                <DropdownPoliticians district={selectedDistrict}/>
-            ) : null }
+        <div>
+            <DropdownDistricts onSelectedDistrict={handleDistrictSelection} />
+            {selectedDistrict && (
+                <DropdownCandidates
+                    selectedDistrict={selectedDistrict}
+                    onSelectedCandidate={handleCandidateSelection}
+                />
+            )}
+            {selectedCandidate && <PanelCandidate candidate={selectedCandidate} />}
         </div>
     );
 };
