@@ -1,7 +1,7 @@
 import json
 import os
 import pandas as pd
-from pymongo import MongoClient
+from pymongo import MongoClient, UpdateOne
 
 base_directory = "/Users/zangus/Documents/Projects/Project_CREAM"
 
@@ -20,66 +20,63 @@ def get_user_choices():
     states = os.listdir(os.path.join(clean_directory, year))
     state = get_user_choice("From which state do you want to upload data?: ", states)
     all_districts = ["all"] + os.listdir(os.path.join(clean_directory, year, state))
-    district = get_user_choice(f"From which {state} district do you want to upload data?: ", all_districts)
-    district_path = os.path.join(clean_directory, year, state, district) if district != "all" else os.path.join(clean_directory, year, state)
-    candidate_files = [f for f in os.listdir(district_path) if f.endswith("_clean.csv")]
-    candidates = ["all"] + [f.split('_')[3] for f in candidate_files]
-    candidate = get_user_choice("Which candidate do you want to upload?: ", candidates)
+    district = get_user_choice(f"From which {state.upper()} district do you want to upload data?: ", all_districts)
+    candidate = "all"
+    if district != "all":
+        district_path = os.path.join(clean_directory, year, state, district)
+        candidate_files = [f for f in os.listdir(district_path) if f.endswith("_clean.csv")]
+        candidates = ["all"] + [f.split('_')[3] for f in candidate_files]
+        candidate = get_user_choice("Which candidate do you want to upload?: ", candidates)
     return year, state, district, candidate
 
 def get_user_choice(prompt, available_options):
     print("Available options:", available_options)
     choice = input(prompt).strip()
-    while choice.upper() not in [option.upper() for option in available_options]:
+    while choice.lower() not in [option.lower() for option in available_options]:
         print("Invalid choice. Please choose from the available options.")
         choice = input(prompt).strip()
-    return choice.upper()
+    return choice
 
 def process_upload(upload_path, db):
-    data = pd.read_csv(upload_path, dtype={
-        "transaction_id": str,
-        "candidate_district": str,
-        "fec_election_year": str,
-        "candidate_office_district": str
-    })
-    data["contribution_receipt_amount"] = data["contribution_receipt_amount"].astype(float)
-    data["contributor_location"] = data["contributor_location"].apply(
-        lambda coord_string: [float(x) for x in coord_string[1:-1].split(", ")] if isinstance(coord_string, str) else coord_string
-    )
-    collection_name = os.path.basename(upload_path)[:7]
-    print(f"\nUploading file to collection: {collection_name}")
-    collection = db[collection_name]
-
-    records = data.to_dict(orient = "records")
-    for record in records:
-        collection.update_one(
-            {"transaction_id": record["transaction_id"]},
-            {"$set": record},
-            upsert = True
+    try:
+        data = pd.read_csv(upload_path, dtype = str)
+        data["contribution_receipt_amount"] = data["contribution_receipt_amount"].astype(float)
+        data["contributor_location"] = data["contributor_location"].apply(
+            lambda coord_string: [float(x) for x in coord_string[1:-1].split(", ")] if isinstance(coord_string, str) else coord_string
         )
-        
-
-year, state, district, candidate = get_user_choices()
-
-if district == "all":
-    districts = os.listdir(os.path.join(clean_directory, year, state))
-else:
-    districts = [district]
-
-for district in districts:
-    path = os.path.join(clean_directory, year, state, district)
-    print(f"\nChecking path: {path}")
-    all_files = os.listdir(path)
-    print(f"\nAll files in directory: {all_files}")
-    if candidate == "ALL":
-        files = [f for f in all_files if f.endswith("_clean.csv")]
-    else:
-        files = [f for f in all_files if candidate in f.upper()]
-
-    print(f"\nFiles to be processed: {files}")
-    for file in files:
-        print(f"\nProcessing file {file}")
-        process_upload(os.path.join(path, file), db)
-        print(f"\nFinished uploading file {file}")
-
-print("\nFinished uploading data")
+        file_parts = os.path.basename(upload_path).split("_")
+        year = file_parts[0]
+        chamber = "senate" if "sen" in file_parts[2].lower() else "house"
+        name = file_parts[3]
+        collection_name = f"{year}_{chamber}"
+        print(f"Uploading {name}'s file to collection: {collection_name}")
+        collection = db[collection_name]
+        operations = []
+        for record in data.to_dict(orient = "records"):
+            operations.append(UpdateOne(
+                {"transaction_id": record["transaction_id"]},
+                {"$setOnInsert": record},
+                upsert = True
+            ))
+        if operations:
+            result = collection.bulk_write(operations)
+            print(f"Uploaded {result.upserted_count} new donations for {name} to collection {collection_name}")
+        else:
+            print(f"No new records for {name} to upload")
+    except Exception as e:
+        print(f"Error occurred while processing {upload_path}: {e}")
+    
+if __name__ == "__main__":        
+    year, state, district, candidate = get_user_choices()
+    districts_to_process = [district] if district != "all" else os.listdir(os.path.join(clean_directory, year, state))
+    for district in districts_to_process:
+        path = os.path.join(clean_directory, year, state, district if district != "all" else "")
+        files_to_process = [f for f in os.listdir(path) if f.endswith("_clean.csv") and (candidate == "all" or candidate.lower() in f.lower())]
+        for file_name in files_to_process:
+            file_path = os.path.join(path, file_name)
+            print(f"\nStarting to process file: {file_name}")
+            process_upload(file_path, db)
+        if candidate == "all":
+            print(f"\nFinished uploading {state.upper()}-{district}'s data\n\n{'-' * 50}")
+        else:
+            print(f"\nFinished uploading {candidate}'s data")
