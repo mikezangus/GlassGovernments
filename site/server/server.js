@@ -30,7 +30,7 @@ client.connect()
 app.get("/api/districts", async (req, res) => {
     try {
         const db = client.db(config.mongoDatabase);
-        const collection = db.collection("2022_PA");
+        const collection = db.collection("2022_house");
         const aggregation = await collection.aggregate([
             {
                 $group: {
@@ -51,7 +51,7 @@ app.get("/api/districts", async (req, res) => {
 app.get("/api/lastnames", async (req, res) => {
     try {
         const db = client.db(config.mongoDatabase);
-        const collection = db.collection("2022_PA");
+        const collection = db.collection("2022_house");
         const { state, district } = req.query;
         let matchStage = {};
         if (state && district) {

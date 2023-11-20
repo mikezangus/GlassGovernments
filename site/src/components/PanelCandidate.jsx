@@ -1,15 +1,14 @@
 import React from "react";
 import "./PanelCandidate.css";
 
-export default function PanelCandidate ( {selectedCandidate} ) {
-    if (!selectedCandidate) {
-        return null;
-    }
+export default function PanelCandidate ( {candidate} ) {
     return (
-        <div className="panel">
-            {selectedCandidate.candidate_first_name} {selectedCandidate.candidate_last_name}
-            <div>State: {selectedCandidate.candidate_state}</div>
-            <div>District: {selectedCandidate.candidate_district}</div>
+        <div className={`panel-candidate ${candidate ? "white-background" : ""}`}>
+            {candidate && (
+                <div className="candidate-info">
+                    {candidate._id.lastName}
+                </div>
+            )}
         </div>
     );
-}
+};

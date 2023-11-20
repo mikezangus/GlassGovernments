@@ -12,10 +12,14 @@ function formatAmount(amount) {
     );
 };
 
-export default function DropdownCandidates({ selectedDistrict, onSelectedCandidate }) {
+export default function DropdownCandidates({ selectedDistrict, onSelectedCandidate, selectedCandidate }) {
 
     const [candidates, setCandidates] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+
+    const sortCandidatesByFunding = (candidatesArray) => {
+        return candidatesArray.sort((a, b) => b.totalFunding - a.totalFunding);
+    }
 
     useEffect(() => {
         const fetchCandidates = async () => {
@@ -26,7 +30,8 @@ export default function DropdownCandidates({ selectedDistrict, onSelectedCandida
                     const response = await fetch(`http://localhost:4000/api/lastnames?${queryParams}`);
                     if (!response.ok) throw new Error("Network response was not ok");
                     const data = await response.json();
-                    setCandidates(data);
+                    const sortedData = sortCandidatesByFunding(data);
+                    setCandidates(sortedData);
                 }
             } catch (error) {
                 console.error("Error fetching data", error);
@@ -49,7 +54,7 @@ export default function DropdownCandidates({ selectedDistrict, onSelectedCandida
                     Candidates from {selectedDistrict || ""}
                 </h2>
                 <button className="dropdown__button" onClick={toggleDropdown}>
-                    Click to select a candidate
+                    {selectedCandidate ? `Candidate selected: ${selectedCandidate._id.lastName}` : "Click to select a candidate"}
                 </button>
                 {isOpen && (
                     <div className="dropdown__menu" style={{ display: "block" }}>
