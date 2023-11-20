@@ -48,7 +48,7 @@ app.get("/api/districts", async (req, res) => {
     };
 });
 
-app.get("/api/lastnames", async (req, res) => {
+app.get("/api/candidates", async (req, res) => {
     try {
         const db = client.db(config.mongoDatabase);
         const collection = db.collection("2022_house");
@@ -67,9 +67,11 @@ app.get("/api/lastnames", async (req, res) => {
             {
                 $group: {
                     _id: {
+                        firstName: "$candidate_first_name",
                         lastName: "$candidate_last_name",
                         state: "$candidate_state",
-                        district: "$candidate_district"
+                        district: "$candidate_district",
+                        party: "$candidate_party"
                     },
                     totalFunding: { $sum: "$contribution_receipt_amount" }
                 }
@@ -77,6 +79,37 @@ app.get("/api/lastnames", async (req, res) => {
         ].filter(stage => Object.keys(stage).length > 0);
         const aggregation = await collection.aggregate(aggregationStages).toArray();
         res.json(aggregation);
+    } catch (err) {
+        console.error("Error fetching data from mongo:", err);
+        res.status(500).send("Internal server error");
+    }
+});
+
+app.get("/api/candidate-panel", async (req, res) => {
+    try {
+        const db = client.db(config.mongoDatabase);
+        const collection = db.collection("2022_house");
+        const { state, district, lastName, firstName } = req.query;
+        let matchStage = {
+            $match: {
+                candidate_state: state,
+                candidate_district: district,
+                candidate_first_name: firstName,
+                candidate_last_name: lastName
+            }
+        };
+        const aggregationStages = [
+            matchStage,
+            {
+                $group: {
+                    _id: "$entity_type_desc",
+                    totalAmount: { $sum: "$contribution_receipt_amount" }
+                }
+            },
+            { $sort: { totalAmount: -1 } }
+        ];
+        const donations = await collection.aggregate(aggregationStages).toArray();
+        res.json(donations);
     } catch (err) {
         console.error("Error fetching data from mongo:", err);
         res.status(500).send("Internal server error");

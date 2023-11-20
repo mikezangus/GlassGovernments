@@ -36,32 +36,33 @@ export default function DropdownDistricts({ onSelectedDistrict, selectedDistrict
         setIsOpen(false);
     };
 
-    const toggleDropdown = () => setIsOpen(!isOpen);
+    const toggleDropdown = () => {
+        console.log("Districts button clicked");
+        setIsOpen(!isOpen);
+    };
 
     return (
-        <main>
-            <div className="dropdown">
-                <h2 className="dropdown__title">Districts</h2>
-                <button className="dropdown__button" onClick={toggleDropdown}>
-                    {selectedDistrict ? `District selected: ${selectedDistrict}` : "Click to select a district"}
-                </button>
-                {isOpen && (
-                    <div className="dropdown__menu" style={{ display: "block" }}>
-                        {districts.map((districtObject, index) => {
-                            const districtString = `${districtObject._id.state}-${districtObject._id.district}`;
-                            return (
-                                <button
-                                    className="dropdown__item"
-                                    key={index}
-                                    onClick={() => handleDistrictClick(districtString)}
-                                >
-                                    {districtString}
-                                </button>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
-        </main>
+        <div className="dropdown">
+            <h2 className="dropdown__title">Districts</h2>
+            <button className="dropdown__button" onClick={toggleDropdown}>
+                {selectedDistrict ? `District selected: ${selectedDistrict}` : "Click to select a district"}
+            </button>
+            {isOpen && (
+                <div className="dropdown__menu" style={{ display: "block" }}>
+                    {districts.map((districtObject, index) => {
+                        const districtString = `${districtObject._id.state}-${districtObject._id.district}`;
+                        return (
+                            <button
+                                className="dropdown__item"
+                                key={index}
+                                onClick={() => handleDistrictClick(districtString)}
+                            >
+                                {districtString}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
     );
 };

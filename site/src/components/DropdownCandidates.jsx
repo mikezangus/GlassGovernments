@@ -27,7 +27,7 @@ export default function DropdownCandidates({ selectedDistrict, onSelectedCandida
                 if (selectedDistrict) {
                     const [state, district] = selectedDistrict.split("-");
                     const queryParams = new URLSearchParams({ state, district }).toString();
-                    const response = await fetch(`http://localhost:4000/api/lastnames?${queryParams}`);
+                    const response = await fetch(`http://localhost:4000/api/candidates?${queryParams}`);
                     if (!response.ok) throw new Error("Network response was not ok");
                     const data = await response.json();
                     const sortedData = sortCandidatesByFunding(data);
@@ -48,32 +48,32 @@ export default function DropdownCandidates({ selectedDistrict, onSelectedCandida
     const toggleDropdown = () => setIsOpen(!isOpen);
 
     return (
-        <main>
-            <div className="dropdown">
-                <h2 className="dropdown__title">
-                    Candidates from {selectedDistrict || ""}
-                </h2>
-                <button className="dropdown__button" onClick={toggleDropdown}>
-                    {selectedCandidate ? `Candidate selected: ${selectedCandidate._id.lastName}` : "Click to select a candidate"}
-                </button>
-                {isOpen && (
-                    <div className="dropdown__menu" style={{ display: "block" }}>
-                        {candidates.map((candidateObject) => {
-                            const candidateName = candidateObject._id.lastName;
-                            const funding = candidateObject.totalFunding;
-                            return (
-                                <button
-                                    className="dropdown__item"
-                                    key={candidateName}
-                                    onClick={() => handleCandidateClick(candidateObject)}
-                                >
-                                    {candidateName} - ${formatAmount(funding)}
-                                </button>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
-        </main>
+        <div className="dropdown">
+            <h2 className="dropdown__title">
+                Candidates from {selectedDistrict || ""}
+            </h2>
+            <button className="dropdown__button" onClick={toggleDropdown}>
+                {selectedCandidate ? `Candidate selected: ${selectedCandidate._id.lastName}` : "Click to select a candidate"}
+            </button>
+            {isOpen && (
+                <div className="dropdown__menu" style={{ display: "block" }}>
+                    {candidates.map((candidateObject) => {
+                        const candidateFirstName = candidateObject._id.firstName;
+                        const candidateLastName = candidateObject._id.lastName;
+                        const candidateParty = candidateObject._id.party ? `(${candidateObject._id.party.charAt(0)})` : `("")`
+                        const funding = candidateObject.totalFunding;
+                        return (
+                            <button
+                                className="dropdown__item"
+                                key={`${candidateFirstName}`-`${candidateLastName}`}
+                                onClick={() => handleCandidateClick(candidateObject)}
+                            >
+                                {candidateFirstName} {candidateLastName} {candidateParty} - ${formatAmount(funding)}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
     );
 };

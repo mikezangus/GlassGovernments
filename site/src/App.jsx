@@ -18,21 +18,23 @@ export default function App() {
     };
 
     return (
-        <div className="app-container" style={{ display: "flex" }}>
-            <div className="left-container" style={{ width: "50%" }}>
-                <DropdownDistricts
-                    onSelectedDistrict={handleDistrictSelection}
-                    selectedDistrict={selectedDistrict}
-                />
-                {selectedDistrict && (
-                    <DropdownCandidates
+        <main>
+            <div className="app-container" style={{ display: "flex" }}>
+                <div className="left-container" style={{ width: "50%" }}>
+                    <DropdownDistricts
+                        onSelectedDistrict={handleDistrictSelection}
                         selectedDistrict={selectedDistrict}
-                        onSelectedCandidate={handleCandidateSelection}
-                        selectedCandidate={selectedCandidate}
                     />
-                )}
+                    {selectedDistrict && (
+                        <DropdownCandidates
+                            selectedDistrict={selectedDistrict}
+                            onSelectedCandidate={handleCandidateSelection}
+                            selectedCandidate={selectedCandidate}
+                        />
+                    )}
+                </div>
+                <PanelCandidate candidate={selectedCandidate} />
             </div>
-            <PanelCandidate candidate={selectedCandidate} />
-        </div>
+        </main>
     );
 };
