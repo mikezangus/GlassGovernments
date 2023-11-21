@@ -1,7 +1,7 @@
 import json
 import os
 import pandas as pd
-from pymongo import MongoClient, UpdateOne
+from pymongo import GEOSPHERE, MongoClient, UpdateOne
 
 base_directory = "/Users/zangus/Documents/Projects/Project_CREAM"
 
@@ -42,7 +42,7 @@ def process_upload(upload_path, db):
         data = pd.read_csv(upload_path, dtype = str)
         data["contribution_receipt_amount"] = data["contribution_receipt_amount"].astype(float)
         data["contributor_location"] = data["contributor_location"].apply(
-            lambda coord_string: [float(x) for x in coord_string[1:-1].split(", ")] if isinstance(coord_string, str) else coord_string
+            lambda x: {"type": "Point", "coordinates": [float(coord) for coord in x.strip("[]").split(", ")]} if isinstance(x, str) else None
         )
         file_parts = os.path.basename(upload_path).split("_")
         year = file_parts[0]
@@ -51,6 +51,7 @@ def process_upload(upload_path, db):
         collection_name = f"{year}_{chamber}"
         print(f"Uploading {name}'s file to collection: {collection_name}")
         collection = db[collection_name]
+        # collection.create_index([("contributor_location", GEOSPHERE)])
         operations = []
         for record in data.to_dict(orient = "records"):
             operations.append(UpdateOne(
