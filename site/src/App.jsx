@@ -7,6 +7,7 @@ export default function App() {
 
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
+    const [totalRaised, setTotalRaised] = useState(0);
 
     const handleDistrictSelection = (district) => {
         setSelectedDistrict(district);
@@ -15,6 +16,7 @@ export default function App() {
 
     const handleCandidateSelection = (candidate) => {
         setSelectedCandidate(candidate);
+        setTotalRaised(candidate.totalFunding);
     };
 
     return (
@@ -33,7 +35,7 @@ export default function App() {
                         />
                     )}
                 </div>
-                <PanelCandidate candidate={selectedCandidate} />
+                <PanelCandidate candidate={selectedCandidate} totalRaised={totalRaised}/>
             </div>
         </main>
     );

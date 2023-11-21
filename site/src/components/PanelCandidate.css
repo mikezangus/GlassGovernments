@@ -6,9 +6,11 @@
 }
 
 .panel-candidate {
+    padding: 25px;
     width: 50%;
-    height: 100vh;
+    height: auto;
     float: right;
+    border-radius: 5%;
 }
 
 .panel-candidate.white-background {
