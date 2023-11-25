@@ -2,8 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./PanelCandidate.css";
 
 export default function PanelCandidate({ candidate, totalRaised }) {
+
     const [donationsByType, setDonationsByType] = useState([]);
     const [donationHotspots, setDonationHotspots] = useState([]);
+
+    useEffect(() => {
+        if (candidate) {
+            console.log("Current candidate:", candidate);
+            fetchDonationsByType();
+            fetchDonationHotspots();
+        }
+    }, [candidate]);
 
     const getPartyColor = (party) => {
         switch (party) {
@@ -20,18 +29,10 @@ export default function PanelCandidate({ candidate, totalRaised }) {
         }
     };
 
-    useEffect(() => {
-        if (candidate) {
-            console.log("Current candidate:", candidate);
-            fetchDonationsByType();
-            fetchDonationHotspots();
-        }
-    }, [candidate]);
-
     const fetchDonationsByType = async () => {
         try {
             const typeResponse = await fetch(
-                `http://localhost:4000/api/candidate-funding-by-entity?${new URLSearchParams({
+                `http://localhost:4000/api/funding-by-entity?${new URLSearchParams({
                     firstName: candidate._id.firstName,
                     lastName: candidate._id.lastName,
                     state: candidate._id.state,
@@ -57,7 +58,7 @@ export default function PanelCandidate({ candidate, totalRaised }) {
         }).toString();
         console.log("Query paramters for hotspots:", queryParams)
         try {
-            const response = await fetch(`http://localhost:4000/api/candidate-donation-hotspots?${queryParams}`);
+            const response = await fetch(`http://localhost:4000/api/funding-by-location?${queryParams}`);
             if (!response.ok) {
                 throw new Error("Network response was not ok")
             }
