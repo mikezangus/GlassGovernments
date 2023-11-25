@@ -41,9 +41,10 @@ def process_upload(upload_path, db):
     try:
         data = pd.read_csv(upload_path, dtype = str)
         data["contribution_receipt_amount"] = data["contribution_receipt_amount"].astype(float)
+        # data["contributor_location"] = data["contributor_location"].apply(
+        #     lambda x: {"type": "Point", "coordinates": [float(coord) for coord in x.strip("[]").split(", ")]} if isinstance(x, str) else None)
         data["contributor_location"] = data["contributor_location"].apply(
-            lambda x: {"type": "Point", "coordinates": [float(coord) for coord in x.strip("[]").split(", ")]} if isinstance(x, str) else None
-        )
+            lambda x: {"type": "Point", "coordinates": [float(coord) for coord in x.strip("[]").split(", ")[::-1]]} if isinstance(x, str) else None)
         file_parts = os.path.basename(upload_path).split("_")
         year = file_parts[0]
         chamber = "senate" if "sen" in file_parts[2].lower() else "house"
@@ -51,7 +52,7 @@ def process_upload(upload_path, db):
         collection_name = f"{year}_{chamber}"
         print(f"Uploading {name}'s file to collection: {collection_name}")
         collection = db[collection_name]
-        # collection.create_index([("contributor_location", GEOSPHERE)])
+        collection.create_index([("contributor_location", GEOSPHERE)])
         operations = []
         for record in data.to_dict(orient = "records"):
             operations.append(UpdateOne(

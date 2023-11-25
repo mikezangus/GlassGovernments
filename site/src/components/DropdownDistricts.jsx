@@ -37,7 +37,7 @@ export default function DropdownDistricts({ onSelectedDistrict, selectedDistrict
     };
 
     const toggleDropdown = () => {
-        console.log("Districts button clicked");
+        console.log("Districts dropdown button clicked");
         setIsOpen(!isOpen);
     };
 

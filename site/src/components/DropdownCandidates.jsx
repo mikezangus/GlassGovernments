@@ -41,6 +41,7 @@ export default function DropdownCandidates({ selectedDistrict, onSelectedCandida
     }, [selectedDistrict]);
 
     const handleCandidateClick = (candidate) => {
+        console.log("Candidates dropdown button clicked")
         onSelectedCandidate(candidate);
         setIsOpen(false);
     };
