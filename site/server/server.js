@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { connectToMongo } = require("./mongoClient");
+
 const districtsRoute = require("./routes/districts");
 const candidatesRoute = require("./routes/candidates");
 const fundingByEntityRoute = require("./routes/fundingByEntity");

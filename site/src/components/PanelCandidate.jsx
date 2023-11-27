@@ -63,7 +63,7 @@ export default function PanelCandidate({ candidate, totalRaised }) {
                 throw new Error("Network response was not ok")
             }
             const hotspots = await response.json();
-            console.log("Fetched donation hotspots:", hotspots);
+            console.log("Fetched donation hotspots via component:", hotspots);
             setDonationHotspots(hotspots);
         } catch (error) {
             console.error("Error fetching donation hotspots:", error);
@@ -71,6 +71,7 @@ export default function PanelCandidate({ candidate, totalRaised }) {
     };
 
     const partyColor = candidate ? getPartyColor(candidate._id.party) : "gray";
+    console.log("Donation hotspots via component:", donationHotspots)
 
     return (
         <div className={`panel-candidate ${candidate ? "white-background" : ""}`}>
@@ -94,9 +95,9 @@ export default function PanelCandidate({ candidate, totalRaised }) {
                     <section>
                         <h3>Donation spots</h3>
                         <ul>
-                            {donationHotspots.map((geo, index) => (
+                            {donationHotspots.map((hotspot, index) => (
                                 <li key={index}>
-                                    Lat: {geo.latitude}, Lng: {geo.longitude}
+                                    Count: {hotspot.count} | {hotspot.latitude}, {hotspot.longitude}
                                 </li>
                             ))}
                         </ul>

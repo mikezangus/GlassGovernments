@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const { getDB } = require("../mongoClient");
-const { groupCoordinates } = require("../utilities/locationUtils");
+const { groupCoordinates, sortGroupsBySize } = require("../utilities/locationUtils");
 
 router.get("/", async (req, res) => {
     try {
         const db = getDB();
         const collection = db.collection("2022_house");
         const { state, district, lastName, firstName } = req.query;
-        console.log("Request query:", req.query);
+        console.log("Request query via route:", req.query);
         const aggregation = await collection.aggregate([
             {
                 $match: {
@@ -22,17 +22,23 @@ router.get("/", async (req, res) => {
             {
                 $project: {
                     _id: 0,
-                    longitude: { $arrayElemAt: ["$contributor_location.coordinates", 0] },
-                    latitude: { $arrayElemAt: ["$contributor_location.coordinates", 1] }
+                    coordinates: "$contributor_location.coordinates"
                 }
             }
         ]).toArray();
-        console.log("Aggregation result:", aggregation);
-        const groupedHotspots = groupCoordinates(aggregation);
-        res.json(groupedHotspots);
+        console.log("Aggregation result via route:", aggregation);
+        const hotspots = aggregation.map(item => ({
+            longitude: item.coordinates[0],
+            latitude: item.coordinates[1]
+        }));
+        let groupedHotspots = groupCoordinates(hotspots);
+        groupedHotspots = sortGroupsBySize(groupedHotspots);
+        const topGroupedHotspots = groupedHotspots.slice(0, 5)
+        console.log("Top 5 grouped hotspots via route:", topGroupedHotspots)
+        res.json(topGroupedHotspots);
     } catch (err) {
-        console.error("Error fetching donation hotspots from MongoDB:", err);
-        res.status(500).send("Internal server error");
+        console.error("Error fetching donation hotspots from MongoDB via fundingByLocation.js:", err);
+        res.status(500).send("Internal server error via fundingByLocation.js");
     }
 });
 

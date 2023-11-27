@@ -27,7 +27,31 @@ function groupCoordinates(coordinates) {
             groupedCoords.push([coord]);
         }
     });
-    return groupedCoords;
+    
+    const averagedGroupCoords = groupedCoords.map(group => {
+
+        const sum = group.reduce((acc, curr) => {
+            return {
+                latitude: acc.latitude + curr.latitude,
+                longitude: acc.longitude + curr.longitude
+            };
+        }, { latitude: 0, longitude: 0 });
+
+        return {
+            latitude: sum.latitude / group.length,
+            longitude: sum.longitude / group.length,
+            count: group.length
+        };
+    });
+
+    console.log("Averaged group coordinates via utility:", averagedGroupCoords);
+    return averagedGroupCoords;
 };
 
-module.exports = { haversine, groupCoordinates };
+function sortGroupsBySize(groupedCoords) {
+    groupedCoords.sort((a, b) => b.length - a.length);
+    console.log("Grouped coordinates via utility:", groupedCoords);
+    return groupedCoords;
+}
+
+module.exports = { haversine, groupCoordinates, sortGroupsBySize };
