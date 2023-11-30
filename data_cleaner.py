@@ -1,47 +1,36 @@
-import json
 import os
 import pandas as pd
 import requests
 import time
 
-base_directory = "/Users/zangus/Documents/Projects/Project_CREAM"
-data_directory = os.path.join(base_directory, "data")
-source_data_directory = os.path.join(data_directory, "source")
-clean_data_directory = os.path.join(data_directory, "clean")
 
-try:
-    with open(os.path.join(base_directory, "config.json"), "r") as file:
-        config = json.load(file)
-        api_key = config["googleMapsApiKey"]
-    if not api_key:
-        raise ValueError("Google Maps API Key is missing from the config file")
-except FileNotFoundError:
-    print("Config file not found")
-    exit()
+base_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.join(base_dir, "data")
+src_data_dir = os.path.join(data_dir, "source")
 
 
-def get_coordinates(address, api_key):
-    base_url = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {
-        "address": address,
-        "key": api_key
-    }
-    response = requests.get(base_url, params = params)
-    if response.status_code == 200:
-        data = response.json()
-        if data["status"] == "OK":
-            latitude = data["results"][0]["geometry"]["location"]["lat"]
-            longitude = data["results"][0]["geometry"]["location"]["lng"]
-            return [latitude, longitude]
-    return None
+def clean_data(file_name, src_path):
 
-
-def clean_data(filename, input_path):
-    candidate_info = filename.split("_")
+    def get_coordinates(address):
+        try:
+            base_url = "https://nominatim.openstreetmap.org/search"
+            params = { "q": address, "format": "json" }
+            response = requests.get(base_url, params = params)
+            response.raise_for_status()
+            data = response.json()
+            if data:
+                latitude = float(data[0]["lat"])
+                longitude = float(data[0]["lon"])
+                return [latitude, longitude]
+            return None
+        except requests.RequestException as e:
+            print(f"Error fetching coordinates: {e}")
+            return None
+            
+    candidate_info = file_name.split("_")
     year, state, district, last_name, first_name, party = candidate_info[:6]
-    print(f"Starting to clean {year} {state}-{district} candidate {first_name} {last_name}'s data")
 
-    relevant_columns = [
+    relevant_cols = [
         "transaction_id",
         "entity_type_desc",
         "contributor_street_1",
@@ -59,32 +48,35 @@ def clean_data(filename, input_path):
         "fec_election_year"
     ]
 
-    data = pd.read_csv(filepath_or_buffer = input_path, sep = ",", usecols = relevant_columns)
+    data = pd.read_csv(filepath_or_buffer = src_path, sep = ",", usecols = relevant_cols)
+    data["fec_election_year"] = data["fec_election_year"].fillna(0).astype(int).astype(str)
+    data = data.loc[data["fec_election_year"] == year]
 
     data["candidate_last_name"] = last_name
     data["candidate_first_name"] = first_name
     data["candidate_state"] = state
-    data["candidate_district"] = str(district)
+    data["candidate_district"] = district
     data["candidate_party"] = party
 
-    data["transaction_id"] = data["transaction_id"].astype(str)
-    data["contributor_zip"] = data["contributor_zip"].astype(str)
-    data["candidate_office_district"] = data["candidate_office_district"].apply(lambda x: str(int(x)) if not pd.isna(x) else x)
-    data["fec_election_year"] = data["fec_election_year"].fillna(0).astype(int).astype(str)
-    data = data.loc[data["fec_election_year"] == year]
+    string_cols = data.columns.drop(['candidate_office_district', 'contribution_receipt_amount'])
+    data[string_cols] = data[string_cols].astype(str) 
+    
+    data["candidate_office_district"] = data["candidate_office_district"].apply(
+        lambda x: str(int(x)) if (not pd.isna(x) and x != '' and str(x).isdigit()) else x
+    )
     data["contribution_receipt_amount"] = data["contribution_receipt_amount"].astype(float)
-    data["contribution_receipt_date"] = pd.to_datetime(data["contribution_receipt_date"], errors = "coerce")
-    data["contribution_receipt_date"] = data["contribution_receipt_date"].dt.strftime("%Y-%m-%d")
+
 
     data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"]
     address_count = len(data["full_address"])
     start_time = time.time()
     print(f"Converting {address_count} addresses to coordinates, starting at {time.strftime('%H:%M:%S', time.localtime(start_time))}...")
-    data["contributor_location"] = data.apply(lambda row: get_coordinates(row["full_address"], api_key), axis = 1)
+    data["contribution_location"] = data["full_address"].apply(get_coordinates)
     end_time = time.time()
     total_time = round((end_time - start_time) / 60, 4)
     print(f"Finished converting {address_count} addresses to coordinates in {total_time:.2f} minutes at a rate of {(address_count / total_time):.2f} addresses per minute")
     data.drop(columns = ["contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"], inplace = True)
+
 
     column_order = [
         "transaction_id",
@@ -97,7 +89,7 @@ def clean_data(filename, input_path):
         "contribution_receipt_date",
         "contribution_receipt_amount",
         "entity_type_desc",
-        "contributor_location",
+        "contribution_location",
         "fec_election_type_desc",
         "donor_committee_name",
         "candidate_office_full",
@@ -109,37 +101,96 @@ def clean_data(filename, input_path):
     return data
 
 
-def save_cleaned_data(district_paths):
-    for district_path in district_paths:
-        for filename in os.listdir(district_path):
-            if filename.startswith("."): 
-                continue
-            input_path = os.path.join(district_path, filename)
-            clean_district_path = district_path.replace(source_data_directory, clean_data_directory)
-            output_filename = filename.replace("_source.csv", "_clean.csv")
-            output_path = os.path.join(clean_district_path, output_filename)
-            if os.path.exists(output_path):
-                continue
-            cleaned_data = clean_data(filename, input_path)
-            os.makedirs(clean_district_path, exist_ok = True)
-            cleaned_data.to_csv(path_or_buf = output_path, index = False)
-            print(f"Cleaned data saved to {output_path}")
+def clean_file(year, state, district, candidate_file):
+    
+    src_file_path = os.path.join(src_data_dir, year, state, district, candidate_file)
+    cleaned_data_dir = os.path.join(data_dir, "cleanX")
+    cleaned_file_dir = os.path.join(cleaned_data_dir, year, state, district)
+    os.makedirs(cleaned_file_dir, exist_ok = True)
+
+    print(f"Starting to clean file: {candidate_file}")
+    clean_file = clean_data(file_name = candidate_file, src_path = src_file_path)
+    cleaned_file_name = candidate_file.replace("source", "clean")
+    cleaned_file_path = os.path.join(cleaned_file_dir, cleaned_file_name)
+    os.path.isfile(cleaned_file_path)
+
+    clean_file.to_csv(path_or_buf = cleaned_file_path, index = False)
+    print(f"Finished cleaning file: {cleaned_file_name}\n")
+    
 
 
-def process_district_data(year, state, district_choice):
-    if district_choice == "all":
-        all_districts = sorted([d for d in os.listdir(os.path.join(source_data_directory, str(year), state)) if os.path.isdir(os.path.join(source_data_directory, str(year), state, d))], key = lambda x: int(x) if x.isdigit() else 0)
-        for district in all_districts:
-            district_path = os.path.join(source_data_directory, str(year), state, district)
-            save_cleaned_data([district_path])
-    else:
-        district_path = os.path.join(source_data_directory, str(year), state, district_choice)
-        save_cleaned_data([district_path])
+def get_user_input():
+
+# 1. Year
+    def decide_year():
+        years = sorted([y for y in os.listdir(src_data_dir) if not y.startswith(".")])
+        year_input = input(str(f"From which year do you want to clean data?:\n{', '.join(years)}\n> "))
+        decide_state(year = year_input)
+
+# 2. State
+    def decide_state(year):
+        states_dir = os.path.join(src_data_dir, year)
+        states = sorted([s for s in os.listdir(states_dir) if not s.startswith(".")])
+        state_input = input(f"From which state do you want to clean files? For all states, enter 'all':\n{', '.join(states)}\n> ").upper()
+        if state_input == "ALL":
+            process_all_states(year = year)
+        else:
+            decide_district(year = year, state = state_input)
+
+    def process_all_states(year):
+        print(f"\nCleaning data from {year} for all states\n{'-' * 100}")
+        states_dir = os.path.join(src_data_dir, year)
+        states = sorted([s for s in os.listdir(states_dir) if not s.startswith(".")])
+        for state in states:
+            process_all_districts(year = year, state = state)
+
+# 3. District
+    def decide_district(year, state):
+        districts_dir = os.path.join(src_data_dir, year, state)
+        districts = sorted([d for d in os.listdir(districts_dir) if not d.startswith(".")])
+        if len(districts) == 1:
+            decide_candidate(year = year, state = state, district = districts[0])   
+        else:
+            district_input = input(f"From which district do you want to clean files? For all districts, enter 'all':\n{', '.join(districts)}\n> ")
+            if district_input.lower() == "all":
+                process_all_districts(year = year, state = state)
+            else:
+                decide_candidate(year = year, state = state, district = district_input)
+
+    def process_all_districts(year, state):
+        print(f"\nCleaning data for all {state} districts\n{'-' * 100}")
+        districts_dir = os.path.join(src_data_dir, year, state)
+        districts = sorted([d for d in os.listdir(districts_dir) if not d.startswith(".")])
+        for district in districts:
+            process_all_candidates(year = year, state = state, district = district)
+
+# 4. Candidate
+    def decide_candidate(year, state, district):
+        candidates_dir = os.path.join(src_data_dir, year, state, district)
+        candidate_files = [f for f in os.listdir(candidates_dir) if not f.startswith(".") and f.count("_") == 6]
+        candidate_last_names = [file.split("_")[3] for file in candidate_files]
+        candidate_input = input(f"Which candidate's file do you want to clean? For all candidates, enter 'all':\n{', '.join(candidate_last_names)}\n> ").upper()
+        if candidate_input == "ALL":
+            process_all_candidates(year = year, state = state, district = district)
+        else:
+            for candidate_file in candidate_files:
+                if candidate_file.split("_")[3].upper() == candidate_input:
+                    process_one_candidate(year = year, state = state, district = district, candidate = candidate_file)       
+    
+    def process_all_candidates(year, state, district):
+        print(f"\nCleaning data for all {state}-{district} candidates\n{'-' * 50}")
+        candidates_dir = os.path.join(src_data_dir, year, state, district)
+        candidate_files = [f for f in os.listdir(candidates_dir) if not f.startswith(".") and f.count("_") == 6]
+        for candidate_file in candidate_files:
+            process_one_candidate(year = year, state = state, district = district, candidate = candidate_file)
+    
+    def process_one_candidate(year, state, district, candidate):
+        clean_file(year = year, state = state, district = district, candidate_file = candidate)
+
+
+    decide_year()
 
 
 if __name__ == "__main__":
-    year = "2022"
-    state = input("From which state do you want to clean data?: ").upper()
-    district_choice = input(f"From which {state} district do you want to clean data?\nTo process one district, enter the district's number, or to process all of {state}'s districts, enter 'all': ")
-    process_district_data(year, state, district_choice)
-    print("Data cleaning completed")
+    get_user_input()
+    print(f"Data cleaning completed")
