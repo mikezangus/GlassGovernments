@@ -178,7 +178,7 @@ def get_user_input():
                     process_one_candidate(year = year, state = state, district = district, candidate = candidate_file)       
     
     def process_all_candidates(year, state, district):
-        print(f"\nCleaning data for all {state}-{district} candidates\n{'-' * 50}")
+        print(f"\nCleaning data for all {state}-{district} candidates\n{'-' * 75}")
         candidates_dir = os.path.join(src_data_dir, year, state, district)
         candidate_files = [f for f in os.listdir(candidates_dir) if not f.startswith(".") and f.count("_") == 6]
         for candidate_file in candidate_files:
