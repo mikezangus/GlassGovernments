@@ -10,7 +10,7 @@ data_base_dir = os.path.join(base_dir, "data")
 src_data_dir = os.path.join(data_base_dir, "source")
 
 
-def clean_data(src_file_name, src_file_path):
+def process_src_data(src_file_name, src_file_path):
 
     def get_coordinates(address):
         try:
@@ -23,13 +23,10 @@ def clean_data(src_file_name, src_file_path):
                 latitude = float(data[0]["lat"])
                 longitude = float(data[0]["lon"])
                 return f"[{latitude}, {longitude}]"
-            return None
+            return ""
         except requests.RequestException as e:
             print(f"Error fetching coordinates: {e}")
-            return None
-            
-    candidate_info = src_file_name.split("_")
-    year, state, district, last_name, first_name, party = candidate_info[:6]
+            return ""
 
     relevant_cols = [
         "transaction_id",
@@ -40,12 +37,12 @@ def clean_data(src_file_name, src_file_path):
         "donor_committee_name",
         "fec_election_type_desc", "fec_election_year"
     ]
-
     data = pd.read_csv(
-        filepath_or_buffer = src_file_path, sep = ",", usecols = relevant_cols, na_values = "", keep_default_na = False, low_memory = False
-    )
+        filepath_or_buffer = src_file_path, sep = ",", usecols = relevant_cols, dtype = str, na_values = "", keep_default_na = False, low_memory = False
+    )           
+    candidate_info = src_file_name.split("_")[:6]
+    year, state, district, last_name, first_name, party = candidate_info
 
-    data["fec_election_year"] = data["fec_election_year"].fillna(0).astype(int).astype(str)
     data = data.loc[data["fec_election_year"] == year]
 
     data["candidate_state"] = state
@@ -53,13 +50,7 @@ def clean_data(src_file_name, src_file_path):
     data["candidate_last_name"] = last_name
     data["candidate_first_name"] = first_name
     data["candidate_party"] = party
-
-    string_cols = data.columns.drop(["candidate_office_district"])
-    data[string_cols] = data[string_cols].astype(str) 
     
-    data["candidate_office_district"] = data["candidate_office_district"].apply(
-        lambda x: str(int(x)) if (not pd.isna(x) and x != '' and str(x).isdigit()) else x
-    )
     data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"]
     total_address_count = len(data["full_address"])
 
@@ -87,8 +78,8 @@ def clean_data(src_file_name, src_file_path):
     total_conversion_rate = total_address_count / total_time
     print(f"Finished converting {format(total_address_count, ',')} addresses to coordinates in {total_time:.2f} minutes at {total_conversion_rate:.2f} addresses per minute")
     data.drop(columns = ["contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"], inplace = True)
-
-    column_order = [
+    data.fillna("", inplace = True)
+    col_order = [
         "transaction_id",
         "candidate_last_name",
         "candidate_first_name",
@@ -107,27 +98,25 @@ def clean_data(src_file_name, src_file_path):
         "candidate_office_district"
     ]
 
-    data = data.reindex(columns = column_order)
+    data = data.reindex(columns = col_order)
     return data
 
 
 def save_cleaned_file(year, state, district, src_file_name):
     
     src_file_path = os.path.join(src_data_dir, year, state, district, src_file_name)
-    cleaned_data_dir = os.path.join(data_base_dir, "cleanX")
+    cleaned_data_dir = os.path.join(data_base_dir, "clean_x")
     cleaned_file_dir = os.path.join(cleaned_data_dir, year, state, district)
     os.makedirs(cleaned_file_dir, exist_ok = True)
 
     print(f"Starting to clean file: {src_file_name}")
-    clean_file = clean_data(src_file_name = src_file_name, src_file_path = src_file_path)
+    clean_file = process_src_data(src_file_name = src_file_name, src_file_path = src_file_path)
     cleaned_file_name = src_file_name.replace("source", "clean")
     cleaned_file_path = os.path.join(cleaned_file_dir, cleaned_file_name)
-    os.path.isfile(cleaned_file_path)
-
     clean_file.to_csv(path_or_buf = cleaned_file_path, index = False)
     print(f"Finished cleaning file: {cleaned_file_name}\n")
 
 
 if __name__ == "__main__":
     get_user_input(callback = save_cleaned_file, data_dir = src_data_dir)
-    print(f"Data cleaning completed")
+    print(f"Finished cleaning data")
