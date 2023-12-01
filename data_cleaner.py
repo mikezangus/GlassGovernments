@@ -6,8 +6,8 @@ from user_inputs import get_user_input
 
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = os.path.join(base_dir, "data")
-src_data_dir = os.path.join(data_dir, "source")
+data_base_dir = os.path.join(base_dir, "data")
+src_data_dir = os.path.join(data_base_dir, "source")
 
 
 def clean_data(src_file_name, src_file_path):
@@ -114,7 +114,7 @@ def clean_data(src_file_name, src_file_path):
 def save_cleaned_file(year, state, district, src_file_name):
     
     src_file_path = os.path.join(src_data_dir, year, state, district, src_file_name)
-    cleaned_data_dir = os.path.join(data_dir, "cleanX")
+    cleaned_data_dir = os.path.join(data_base_dir, "cleanX")
     cleaned_file_dir = os.path.join(cleaned_data_dir, year, state, district)
     os.makedirs(cleaned_file_dir, exist_ok = True)
 
