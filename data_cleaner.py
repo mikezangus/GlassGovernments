@@ -21,7 +21,7 @@ def clean_data(file_name, src_path):
             if data:
                 latitude = float(data[0]["lat"])
                 longitude = float(data[0]["lon"])
-                return [latitude, longitude]
+                return f"[{latitude}, {longitude}]"
             return None
         except requests.RequestException as e:
             print(f"Error fetching coordinates: {e}")
@@ -48,7 +48,7 @@ def clean_data(file_name, src_path):
         "fec_election_year"
     ]
 
-    data = pd.read_csv(filepath_or_buffer = src_path, sep = ",", usecols = relevant_cols)
+    data = pd.read_csv(filepath_or_buffer = src_path, sep = ",", usecols = relevant_cols, low_memory = False, na_values = "", keep_default_na = False)
     data["fec_election_year"] = data["fec_election_year"].fillna(0).astype(int).astype(str)
     data = data.loc[data["fec_election_year"] == year]
 
@@ -68,13 +68,30 @@ def clean_data(file_name, src_path):
 
 
     data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"]
-    address_count = len(data["full_address"])
+    total_address_count = len(data["full_address"])
     start_time = time.time()
-    print(f"Converting {address_count} addresses to coordinates, starting at {time.strftime('%H:%M:%S', time.localtime(start_time))}...")
-    data["contribution_location"] = data["full_address"].apply(get_coordinates)
+    print(f"Starting to convert {format(total_address_count, ',')} addresses to coordinates, starting at {time.strftime('%H:%M:%S', time.localtime(start_time))}...")
+    
+    last_update_time = start_time
+    converted_count = 0
+    for idx, address in enumerate(data["full_address"]):
+        data.at[idx, "contribution_location"] = get_coordinates(address)
+        converted_count += 1
+        if time.time() - last_update_time >= 300:
+            loop_elapsed_time = (time.time() - start_time) / 60 
+            loop_conversion_percentage = converted_count / total_address_count * 100
+            loop_conversion_rate = converted_count / loop_elapsed_time
+            projected_total_time = total_address_count / loop_conversion_rate
+            projected_remaining_time = projected_total_time - loop_elapsed_time
+            projected_end_time = time.strftime('%H:%M:%S', time.localtime(start_time + projected_total_time * 60))
+            print(f"{' ' * 9}Minute {int(loop_elapsed_time)}: Converted {format(converted_count, ',')} of {format(total_address_count, ',')} addresses at {int(loop_conversion_rate)} addresses per minute")
+            print(f"{' ' * 19}{loop_conversion_percentage:.1f}% complete, projected to complete in {projected_remaining_time:.1f} minutes at {projected_end_time}")
+            last_update_time = time.time()
+    
     end_time = time.time()
-    total_time = round((end_time - start_time) / 60, 4)
-    print(f"Finished converting {address_count} addresses to coordinates in {total_time:.2f} minutes at a rate of {(address_count / total_time):.2f} addresses per minute")
+    total_time = (end_time - start_time) / 60
+    total_conversion_rate = total_address_count / total_time
+    print(f"Finished converting {format(total_address_count, ',')} addresses to coordinates in {total_time:.2f} minutes at {total_conversion_rate:.2f} addresses per minute")
     data.drop(columns = ["contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"], inplace = True)
 
 
@@ -121,13 +138,13 @@ def clean_file(year, state, district, candidate_file):
 
 def get_user_input():
 
-# 1. Year
+    # 1. Year
     def decide_year():
         years = sorted([y for y in os.listdir(src_data_dir) if not y.startswith(".")])
         year_input = input(str(f"From which year do you want to clean data?:\n{', '.join(years)}\n> "))
         decide_state(year = year_input)
 
-# 2. State
+    # 2. State
     def decide_state(year):
         states_dir = os.path.join(src_data_dir, year)
         states = sorted([s for s in os.listdir(states_dir) if not s.startswith(".")])
@@ -144,7 +161,7 @@ def get_user_input():
         for state in states:
             process_all_districts(year = year, state = state)
 
-# 3. District
+    # 3. District
     def decide_district(year, state):
         districts_dir = os.path.join(src_data_dir, year, state)
         districts = sorted([d for d in os.listdir(districts_dir) if not d.startswith(".")])
@@ -164,7 +181,7 @@ def get_user_input():
         for district in districts:
             process_all_candidates(year = year, state = state, district = district)
 
-# 4. Candidate
+    # 4. Candidate
     def decide_candidate(year, state, district):
         candidates_dir = os.path.join(src_data_dir, year, state, district)
         candidate_files = [f for f in os.listdir(candidates_dir) if not f.startswith(".") and f.count("_") == 6]
@@ -187,7 +204,7 @@ def get_user_input():
     def process_one_candidate(year, state, district, candidate):
         clean_file(year = year, state = state, district = district, candidate_file = candidate)
 
-
+    # 5. Run
     decide_year()
 
 
