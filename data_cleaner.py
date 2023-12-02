@@ -6,117 +6,139 @@ from user_inputs import get_user_input
 
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-data_base_dir = os.path.join(base_dir, "data")
-src_data_dir = os.path.join(data_base_dir, "source")
+data_dir = os.path.join(base_dir, "data")
+source_data_dir = os.path.join(data_dir, "source")
 
 
-def process_src_data(src_file_name, src_file_path):
+def process_source_data(source_file_name, source_file_path):
 
-    def get_coordinates(address):
-        try:
+
+    candidate_info = source_file_name.split("_")[:6]
+    year, state, district, last_name, first_name, party = candidate_info
+ 
+
+    def add_candidate_info(data, state, district, last_name, first_name, party):
+        data["candidate_state"] = state
+        data["candidate_district"] = district
+        data["candidate_last_name"] = last_name
+        data["candidate_first_name"] = first_name
+        data["candidate_party"] = party
+        return data
+    
+    def convert_addresses_to_coordinates(data):
+
+
+        def get_coordinates(address, failed_conversions):
             base_url = "https://nominatim.openstreetmap.org/search"
             params = { "q": address, "format": "json" }
-            response = requests.get(url = base_url, params = params)
-            response.raise_for_status()
-            data = response.json()
-            if data:
-                latitude = float(data[0]["lat"])
-                longitude = float(data[0]["lon"])
-                return f"[{latitude}, {longitude}]"
-            return ""
-        except requests.RequestException as e:
-            print(f"Error fetching coordinates: {e}")
-            return ""
+            try:
+                response = requests.get(url = base_url, params = params, timeout = 10)
+                response.raise_for_status()
+                data = response.json()
+                if data:
+                    latitude = float(data[0]["lat"])
+                    longitude = float(data[0]["lon"])
+                    return f"[{latitude}, {longitude}]"
+                else:
+                    failed_conversions["count"] += 1
+                    return ""
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
+                failed_conversions["count"] += 1
+                return ""
+            
 
-    relevant_cols = [
-        "transaction_id",
-        "entity_type_desc",
-        "contributor_street_1", "contributor_city", "contributor_state", "contributor_zip",
-        "contribution_receipt_date", "contribution_receipt_amount",
-        "candidate_name", "candidate_office_full", "candidate_office_state", "candidate_office_district",
-        "donor_committee_name",
-        "fec_election_type_desc", "fec_election_year"
-    ]
-    data = pd.read_csv(
-        filepath_or_buffer = src_file_path, sep = ",", usecols = relevant_cols, dtype = str, na_values = "", keep_default_na = False, low_memory = False
-    )           
-    candidate_info = src_file_name.split("_")[:6]
-    year, state, district, last_name, first_name, party = candidate_info
-
-    data = data.loc[data["fec_election_year"] == year]
-
-    data["candidate_state"] = state
-    data["candidate_district"] = district
-    data["candidate_last_name"] = last_name
-    data["candidate_first_name"] = first_name
-    data["candidate_party"] = party
+        data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"] 
+        total_address_count = len(data["full_address"])
+        conversion_start_time = time.time()
+        print(f"Starting to convert {format(total_address_count, ',')} addresses to coordinates at {time.strftime('%H:%M:%S', time.localtime(conversion_start_time))}")
+        conversion_last_update_time = conversion_start_time
+        conversion_count = 0
+        failed_conversions = {"count": 0}
+        for idx, address in enumerate(data["full_address"]):
+            data.at[idx, "contribution_location"] = get_coordinates(address = address, failed_conversions = failed_conversions)
+            conversion_count += 1
+            if time.time() - conversion_last_update_time >= 300:
+                loop_elapsed_time = (time.time() - conversion_start_time) / 60 
+                loop_conversion_percentage = conversion_count / total_address_count * 100
+                loop_conversion_rate = conversion_count / loop_elapsed_time
+                projected_total_time = total_address_count / loop_conversion_rate
+                projected_total_remaining_time = projected_total_time - loop_elapsed_time
+                if projected_total_remaining_time >= 60:
+                    projected_total_remaining_time_printout = f"{(projected_total_remaining_time / 60):.1f} hour(s)"
+                else:
+                    projected_total_remaining_time_printout = f"{(projected_total_remaining_time):.1f} minutes"
+                projected_total_end_time = time.strftime('%H:%M:%S', time.localtime(conversion_start_time + projected_total_time * 60))
+                loop_current_minute = f"Minute {int(loop_elapsed_time)} at {time.strftime('%H:%M:%S', time.localtime(time.time()))} | "
+                print(f"{' ' * 9}{loop_current_minute}Converted {format(conversion_count, ',')} of {format(total_address_count, ',')} addresses at {int(loop_conversion_rate)} addresses per minute")
+                print(f"{' ' * (9 + len(loop_current_minute))}{loop_conversion_percentage:.1f}% complete, projected to complete in {projected_total_remaining_time_printout} at {projected_total_end_time}")
+                conversion_last_update_time = time.time()
+        end_time = time.time()
+        conversion_total_time = (end_time - conversion_start_time) / 60
+        total_conversion_rate = total_address_count / conversion_total_time
+        print(f"Finished converting {format((total_address_count - failed_conversions['count']), ',')} out of {format(total_address_count, ',')} addresses to coordinates in {conversion_total_time:.2f} minutes at {total_conversion_rate:.2f} addresses per minute")
+        data.drop(columns = ["contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"], inplace = True)
+        return data
     
-    data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"]
-    total_address_count = len(data["full_address"])
 
-    start_time = time.time()
-    print(f"{' ' * 9}Starting to convert {format(total_address_count, ',')} addresses to coordinates. Current time: {time.strftime('%H:%M:%S', time.localtime(start_time))}")
-    last_update_time = start_time
-    converted_count = 0
-    for idx, address in enumerate(data["full_address"]):
-        data.at[idx, "contribution_location"] = get_coordinates(address)
-        converted_count += 1
-        if time.time() - last_update_time >= 300:
-            loop_elapsed_time = (time.time() - start_time) / 60 
-            loop_conversion_percentage = converted_count / total_address_count * 100
-            loop_conversion_rate = converted_count / loop_elapsed_time
-            projected_total_time = total_address_count / loop_conversion_rate
-            projected_total_remaining_time = projected_total_time - loop_elapsed_time
-            projected_total_end_time = time.strftime('%H:%M:%S', time.localtime(start_time + projected_total_time * 60))
-            loop_current_minute = f"Minute {int(loop_elapsed_time)}: "
-            print(f"{' ' * 9}{loop_current_minute}Converted {format(converted_count, ',')} of {format(total_address_count, ',')} addresses at {int(loop_conversion_rate)} addresses per minute")
-            print(f"{' ' * (9 + len(loop_current_minute))}{loop_conversion_percentage:.1f}% complete, projected to complete in {projected_total_remaining_time:.1f} minutes at {projected_total_end_time}")
-            last_update_time = time.time()
+    def clean_data():
+        relevant_cols = [
+            "transaction_id",
+            "entity_type_desc",
+            "contributor_street_1", "contributor_city", "contributor_state", "contributor_zip",
+            "contribution_receipt_date", "contribution_receipt_amount",
+            "candidate_name", "candidate_office_full", "candidate_office_state", "candidate_office_district",
+            "donor_committee_name",
+            "fec_election_type_desc", "fec_election_year"
+        ]
+        col_order = [
+            "transaction_id",
+            "candidate_last_name",
+            "candidate_first_name",
+            "fec_election_year",
+            "candidate_state",
+            "candidate_district",
+            "candidate_party",
+            "contribution_receipt_date",
+            "contribution_receipt_amount",
+            "entity_type_desc",
+            "contribution_location",
+            "fec_election_type_desc",
+            "donor_committee_name",
+            "candidate_office_full",
+            "candidate_office_state",
+            "candidate_office_district"
+        ]
+        data = pd.read_csv(
+            filepath_or_buffer = source_file_path, sep = ",", usecols = relevant_cols, dtype = str, na_values = "", keep_default_na = False, low_memory = False
+        )
+        data = data[data["fec_election_year"] == year]
+        data = add_candidate_info(data = data, state = state, district = district, last_name = last_name, first_name = first_name, party = party)
+        data = convert_addresses_to_coordinates(data = data)
+        data = data.reindex(columns = col_order)
+        return data
     
-    end_time = time.time()
-    total_time = (end_time - start_time) / 60
-    total_conversion_rate = total_address_count / total_time
-    print(f"Finished converting {format(total_address_count, ',')} addresses to coordinates in {total_time:.2f} minutes at {total_conversion_rate:.2f} addresses per minute")
-    data.drop(columns = ["contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"], inplace = True)
-    data.fillna("", inplace = True)
-    col_order = [
-        "transaction_id",
-        "candidate_last_name",
-        "candidate_first_name",
-        "fec_election_year",
-        "candidate_state",
-        "candidate_district",
-        "candidate_party",
-        "contribution_receipt_date",
-        "contribution_receipt_amount",
-        "entity_type_desc",
-        "contribution_location",
-        "fec_election_type_desc",
-        "donor_committee_name",
-        "candidate_office_full",
-        "candidate_office_state",
-        "candidate_office_district"
-    ]
 
-    data = data.reindex(columns = col_order)
-    return data
+    processed_data = clean_data()
+    return processed_data
 
 
-def save_cleaned_file(year, state, district, src_file_name):
+def save_cleaned_file(year, state, district, file_name):
     
-    src_file_path = os.path.join(src_data_dir, year, state, district, src_file_name)
-    cleaned_data_dir = os.path.join(data_base_dir, "clean_x")
+    source_file_path = os.path.join(source_data_dir, year, state, district, file_name)
+    cleaned_data_dir = os.path.join(data_dir, "cleanx")
     cleaned_file_dir = os.path.join(cleaned_data_dir, year, state, district)
     os.makedirs(cleaned_file_dir, exist_ok = True)
 
-    print(f"Starting to clean file: {src_file_name}")
-    clean_file = process_src_data(src_file_name = src_file_name, src_file_path = src_file_path)
-    cleaned_file_name = src_file_name.replace("source", "clean")
+    print(f"Starting to clean file: {file_name}")
+    cleaned_file_name = file_name.replace("source", "cleanx")
+    clean_file = process_source_data(source_file_name = file_name, source_file_path = source_file_path)
+    print(f"Finished cleaning file: {cleaned_file_name}")
     cleaned_file_path = os.path.join(cleaned_file_dir, cleaned_file_name)
     clean_file.to_csv(path_or_buf = cleaned_file_path, index = False)
-    print(f"Finished cleaning file: {cleaned_file_name}\n")
+    print(f"Saved cleaned file to: {cleaned_file_dir}\n")
 
 
 if __name__ == "__main__":
-    get_user_input(callback = save_cleaned_file, data_dir = src_data_dir)
-    print(f"Finished cleaning data")
+    get_user_input(action = "clean", data_dir = source_data_dir, callback = save_cleaned_file)
+    print("\nFinished cleaning data")
