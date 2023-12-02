@@ -48,4 +48,4 @@ def upload_data(year, state, district, file_name):
 
 if __name__ == "__main__":
     get_user_input(action = "upload", data_dir = cleaned_data_dir, callback = upload_data)
-    print("\ninished uploading data")
+    print("\nFinished uploading data")
