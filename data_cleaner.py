@@ -3,11 +3,7 @@ import pandas as pd
 import requests
 import time
 from user_inputs import get_user_input
-
-
-base_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = os.path.join(base_dir, "data")
-source_data_dir = os.path.join(data_dir, "source")
+from utilities import source_data_dir, cleaned_data_dir
 
 
 def process_source_data(source_file_name, source_file_path):
@@ -24,6 +20,7 @@ def process_source_data(source_file_name, source_file_path):
         data["candidate_first_name"] = first_name
         data["candidate_party"] = party
         return data
+    
     
     def convert_addresses_to_coordinates(data):
 
@@ -126,19 +123,18 @@ def process_source_data(source_file_name, source_file_path):
 def save_cleaned_file(year, state, district, file_name):
     
     source_file_path = os.path.join(source_data_dir, year, state, district, file_name)
-    cleaned_data_dir = os.path.join(data_dir, "cleanx")
     cleaned_file_dir = os.path.join(cleaned_data_dir, year, state, district)
-    os.makedirs(cleaned_file_dir, exist_ok = True)
 
     print(f"Starting to clean file: {file_name}")
     cleaned_file_name = file_name.replace("source", "cleanx")
     clean_file = process_source_data(source_file_name = file_name, source_file_path = source_file_path)
     print(f"Finished cleaning file: {cleaned_file_name}")
     cleaned_file_path = os.path.join(cleaned_file_dir, cleaned_file_name)
+    os.makedirs(cleaned_file_dir, exist_ok = True)
     clean_file.to_csv(path_or_buf = cleaned_file_path, index = False)
     print(f"Saved cleaned file to: {cleaned_file_dir}\n")
 
 
 if __name__ == "__main__":
-    get_user_input(action = "clean", data_dir = source_data_dir, callback = save_cleaned_file)
+    get_user_input(specify_chamber = False, action = "clean", data_dir = source_data_dir, callback = save_cleaned_file)
     print("\nFinished cleaning data")

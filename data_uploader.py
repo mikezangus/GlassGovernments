@@ -3,13 +3,10 @@ import os
 import pandas as pd
 from pymongo import GEOSPHERE, MongoClient, UpdateOne
 from user_inputs import get_user_input
+from utilities import current_path, cleaned_data_dir
 
 
-base_dir = os.path.dirname(os.path.abspath(__file__))
-cleaned_data_dir = os.path.join(base_dir, "data", "cleanx")
-
-
-with open(os.path.join(base_dir, "config.json"), "r") as file: config = json.load(file)
+with open(os.path.join(current_path, "config.json"), "r") as config_file: config = json.load(config_file)
 config["uri"] = f"mongodb+srv://{config['mongoUsername']}:{config['mongoPassword']}@{config['mongoCluster']}.px0sapn.mongodb.net/{config['mongoDatabase']}?retryWrites=true&w=majority"
 client = MongoClient(config["uri"])
 db = client[config["mongoDatabase"]]
@@ -47,5 +44,5 @@ def upload_data(year, state, district, file_name):
 
 
 if __name__ == "__main__":
-    get_user_input(action = "upload", data_dir = cleaned_data_dir, callback = upload_data)
+    get_user_input(specify_chamber = False, action = "upload", data_dir = cleaned_data_dir, callback = upload_data)
     print("\nFinished uploading data")
