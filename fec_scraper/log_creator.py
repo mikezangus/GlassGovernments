@@ -12,7 +12,7 @@ def create_log_file():
     log_dir = os.path.join(current_dir, "logs", year, month)
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
-    log_file_name = f"failed_downloads_{current_datetime_str}.log"
+    log_file_name = f"scraper_log_{current_datetime_str}.log"
     log_file_path = os.path.join(log_dir, log_file_name)
     logging.basicConfig(
         filename = log_file_path,

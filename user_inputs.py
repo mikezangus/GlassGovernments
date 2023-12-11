@@ -35,10 +35,10 @@ def get_user_inputs(action: str, chamber: bool = None, data_dir = None):
         years = sorted([y for y in os.listdir(data_dir) if not y.startswith(".")])
         while True:
             year_input = input_choice(subject = subject, action = action, choices = years)
-            if year_input not in years:
-                print_retry_message(subject = subject)
-                continue
-            return year_input
+            if year_input in years:
+                return year_input
+            print_retry_message(subject = subject)
+            continue
                     
 
     def decide_chamber():
@@ -46,36 +46,36 @@ def get_user_inputs(action: str, chamber: bool = None, data_dir = None):
         chambers = ["House", "Senate"]
         while True:
             chamber_input = input_choice(subject = subject, action = action, choices = chambers).capitalize()
-            if not is_valid_input(choice = chamber_input, choices = chambers):
-                print_retry_message(subject = subject)
-                continue
-            return chamber_input.lower()           
+            if is_valid_input(choice = chamber_input, choices = chambers):
+                return chamber_input.lower()
+            print_retry_message(subject = subject)
+            continue         
 
 
     def decide_state(year: str, chamber: str = None):
         subject = "state"
         if chamber:
-            states = list(us_states_all.values())
+            all_states = list(us_states_all.values())
             while True:
-                state_input = input_choice(subject = subject, action = action, choices = states).upper()
-                if not is_valid_input(choice = state_input, choices = states):
-                    print_retry_message(subject = subject)
-                    continue
-                return state_input   
-        states_dir = os.path.join(data_dir, year)
-        states = sorted([s for s in os.listdir(states_dir) if not s.startswith(".")])
-        while True:
-            state_input = input_choice(subject = subject, action = action, choices = states).upper()
-            if not is_valid_input(choice = state_input, choices = states):
+                state_input = input_choice(subject = subject, action = action, choices = all_states).upper()
+                if is_valid_input(choice = state_input, choices = all_states):
+                    return state_input
                 print_retry_message(subject = subject)
                 continue
-            return state_input
+        states_dir = os.path.join(data_dir, year)
+        all_states = sorted([s for s in os.listdir(states_dir) if not s.startswith(".")])
+        while True:
+            state_input = input_choice(subject = subject, action = action, choices = all_states).upper()
+            if is_valid_input(choice = state_input, choices = all_states):
+                return state_input
+            print_retry_message(subject = subject)
+            continue
 
 
     def decide_district(year: str, state: str, chamber: str = None):
         subject = "district"
         if chamber:
-            district_input = input_choice(subject = subject, action = action)
+            district_input = str(input_choice(subject = subject, action = action)).zfill(2)
             return district_input
         districts_dir = os.path.join(data_dir, year, state)
         districts = sorted([d for d in os.listdir(districts_dir) if not d.startswith(".")])
@@ -83,11 +83,11 @@ def get_user_inputs(action: str, chamber: bool = None, data_dir = None):
             district_input = districts[0]
             return district_input
         while True:
-            district_input = input_choice(subject = subject, action = action, choices = districts)
-            if not is_valid_input(choice = district_input, choices = districts):
-                print_retry_message(subject = subject)
-                continue
-            return district_input
+            district_input = str(input_choice(subject = subject, action = action, choices = districts)).zfill(2)
+            if is_valid_input(choice = district_input, choices = districts):
+                return district_input
+            print_retry_message(subject = subject)
+            continue
         
 
     def decide_candidate(year: str, state: str, district: str):
@@ -97,36 +97,31 @@ def get_user_inputs(action: str, chamber: bool = None, data_dir = None):
         candidate_last_names = [file.split("_")[3] for file in source_file_names]
         while True:
             candidate_input = input_choice(subject = subject, action = action, choices = candidate_last_names).upper()
-            if not is_valid_input(choice = candidate_input, choices = candidate_last_names):
-                print_retry_message(subject = subject)  
-                continue
-            return candidate_input
+            if is_valid_input(choice = candidate_input, choices = candidate_last_names):
+                return candidate_input
+            print_retry_message(subject = subject)  
+            continue
         
 
-    # 1. Year
     year = decide_year(chamber = chamber)
 
-    # 2. Chamber
     if chamber:
         chamber = decide_chamber()
     else:
         chamber = None
 
-    # 3. State
     state = decide_state(year = year, chamber = chamber)
 
-    # 4. District
-    if chamber == "senate":
+    if isinstance(state, list) or state.lower() == "all":
+        district = None
+    elif chamber == "senate":
         district = None
     elif chamber == "house":
-        if state.lower() == "all":
-            district = None
-        elif state in us_states_at_large.values():
+        if state in us_states_at_large.values():
             district = "00"
         else:
             district = decide_district(chamber = chamber, year = year, state = state)
 
-    # 5. Candidate
     if chamber:
         candidate = None
     else:

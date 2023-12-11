@@ -7,7 +7,7 @@ from selenium.webdriver.firefox.options import Options
 def firefox_driver():
     
     options = Options()
-    options.headless = False
+    options.headless = True
 
     profile = webdriver.FirefoxProfile()
     profile.set_preference("browser.privatebrowsing.autostart", True)
@@ -20,7 +20,7 @@ def firefox_driver():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
     sys.path.append(parent_dir)
-    from project_utilities import downloads_container_dir
+    from directories import downloads_container_dir
 
     profile.set_preference("browser.download.dir", downloads_container_dir)
     profile.set_preference("browser.download.folderList", 2)
