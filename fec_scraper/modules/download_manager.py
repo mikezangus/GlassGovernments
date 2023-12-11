@@ -1,11 +1,12 @@
 import logging
 import os
 import sys
-from message_writer import write_failure_message
+from .message_writer import write_failure_message
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
-sys.path.append(parent_dir)
+grandparent_dir = os.path.dirname(parent_dir)
+sys.path.append(grandparent_dir)
 from directories import downloads_container_dir, raw_data_dir
 
 
