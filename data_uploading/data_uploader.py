@@ -2,8 +2,8 @@ import json
 import os
 import pandas as pd
 from pymongo import GEOSPHERE, MongoClient, UpdateOne
-from user_inputs import get_user_input
-from utilities import current_path, cleaned_data_dir
+from user_inputs import get_user_inputs
+from directories import current_path, cleaned_data_dir
 
 
 with open(os.path.join(current_path, "config.json"), "r") as config_file: config = json.load(config_file)
@@ -44,5 +44,5 @@ def upload_data(year, state, district, file_name):
 
 
 if __name__ == "__main__":
-    get_user_input(specify_chamber = False, action = "upload", data_dir = cleaned_data_dir, callback = upload_data)
+    get_user_inputs(chamber = False, action = "upload", data_dir = cleaned_data_dir, callback = upload_data)
     print("\nFinished uploading data")

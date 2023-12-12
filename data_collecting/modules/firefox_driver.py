@@ -7,7 +7,7 @@ from selenium.webdriver.firefox.options import Options
 def firefox_driver():
     
     options = Options()
-    options.headless = True
+    options.headless = False
 
     profile = webdriver.FirefoxProfile()
     profile.set_preference("browser.privatebrowsing.autostart", True)

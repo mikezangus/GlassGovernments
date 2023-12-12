@@ -1,29 +1,43 @@
 import json
+import logging
 import os
 from engine import scrape_one_candidate
 from modules.button_clickers import select_results_per_page
+from modules.element_locators import locator_candidate_count, locator_financial_totals
+from modules.message_writer import write_failure_message
 from modules.utilities import load_base_url, check_if_district_exists, get_candidate_count
 
 
 def scrape_all_candidates_in_one_district(driver, year: str, chamber: str, state: str, district: str = None):
+
     print(f"Starting to scrape all candidates for {state}-{district}")
+
     if chamber == "house":
         load_base_url(driver = driver, year = year, chamber = chamber, state = state, district = district)
     elif chamber == "senate":
         load_base_url(driver = driver, year = year, chamber = chamber, state = state)
         district = chamber.upper()
-    candidate_count = get_candidate_count(driver = driver, state = state, district = district)
-    for i in range(1, candidate_count):
+
+    candidate_count = get_candidate_count(driver = driver, locator = locator_candidate_count, state = state, district = district)
+    if candidate_count is None:
+        return
+    
+    for i in range(1, candidate_count + 1):
+        success = scrape_one_candidate(driver = driver, year = year, chamber = chamber, state = state, district = district, candidate_count = candidate_count, i = i)
+        if not success:
+            message = f"Skipping {state}-{district} candidate {i}/{candidate_count}"
+            print(message)
+            logging.info(message)
+            continue
         if i >= 9:
             select_results_per_page(driver = driver, year = year, chamber = chamber, state = state, district = district)
-        scrape_one_candidate(driver = driver, year = year, chamber = chamber, state = state, district = district, candidate_count = candidate_count, i = i)
 
 
 def scrape_all_districts_in_one_state(driver, year: str, chamber: str, state: str):
     print(f"Starting to scrape all {state} districts")
     for i in range(1, 100):
         load_base_url(driver = driver, year = year, chamber = chamber, state = state, district = str(i).zfill(2))
-        if not check_if_district_exists(driver = driver):
+        if not check_if_district_exists(driver = driver, locator = locator_financial_totals):
             return
         scrape_all_candidates_in_one_district(driver = driver, year = year, chamber = chamber, state = state, district = str(i).zfill(2))
 

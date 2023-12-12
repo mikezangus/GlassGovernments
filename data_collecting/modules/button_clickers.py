@@ -83,16 +83,22 @@ def click_close_download_button(driver, locator: tuple, state: str, district: st
     for attempt in range(1, max_attempts):
         try:
             load_web_page(driver = driver)
-            element_close_download_button = WebDriverWait(driver = driver, timeout = 120).until(
+            WebDriverWait(driver = driver, timeout = 120).until(
                 EC.element_to_be_clickable(locator = locator)
             )
-            element_close_download_button.click()
+            driver.execute_script("document.querySelector('.downloads .js-close').click();")
+            WebDriverWait(driver = driver, timeout = 5).until_not(
+                EC.visibility_of_element_located(locator = locator)
+            )
             return True
         except Exception as e:
             message = write_failure_message(action = action, subject = subject, attempt = attempt, max_attempts = max_attempts, exception = e)
             print(message)
-            break
-    message = write_failure_message(action = action, subject = subject, attempt = attempt, max_attempts = max_attempts, exception = e)
+            if attempt < max_attempts:
+                continue
+            else:
+                break
+    message = write_failure_message(action = action, subject = subject, attempt = attempt, max_attempts = max_attempts)
     print(message)
     logging.info(message)
     return False
@@ -120,9 +126,11 @@ def select_results_per_page(driver, year, chamber, state, district):
         except Exception as e:
             message = write_failure_message(action = action, subject = subject, attempt = attempt, max_attempts = max_attempts, exception = e)
             print(message)
-        driver.refresh()
-        time.sleep(10)
-    message = write_failure_message(action = action, subject = subject, attempt = attempt, max_attempts = max_attempts, exception = e)
+        if attempt < max_attempts:
+            driver.refresh()
+            time.sleep(10)
+            continue
+    message = write_failure_message(action = action, subject = subject, attempt = attempt, max_attempts = max_attempts)
     print(message)
     logging.info(message)
     return False

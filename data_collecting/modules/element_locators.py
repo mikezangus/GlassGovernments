@@ -8,3 +8,6 @@ locator_export_button = (By.CSS_SELECTOR, ".js-export.button.button--cta.button-
 locator_downloads_pane = (By.CSS_SELECTOR, ".downloads")
 locator_download_button = (By.CSS_SELECTOR, "a.button")
 locator_close_download_button = (By.CSS_SELECTOR, "button.js-close:nth-child(3)")
+
+locator_financial_totals = (By.CSS_SELECTOR, "#candidate-financial-totals > div:nth-child(2)")
+locator_candidate_count = (By.CSS_SELECTOR, "#DataTables_Table_0_info")
