@@ -15,7 +15,7 @@ def firefox_driver():
     profile.set_preference("browser.cache.memory.enable", False)
     profile.set_preference("browser.cache.offline.enable", False)
     profile.set_preference("network.http.use-cache", False)
-    profile.set_preference("layout.css.devPixelsPerPx", "1")
+    profile.set_preference("layout.css.devPixelsPerPx", "1.5")
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
@@ -26,7 +26,9 @@ def firefox_driver():
     profile.set_preference("browser.download.folderList", 2)
     profile.set_preference("browser.download.useDownloadDir", True)
     profile.set_preference("browser.download.manager.showWhenStarting", False)
+    options.set_preference("browser.download.manager.quitBehavior", 2)
     profile.set_preference("browser.download.panel.shown", False)
+    profile.set_preference("browser.download.alwaysOpenPanel", False)
     profile.set_preference("browser.download.manager.closeWhenDone", True)
     profile.set_preference("browser.download.manager.alertOnEXEOpen", False)
     profile.set_preference("browser.download.manager.flashCount", 0)
