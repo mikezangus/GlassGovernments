@@ -29,20 +29,25 @@ def load_commands(subject):
     return commands
 
 
-def write_start_message(action, year, chamber, state, district, candidate = None):
-    state_str = ", ".join(state)
-    if len(chamber) > 1:
+def write_start_message(action: str, year: str, chamber_list: list, state_list: list, district_list: list, candidate_list: list = None):
+    state_str = ", ".join(state_list)
+    if len(chamber_list) > 1:
         district_str = "all"
-    elif len(district) > 1:
-        if district[-1] >= "99":
+    elif len(district_list) > 1:
+        if district_list[-1] >= "99":
             district_str = "all"
         else:
-            first_district = district[0]
-            last_district = district[-1]
+            first_district = district_list[0]
+            last_district = district_list[-1]
             district_str = f"{first_district}, ..., {last_district}"
     else:
-        district_str = district[0]
-    if candidate:
-        print(f'\n\nStarting to {action} for:\nYear: {year}\nChamber: {chamber}\nState(s): {state_str}\nDistrict(s): {district_str}\nCandidate(s): {candidate}')
+        district_str = district_list[0]
+    if candidate_list:
+        if len(candidate_list) > 1:
+            last_name_list = [candidate.split("_")[3] for candidate in candidate_list]
+            candidate_str = ", ".join(last_name_list)
+        else:
+            candidate_str = candidate_list[0]
+        print(f'\n\nStarting to {action} for:\nYear: {year}\nChamber: {chamber_list}\nState(s): {state_str}\nDistrict(s): {district_str}\nCandidate(s): {candidate_str}')
     else:
-        print(f'\n\nStarting to {action} for:\nYear: {year}\nChamber: {chamber}\nState(s): {state_str}\nDistrict(s): {district_str}\n')
+        print(f'\n\nStarting to {action} for:\nYear: {year}\nChamber: {chamber_list}\nState(s): {state_str}\nDistrict(s): {district_str}\n')

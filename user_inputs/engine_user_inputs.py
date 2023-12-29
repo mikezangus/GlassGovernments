@@ -13,31 +13,30 @@ def decide_year(data_source: str, action: str):
         year_input = input_choice(subject = subject, action = action)
         return year_input
     elif data_source.lower() == "files":
-        years = sorted([y for y in os.listdir(raw_data_dir) if not y.startswith(".")])
+        year_list = sorted([y for y in os.listdir(raw_data_dir) if not y.startswith(".")])
         while True:
-            year_input = input_choice(subject = subject, action = action, choices = years)
-            if year_input in years:
+            year_input = input_choice(subject = subject, action = action, choices = year_list)
+            if year_input in year_list:
                 return year_input
             print_retry_message(subject = subject)
             continue
                 
 
-def decide_chamber(action: str, chambers: list):
+def decide_chamber(action: str, chamber_list: list):
     subject = "chamber"
     while True:
-        chambers = [chamber.capitalize() for chamber in chambers]
-        chamber_input = input_choice(subject = subject, action = action, choices = chambers).capitalize()
-        if is_valid_input(choice = chamber_input, choices = chambers):
-            return chamber_input.lower()
+        chamber_list = [chamber.capitalize() for chamber in chamber_list]
+        chamber_input = input_choice(subject = subject, action = action, choices = chamber_list).capitalize()
+        if is_valid_input(choice = chamber_input, choices = chamber_list):
+            return chamber_input
         print_retry_message(subject = subject)
         continue         
 
 
-def decide_state(data_source: str, action: str, year: str = None, chamber: str = None, us_states_all: list = None, note = None):
+def decide_state(data_source: str, action: str, year: str = None, chamber: str = None, us_states_all_list: list = None, note = None):
     subject = "state"
     if data_source.lower() == "internet":
-        all_states = list(us_states_all)
-        state_input = input_choice(subject = subject, action = action, choices = all_states, notes = note).upper()
+        state_input = input_choice(subject = subject, action = action, choices = us_states_all_list, notes = note).upper()
         return state_input
     elif data_source.lower() == "files":
         states_dir = os.path.join(raw_data_dir, year, chamber)
@@ -56,28 +55,27 @@ def decide_district(data_source: str, action: str, year: str, state: str, chambe
         district_input = input_choice(subject = subject, action = action, notes = note)
         return district_input
     elif data_source.lower() == "files":
-        state = state[0]
         districts_dir = os.path.join(raw_data_dir, year, chamber, state)
-        districts = sorted([d for d in os.listdir(districts_dir) if not d.startswith(".")])
-        if len(districts) == 1:
-            district_input = districts[0]
-            return district_input
+        district_list = sorted([d for d in os.listdir(districts_dir) if not d.startswith(".")])
         while True:
-            district_input = input_choice(subject = subject, action = action, choices = districts, note = note)
+            district_input = input_choice(subject = subject, action = action, choices = district_list, note = note)
             return district_input
     
 
-def decide_candidate(action: str, year: str, chamber: str, state: list, district: list):
-    state = state[0]
+def decide_candidate(action: str, year: str, chamber: str, state: str, district: str):
     subject = f"{state}-{district} candidate"
-    print(f"State: {state}, District: {district}")
-    candidates_dir = os.path.join(raw_data_dir, year, chamber, state[0], district[0])
-    data_source_file_names = sorted([f for f in os.listdir(candidates_dir) if not f.startswith(".") and f.endswith(".csv") and f.count("_") == 6])
-    candidate_last_names = [file.split("_")[3] for file in data_source_file_names]
+    candidates_dir = os.path.join(raw_data_dir, year, chamber, state, district)
+    candidate_list = sorted([file for file in os.listdir(candidates_dir) if not file.startswith(".") and file.endswith(".csv") and file.count("_") == 6])
+    candidate_last_names = [file.split("_")[3] for file in candidate_list]
     while True:
         candidate_input = input_choice(subject = subject, action = action, choices = candidate_last_names).upper()
-        for file_name in data_source_file_names:
-            if file_name.split("_")[3].upper() == candidate_input:
-                return file_name
+        if candidate_input == "ALL":
+            candidate_input = candidate_list
+            return candidate_input
+        else:
+            for file_name in candidate_list:
+                if file_name.split("_")[3].upper() == candidate_input:
+                    candidate_input = [file_name]
+                    return candidate_input
         print_retry_message(subject = subject)  
         continue
