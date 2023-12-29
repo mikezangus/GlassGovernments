@@ -20,13 +20,14 @@ def firefox_driver():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
     sys.path.append(parent_dir)
-    from directories import downloads_container_dir
+    from project_directories import downloads_container_dir
 
     profile.set_preference("browser.download.dir", downloads_container_dir)
     profile.set_preference("browser.download.folderList", 2)
     profile.set_preference("browser.download.useDownloadDir", True)
     profile.set_preference("browser.download.manager.showWhenStarting", False)
     options.set_preference("browser.download.manager.quitBehavior", 2)
+    profile.set_preference("browser.download.manager.showAlertOnComplete", False)
     profile.set_preference("browser.download.panel.shown", False)
     profile.set_preference("browser.download.alwaysOpenPanel", False)
     profile.set_preference("browser.download.manager.closeWhenDone", True)

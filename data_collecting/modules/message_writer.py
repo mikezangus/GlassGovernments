@@ -1,4 +1,4 @@
-def write_base_message(context, action, subject = None, attempt = None, max_attempts = None, exception = None, notes = None):
+def write_base_message(context, action, subject = None, attempt = None, max_attempts: int = None, exception = None, notes = None):
     
     if subject:
         subject_message = f" for {subject}"
@@ -6,16 +6,17 @@ def write_base_message(context, action, subject = None, attempt = None, max_atte
         subject_message = ""
 
     if attempt and max_attempts:
+        attempt = attempt + 1
         attempt_message = f" on attempt {attempt}/{max_attempts}"
         if attempt < max_attempts and context == "failed":
-            next_action_message = ", retrying."
+            next_action_message = ", retrying"
         elif attempt == max_attempts and context == "failed":
-            next_action_message = ", moving on."
+            next_action_message = ", moving on"
         else:
-            next_action_message = "."
+            next_action_message = ""
     else:
         attempt_message = ""
-        next_action_message = "."
+        next_action_message = ""
 
     if exception:
         exception_message = f" Excepton: {exception}"
