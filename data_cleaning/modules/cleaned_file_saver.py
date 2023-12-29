@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 
 
 def save_cleaned_file(data, raw_file_name, cleaned_data_dir, year, chamber, state, district = None):

@@ -12,7 +12,7 @@ def get_coordinates(address, failed_conversions):
         if data:
             latitude = float(data[0]["lat"])
             longitude = float(data[0]["lon"])
-            return f"[{latitude}, {longitude}]"
+            return (latitude, longitude)
         else:
             failed_conversions["count"] += 1
             return ""
@@ -22,16 +22,22 @@ def get_coordinates(address, failed_conversions):
         return ""
     
     
-def convert_addresses_to_coordinates(data):
+def convert_addresses_to_coordinates(data, subject):
     data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"] 
     total_address_count = len(data["full_address"])
     conversion_start_time = time.time()
-    print(f"Starting to convert {format(total_address_count, ',')} addresses to coordinates at {time.strftime('%H:%M:%S', time.localtime(conversion_start_time))}")
+    print(f"\n{subject} | Starting to convert {format(total_address_count, ',')} addresses to coordinates at {time.strftime('%H:%M:%S', time.localtime(conversion_start_time))}")
     conversion_last_update_time = conversion_start_time
     conversion_count = 0
     failed_conversions = {"count": 0}
     for idx, address in enumerate(data["full_address"]):
-        data.at[idx, "contribution_location"] = get_coordinates(address = address, failed_conversions = failed_conversions)
+        if "contribution_location" not in data.columns:
+            data["contribution_location"] = None
+        coordinates = get_coordinates(address, failed_conversions)
+        if coordinates:
+            data.at[idx, "contribution_location"] = coordinates
+        else:
+            data.at[idx, "contribution_location"] = None
         conversion_count += 1
         if time.time() - conversion_last_update_time >= 300:
             loop_elapsed_time = (time.time() - conversion_start_time) / 60 
@@ -51,6 +57,6 @@ def convert_addresses_to_coordinates(data):
     end_time = time.time()
     conversion_total_time = (end_time - conversion_start_time) / 60
     total_conversion_rate = total_address_count / conversion_total_time
-    print(f"Finished converting {format((total_address_count - failed_conversions['count']), ',')} out of {format(total_address_count, ',')} addresses to coordinates in {conversion_total_time:.2f} minutes at {total_conversion_rate:.2f} addresses per minute")
+    print(f"{subject} | Finished converting {format((total_address_count - failed_conversions['count']), ',')} out of {format(total_address_count, ',')} addresses to coordinates in {conversion_total_time:.2f} minutes at {total_conversion_rate:.2f} addresses per minute")
     data.drop(columns = ["contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"], inplace = True)
     return data

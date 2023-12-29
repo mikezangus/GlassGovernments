@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 
-def load_raw_file(year, chamber, state, district, raw_data_dir, raw_file_name):
+def load_raw_file(year: str, chamber: str, state: str, district: str, raw_data_dir, raw_file_name: str):
     relevant_cols = [
         "transaction_id",
         "entity_type_desc",
