@@ -8,4 +8,5 @@ def load_db(project_dir):
     config["uri"] = f"mongodb+srv://{config['mongoUsername']}:{config['mongoPassword']}@{config['mongoCluster']}.px0sapn.mongodb.net/{config['mongoDatabase']}?retryWrites=true&w=majority"
     client = MongoClient(config["uri"])
     db = client[config["mongoDatabase"]]
+    print("Successfully pinged database")
     return db

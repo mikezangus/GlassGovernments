@@ -2,6 +2,7 @@ from pymongo import GEOSPHERE, UpdateOne
 
 
 def upload_data(db, data, year, chamber, first_name, last_name):
+    print("Starting to upload data")
     collection_name = f"{year}_{chamber}x"
     collection = db[collection_name]
     collection.create_index([("contribution_location", GEOSPHERE)])
