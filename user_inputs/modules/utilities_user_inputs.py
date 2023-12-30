@@ -1,10 +1,7 @@
 def input_choice(subject: str, action: str, choices: list = None, notes = None):
     choices_text = f"\n{', '.join(choices)}" if choices else ""
-    if not notes:
-        notes = ""
-    else:
-        notes = f"\n{notes}"
-    input_message = input(f"\n{'-' * 100}\nFor which {subject} do you want to {action} data?:{choices_text}{notes}\n> ")
+    notes_text = f"\n{notes}" if notes else ""
+    input_message = input(f"\n{'-' * 100}\nFor which {subject} do you want to {action} data?:{choices_text}{notes_text}\n> ")
     return input_message
     
 
@@ -17,7 +14,7 @@ def is_valid_input(choice: str, choices: list):
     return choice in choices or choice.lower() == "all"
 
 
-def load_commands(subject):
+def load_commands(subject: str):
     commands = [
         f"∙ [enter {subject} here]",
         f"∙ [enter 1st {subject} here], [enter 2nd {subject} here], ...,",
@@ -26,7 +23,7 @@ def load_commands(subject):
         f"∙ ALL FROM [first {subject}] TO [last {subject}] (order both {subject}s alphabetically)",
         f"∙ ALL STARTING FROM [enter {subject} here]"
     ]
-    return commands
+    return "\n".join(commands)
 
 
 def write_start_message(action: str, year: str, chamber_list: list, state_list: list, district_list: list, candidate_list: list = None):
