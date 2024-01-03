@@ -1,4 +1,4 @@
-def input_choice(subject: str, action: str, choices: list = None, notes = None):
+def input_choice(action: str, subject: str, choices: list = None, notes = None):
     choices_text = f"\n{', '.join(choices)}" if choices else ""
     notes_text = f"\n{notes}" if notes else ""
     input_message = input(f"\n{'-' * 100}\nFor which {subject} do you want to {action} data?:{choices_text}{notes_text}\n> ")
