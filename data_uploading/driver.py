@@ -16,6 +16,7 @@ def main():
     cleaned_data_dir = load_cleaned_data_dir(data_dir)
 
     candidate_list = get_user_inputs("upload", "files", cleaned_data_dir)
+    print(f"User inputs list via data uploading driver:\n{candidate_list}")
     for candidate in candidate_list:
         upload_one_candidate(candidate, cleaned_data_dir)
 

@@ -16,6 +16,7 @@ def main():
     raw_data_dir = load_raw_data_dir(data_dir)
 
     candidate_list = get_user_inputs("clean", "files", raw_data_dir)
+    print(f"User inputs list via data cleaning driver:\n{candidate_list}")
     caffeinate_process = start_caffeinate()
     try:
         for candidate in candidate_list:
