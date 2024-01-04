@@ -56,7 +56,7 @@ def process_district_input_str(district_input_str: str, district_choices_list: l
     elif "all starting" in district_input_str.lower():
         start_district = district_input_str.split(" ")[-1]
         if start_district in district_choices_list:
-            start_index = district_choices_list.index(start_index)
+            start_index = district_choices_list.index(start_district)
             district_input_list = district_choices_list[start_index:]
     elif "all from" in district_input_str.lower():
         district_input_split = district_input_str.split(" ")
