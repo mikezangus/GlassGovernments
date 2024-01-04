@@ -77,28 +77,33 @@ def process_district_input_str(district_input_str: str, district_choices_list: l
 
 
 def process_candidate_output_str(candidate_input_str: str, candidate_choices_list: list):
+    candidate_input_list = []
     if "all but" in candidate_input_str.lower():
-        candidate_input_split = candidate_input_str[7:].replace(" ", "").split(",")
-        excluded_candidates = [c.strip() for c in candidate_input_split]
-        candidate_input_list = [c for c in candidate_choices_list if c not in excluded_candidates]
+        excluded_candidates = [c.strip().lower() for c in candidate_input_str[7:].replace(" ", "").split(",")]
+        for candidate_file in candidate_choices_list:
+            if not any(excluded_candidate in candidate_file.lower() for excluded_candidate in excluded_candidates):
+                candidate_input_list.append(candidate_file)
     elif "all starting" in candidate_input_str.lower():
-        start_district = candidate_input_str.split(" ")[-1]
-        if start_district in candidate_choices_list:
-            start_index = candidate_choices_list.index(start_index)
+        start_candidate = candidate_input_str.split(" ")[-1].lower()
+        start_index = next((i for i, candidate in enumerate(candidate_choices_list) if start_candidate in candidate.lower()), None)
+        if start_index is not None:
             candidate_input_list = candidate_choices_list[start_index:]
     elif "all from" in candidate_input_str.lower():
-        candidate_input_split = candidate_input_str.split(" ")
-        start_district = candidate_input_split[2]
-        end_district = candidate_input_split[-1]
-        if start_district and end_district in candidate_choices_list:
-            start_index = candidate_choices_list.index(start_district)
-            end_index = candidate_choices_list.index(end_district) + 1
-            candidate_input_list = candidate_choices_list[start_index:end_index]
+        candidate_input_split = candidate_input_str[9:].split("TO")
+        start_candidate, end_candidate = candidate_input_split[0].strip().lower(), candidate_input_split[1].strip().lower()
+        start_index = next((i for i, candidate in enumerate(candidate_choices_list) if start_candidate in candidate.lower()), None)
+        end_index = next((i for i, candidate in enumerate(candidate_choices_list) if end_candidate in candidate.lower()), None)
+        if start_index is not None and end_index is not None:
+            candidate_input_list = candidate_choices_list[start_index:end_index + 1]
     elif candidate_input_str.lower().strip() == "all":
         candidate_input_list = candidate_choices_list
     elif "," in candidate_input_str:
-        candidate_input_split = candidate_input_str.replace(" ", "").split(",")
-        candidate_input_list = [c.strip().upper() for c in candidate_input_split]
+        searched_candidates = [c.strip().lower() for c in candidate_input_str.split(",")]
+        for candidate_file in candidate_choices_list:
+            if any(searched_candidate in candidate_file.lower() for searched_candidate in searched_candidates):
+                candidate_input_list.append(candidate_file)
     else:
-        candidate_input_list = [candidate_input_str]
+        for candidate_file in candidate_choices_list:
+            if candidate_input_str.lower() in candidate_file.lower():
+                candidate_input_list.append(candidate_file)
     return candidate_input_list
