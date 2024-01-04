@@ -45,9 +45,9 @@ def save_downloaded_file(subject, year: str, chamber: str, state: str, last_name
         downloaded_file_path = os.path.join(downloads_container_dir, downloaded_file_name)
         if os.path.isfile(downloaded_file_path):
             if chamber.lower() == "house":
-                destination_dir = os.path.join(raw_data_dir, year, chamber, state, district)
+                destination_dir = os.path.join(raw_data_dir, year, chamber.lower(), state, district)
             elif chamber.lower() == "senate":
-                destination_dir = os.path.join(raw_data_dir, year, chamber, state)
+                destination_dir = os.path.join(raw_data_dir, year, chamber.lower(), state)
             os.makedirs(destination_dir, exist_ok = True)
             formatted_file_name = f"{year}_{state}_{district}_{last_name}_{first_name}_{party}_raw.csv"
             destination_file_path = os.path.join(destination_dir, formatted_file_name)
