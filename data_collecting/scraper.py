@@ -54,19 +54,21 @@ def scrape_candidates(driver, action: str, year: str, chamber: str, state: str, 
 
 
 def scrape_constituency(action: str, year: str, chamber: str, state: str, district: str = None):
+    driver_loaded, driver = firefox_driver()
+    if not driver_loaded:
+        return False, "driver_not_loaded"
     print("Starting Firefox driver")
-    driver = firefox_driver()
     if district:
         subject = f"Year: {year} | Chamber: {chamber} | State: {state} | District: {district}"
     else:
         subject = f"Year: {year} | Chamber: {chamber} | State: {state}"
     load_base_url(driver, subject, year, chamber, state, district)
     if not verify_constituency_exists(driver, subject):
-        return False
+        return False, None
     candidate_count = get_candidate_count(driver, subject)
     if candidate_count is None:
-        return False
+        return False, None
     scrape_candidates(driver, action, year, chamber, state, candidate_count, district)
     print("Quitting Firefox driver\n")
     driver.quit() 
-    return True
+    return True, None

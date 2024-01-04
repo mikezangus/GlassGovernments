@@ -26,9 +26,11 @@ def main():
             if state != current_state:
                 current_state = state
                 constituency_exists = True
-            if not constituency_exists:
+            constituency_exists, driver_not_loaded = scrape_constituency("scrape", year, chamber, state, district)
+            if driver_not_loaded:
+                return
+            elif not constituency_exists:
                 continue
-            constituency_exists = scrape_constituency("scrape", year, chamber, state, district)
     finally:
         stop_caffeinate(caffeinate_process)
 
