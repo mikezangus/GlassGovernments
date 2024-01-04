@@ -1,20 +1,36 @@
 import sys
 import os
-from workflows import determine_workflow
+from scraper import scrape_constituency
 from modules.sub_modules.log_creator import create_log_file
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_dir = os.path.dirname(current_dir)
 sys.path.append(project_dir)
+from caffeinate import start_caffeinate, stop_caffeinate
 from user_inputs.driver_user_inputs import get_user_inputs
 
 
 def main():
-    data_source = "internet"
-    action = "scrape"
-    year, chamber_list, state_list, district_list = get_user_inputs(data_source, action)
-    create_log_file()
-    determine_workflow(year, chamber_list, state_list, district_list)
+    user_inputs_list = get_user_inputs("scrape", "internet")
+    print(f"User inputs list via data collection driver:\n{user_inputs_list}")
+    caffeinate_process = start_caffeinate()
+    try:
+        create_log_file()
+        current_state = None
+        for constituency in user_inputs_list:
+            year, chamber, state = constituency.split("_")
+            if chamber.lower() == "house":
+                district = constituency.split("_")[3]
+            elif chamber.lower() == "senate":
+                district = None
+            if state != current_state:
+                current_state = state
+                constituency_exists = True
+            if not constituency_exists:
+                continue
+            constituency_exists = scrape_constituency("scrape", year, chamber, state, district)
+    finally:
+        stop_caffeinate(caffeinate_process)
 
 
 if __name__ == "__main__":
