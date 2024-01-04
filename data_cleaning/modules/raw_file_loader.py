@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 
-def load_raw_file(year: str, chamber: str, state: str, raw_file_name: str, raw_data_dir: str, district: str = None):
+def load_raw_file(year: str, chamber: str, state: str, raw_file_name: str, raw_data_dir: str, district: str):
     relevant_cols = [
         "transaction_id",
         "entity_type_desc",
@@ -12,9 +12,9 @@ def load_raw_file(year: str, chamber: str, state: str, raw_file_name: str, raw_d
         "donor_committee_name",
         "fec_election_type_desc", "fec_election_year"
     ]
-    if district:
+    if chamber.lower() == "house":
         raw_file_path = os.path.join(raw_data_dir, year, chamber, state, district, raw_file_name)
-    else:
+    elif chamber.lower() == "senate":
         raw_file_path = os.path.join(raw_data_dir, year, chamber, state, raw_file_name)
     data = pd.read_csv(
         filepath_or_buffer = raw_file_path, sep = ",", usecols = relevant_cols, dtype = str, na_values = "", keep_default_na = False, low_memory = False
