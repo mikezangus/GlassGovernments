@@ -16,8 +16,15 @@ def load_raw_file(year: str, chamber: str, state: str, raw_file_name: str, raw_d
         raw_file_path = os.path.join(raw_data_dir, year, chamber, state, district, raw_file_name)
     elif chamber.lower() == "senate":
         raw_file_path = os.path.join(raw_data_dir, year, chamber, state, raw_file_name)
-    data = pd.read_csv(
-        filepath_or_buffer = raw_file_path, sep = ",", usecols = relevant_cols, dtype = str, na_values = "", keep_default_na = False, low_memory = False
-    )
-    data = data[data["fec_election_year"] == year]
-    return data
+    try:
+        data = pd.read_csv(
+            filepath_or_buffer = raw_file_path, sep = ",", usecols = relevant_cols, dtype = str, na_values = "", keep_default_na = False, low_memory = False
+        )
+        data = data[data["fec_election_year"] == year]
+        return data, True
+    except pd.errors.EmptyDataError:
+        print(f"{raw_file_name} is empty, moving on")
+        return pd.DataFrame(), False
+    except Exception as e:
+        print(f"Unexpected error occured with {raw_file_name}. Error: {e}")
+        return pd.DataFrame(), False
