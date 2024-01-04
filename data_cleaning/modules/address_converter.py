@@ -12,14 +12,14 @@ def get_coordinates(address, failed_conversions):
         if data:
             latitude = float(data[0]["lat"])
             longitude = float(data[0]["lon"])
-            return (latitude, longitude)
+            return latitude, longitude
         else:
             failed_conversions["count"] += 1
-            return ""
+            return "", ""
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         failed_conversions["count"] += 1
-        return ""
+        return "", ""
     
     
 def convert_addresses_to_coordinates(data, subject):
@@ -31,13 +31,17 @@ def convert_addresses_to_coordinates(data, subject):
     conversion_count = 0
     failed_conversions = {"count": 0}
     for idx, address in enumerate(data["full_address"]):
-        if "contribution_location" not in data.columns:
-            data["contribution_location"] = None
-        coordinates = get_coordinates(address, failed_conversions)
-        if coordinates:
-            data.at[idx, "contribution_location"] = coordinates
+        if "contribution_latitude" not in data.columns:
+            data["contribution_latitude"] = None
+        if "contribution_longitude" not in data.columns:
+            data["contribution_longitude"] = None
+        latitude, longitude = get_coordinates(address, failed_conversions)
+        if latitude and longitude:
+            data.at[idx, "contribution_latitude"] = latitude
+            data.at[idx, "contribution_longitude"] = longitude
         else:
-            data.at[idx, "contribution_location"] = None
+            data.at[idx, "contribution_latitude"] = None
+            data.at[idx, "contribution_longitude"] = None
         conversion_count += 1
         if time.time() - conversion_last_update_time >= 300:
             loop_elapsed_time = (time.time() - conversion_start_time) / 60 
