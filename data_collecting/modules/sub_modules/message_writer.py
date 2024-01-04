@@ -48,4 +48,3 @@ def write_failure_message(action, subject = None, attempt = None, max_attempts =
     context = "failed"
     failure_message = write_base_message(context = context, action = action, subject = subject, attempt = attempt, max_attempts = max_attempts, exception = exception, notes = notes)
     return failure_message
-

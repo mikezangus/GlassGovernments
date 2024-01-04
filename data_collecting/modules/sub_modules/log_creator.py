@@ -1,8 +1,12 @@
 import logging
 import os
-import sys
 from datetime import datetime
 from .message_writer import write_success_message, write_failure_message
+
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+modules_dir = os.path.dirname(current_dir)
+data_collecting_dir = os.path.dirname(modules_dir)
 
 
 def create_log_file():
@@ -10,12 +14,9 @@ def create_log_file():
     try:
         current_datetime = datetime.now()
         year = str(current_datetime.year)
-        month = str(current_datetime.month)
+        month = str(current_datetime.month).zfill(2)
         current_datetime_str = datetime.now().strftime("%Y_%m_%d_%H-%M-%S")
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        parent_dir = os.path.dirname(current_dir)
-        sys.path.append(parent_dir)
-        log_dir = os.path.join(parent_dir, "logs", year, month)
+        log_dir = os.path.join(data_collecting_dir, "logs", year, month)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
         log_file_name = f"scraper_log_{current_datetime_str}.log"

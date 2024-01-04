@@ -13,3 +13,5 @@ locator_close_download_button = (By.CSS_SELECTOR, "button.js-close:nth-child(3)"
 
 locator_financial_totals = (By.CSS_SELECTOR, "#candidate-financial-totals > div:nth-child(2)")
 locator_candidate_count = (By.CSS_SELECTOR, "#DataTables_Table_0_info")
+
+locator_results_per_page = (By.CSS_SELECTOR, "#DataTables_Table_0_length > label:nth-child(1) > select:nth-child(1)")

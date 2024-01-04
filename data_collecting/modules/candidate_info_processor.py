@@ -18,7 +18,12 @@ def process_candidate_info(driver, subject, elements: list, css_selector_base: s
         if total_receipts == 0.00 or 0:
             print(f"Total donation amount: ${total_receipts:,.2f}, moving on")
             return False, None, None, None
-        party = element_party.split(" ")[0] if element_party else "NO-PARTY-FOUND"
+        if element_party.lower() == "no party affiliation":
+            party = "NO-PARTY-AFFILIATION"
+        elif element_party:
+            party = element_party.split(" ")[0]
+        else:
+            party = "NO-PARTY-FOUND"
         locator_candidate_button = (By.CSS_SELECTOR, css_selector_base + "> td:nth-child(1) > a:nth-child(1)")
         element_candidate_button = WebDriverWait(driver, 5).until(EC.presence_of_element_located(locator_candidate_button))
         time.sleep(1)

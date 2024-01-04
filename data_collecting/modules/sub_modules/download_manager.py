@@ -4,11 +4,16 @@ import sys
 from .message_writer import write_failure_message, write_success_message
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-grandparent_dir = os.path.dirname(parent_dir)
-project_dir = os.path.dirname(grandparent_dir)
+modules_dir = os.path.dirname(current_dir)
+data_collecting_dir = os.path.dirname(modules_dir)
+project_dir = os.path.dirname(data_collecting_dir)
 sys.path.append(project_dir)
-from project_directories import downloads_container_dir, raw_data_dir
+from project_directories import load_data_dir, load_downloads_container_dir, load_raw_data_dir
+
+
+data_dir = load_data_dir(project_dir)
+downloads_container_dir = load_downloads_container_dir(data_dir)
+raw_data_dir = load_raw_data_dir(data_dir)
 
 
 def clear_downloads_container():
@@ -34,12 +39,15 @@ def find_downloaded_file():
     return False
 
 
-def save_downloaded_file(subject, year: str, chamber: str, state: str, district: str, last_name: str, first_name: str, party: str):
+def save_downloaded_file(subject, year: str, chamber: str, state: str, last_name: str, first_name: str, party: str, district: str = None):
     action = f"save file to {raw_data_dir}"
     for downloaded_file_name in os.listdir(downloads_container_dir):
         downloaded_file_path = os.path.join(downloads_container_dir, downloaded_file_name)
         if os.path.isfile(downloaded_file_path):
-            destination_dir = os.path.join(raw_data_dir, year, chamber, state, district)
+            if chamber.lower() == "house":
+                destination_dir = os.path.join(raw_data_dir, year, chamber, state, district)
+            elif chamber.lower() == "senate":
+                destination_dir = os.path.join(raw_data_dir, year, chamber, state)
             os.makedirs(destination_dir, exist_ok = True)
             formatted_file_name = f"{year}_{state}_{district}_{last_name}_{first_name}_{party}_raw.csv"
             destination_file_path = os.path.join(destination_dir, formatted_file_name)

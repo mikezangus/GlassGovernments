@@ -10,17 +10,22 @@ def find_candidate(driver, subject, css_selectors_candidate: list, css_selector_
     action = "find element"
     max_attempts = 5
     for attempt in range(max_attempts):
-        load_web_page(driver, subject)
-        elements = []
-        for css_selector_candidate in css_selectors_candidate:
-            locator_candidate = (By.CSS_SELECTOR, css_selector_base + css_selector_candidate)
-            element_candidate = WebDriverWait(driver, 15).until(
-                EC.presence_of_element_located(locator = locator_candidate)
-            )
-            elements.append(element_candidate.text)
-        message = write_success_message(action, subject, attempt, max_attempts)
-        print(message)
-        return True, elements
+        try:
+            load_web_page(driver, subject)
+            elements = []
+            for css_selector_candidate in css_selectors_candidate:
+                locator_candidate = (By.CSS_SELECTOR, css_selector_base + css_selector_candidate)
+                element_candidate = WebDriverWait(driver, 15).until(
+                    EC.presence_of_element_located(locator = locator_candidate)
+                )
+                elements.append(element_candidate.text)
+            message = write_success_message(action, subject, attempt, max_attempts)
+            print(message)
+            return True, elements
+        except Exception as e:
+            message = write_failure_message(action, subject, attempt, max_attempts, e)
+            print(message)
+            continue
     message = write_failure_message(action, subject, attempt, max_attempts)
     print(message)
     logging.info(message)

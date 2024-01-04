@@ -1,15 +1,14 @@
 import logging
 import time
 from datetime import datetime, timedelta
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from .message_writer import write_failure_message
 
 
-def construct_base_url(year: str, state: str, district: str = None):
-    if district:
+def construct_base_url(year: str, chamber: str, state: str, district: str = None):
+    if chamber.lower() == "house":
         url = f"https://www.fec.gov/data/elections/house/{state}/{district}/{year}/"
-    else:
+    elif chamber.lower() == "senate":
         url = f"https://www.fec.gov/data/elections/senate/{state}/{year}/"
     return url
 
@@ -33,9 +32,9 @@ def load_web_page(driver, subject):
     return False
 
 
-def load_base_url(driver, subject, year: str, state: str, district: str = None):
+def load_base_url(driver, subject, year: str, chamber: str, state: str, district: str = None):
     action = "load base url"
-    url = construct_base_url(year, state, district)
+    url = construct_base_url(year, chamber, state, district)
     try:
         driver.get(url)
         load_web_page(driver, subject)
@@ -45,22 +44,6 @@ def load_base_url(driver, subject, year: str, state: str, district: str = None):
         message = write_failure_message(action, subject, exception = e)
         print(message)
         logging.info(message)
-        return False
-
-
-def verify_district_exists(driver, subject, locator: tuple):
-    action = f"verify existence"
-    try:
-        element_financial_totals = WebDriverWait(driver, 60).until(EC.presence_of_element_located(locator = locator))
-        if "we don't have" in element_financial_totals.text.lower():
-            print(f"{subject} doesn't exist")
-            return False
-        return True
-    except Exception as e:
-        message = write_failure_message(action, subject, exception = e)
-        print(message)
-        logging.info(message)
-        logging.info(driver.page_source)
         return False
     
 
@@ -76,17 +59,3 @@ def handle_rate_limit(driver, element):
         print(f"Rate limit wait over at {resume_time.strftime('%H:%M:%S')}, refreshing page and trying again")
         driver.refresh()
         return
-    
-
-def get_candidate_count(driver, subject, locator: tuple):
-    action = "get candidate count"
-    try:
-        WebDriverWait(driver, 60).until(EC.text_to_be_present_in_element(locator, "Showing"))
-        element_candidate_count = driver.find_element(*locator)
-        candidate_count = int(element_candidate_count.text.split(" ")[-2])
-        return candidate_count
-    except Exception as e:
-        message = write_failure_message(action, subject, exception = e)
-        print(message)
-        logging.info(message)
-        return None

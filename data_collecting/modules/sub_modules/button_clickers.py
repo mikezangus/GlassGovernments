@@ -1,9 +1,9 @@
 import logging
 import time
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from .download_manager import find_downloaded_file
+from .element_locators import locator_browse_receipts_button, locator_export_button, locator_downloads_pane, locator_download_button, locator_close_download_button, locator_results_per_page
 from .message_writer import write_success_message, write_failure_message
 from .web_utilities import load_web_page, handle_rate_limit
 
@@ -11,12 +11,12 @@ from .web_utilities import load_web_page, handle_rate_limit
 max_attempts = 5
 
 
-def click_browse_receipts_button(driver, subject, locator: tuple):
+def click_browse_receipts_button(driver, subject):
     action = "click browse reciepts button"
     for attempt in range(max_attempts):
         load_web_page(driver, subject)
         try:
-            element_browse_receipts = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator))
+            element_browse_receipts = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator_browse_receipts_button))
             driver.execute_script("arguments[0].click();", element_browse_receipts)
             WebDriverWait(driver, 60).until(EC.url_contains("receipts"))
             message = write_success_message(action, subject, attempt, max_attempts)
@@ -32,12 +32,12 @@ def click_browse_receipts_button(driver, subject, locator: tuple):
     return False
 
 
-def click_export_button(driver, subject, locator: tuple):
+def click_export_button(driver, subject):
     action = "click export button"
     for attempt in range(max_attempts):
         load_web_page(driver, subject)
         try:
-            element_export_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator))
+            element_export_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locator_export_button))
             driver.execute_script("arguments[0].click();", element_export_button)
             message = write_success_message(action, subject, attempt, max_attempts)
             print(message)
@@ -52,7 +52,7 @@ def click_export_button(driver, subject, locator: tuple):
     return False
 
 
-def click_download_button(driver, subject, locator_downloads_pane: tuple, locator_download_button: tuple):
+def click_download_button(driver, subject):
     action = "click download button"
     try:
         load_web_page(driver, subject)
@@ -77,14 +77,14 @@ def click_download_button(driver, subject, locator_downloads_pane: tuple, locato
     return False
     
 
-def click_close_download_button(driver, subject, locator: tuple):
+def click_close_download_button(driver, subject):
     action = "click close download button"
     for attempt in range(max_attempts):
         try:
             load_web_page(driver, subject)
-            element_close_download_button = WebDriverWait(driver, 120).until(EC.element_to_be_clickable(locator))
+            element_close_download_button = WebDriverWait(driver, 120).until(EC.element_to_be_clickable(locator_close_download_button))
             driver.execute_script("arguments[0].click();", element_close_download_button)
-            WebDriverWait(driver, 5).until_not(EC.visibility_of_element_located(locator))
+            WebDriverWait(driver, 5).until_not(EC.visibility_of_element_located(locator_close_download_button))
             message = write_success_message(action, subject, attempt, max_attempts)
             print(message)
             return True
@@ -101,7 +101,6 @@ def select_results_per_page(driver, subject):
     for attempt in range(max_attempts):
         try:
             load_web_page(driver, subject)
-            locator_results_per_page = (By.CSS_SELECTOR, "#DataTables_Table_0_length > label:nth-child(1) > select:nth-child(1)")
             element_results_per_page = WebDriverWait(driver, 60).until(EC.element_to_be_clickable(locator_results_per_page))
             time.sleep(1)
             Select(element_results_per_page).select_by_value("100")
