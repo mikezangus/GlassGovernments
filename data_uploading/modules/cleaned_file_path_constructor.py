@@ -1,7 +1,7 @@
 import os
 
 
-def construct_cleaned_file_path(cleaned_data_dir, cleaned_file_name, year, chamber, state, district):
+def construct_cleaned_file_path(cleaned_data_dir: str, cleaned_file_name: str, year: str, chamber: str, state: str, district: str):
     if chamber.lower() == "house":
         cleaned_file_path = os.path.join(cleaned_data_dir, year, chamber, state, district, cleaned_file_name)
     elif chamber.lower() == "senate":

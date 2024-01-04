@@ -1,9 +1,9 @@
 from pymongo import GEOSPHERE, UpdateOne
 
 
-def upload_data(db, data, year, chamber, first_name, last_name):
-    print("Starting to upload data")
-    collection_name = f"{year}_{chamber}x"
+def upload_data(db, data, subject: str, year: str, chamber: str):
+    print(f"Starting to upload data for {subject}")
+    collection_name = f"{year}_{chamber.lower()}x"
     collection = db[collection_name]
     collection.create_index([("contribution_location", GEOSPHERE)])
     operations = []
@@ -15,6 +15,6 @@ def upload_data(db, data, year, chamber, first_name, last_name):
         ))
     if operations:
         result = collection.bulk_write(operations)
-        print(f"Uploaded {result.upserted_count} new donations for {first_name} {last_name} to {collection_name}")
+        print(f"Uploaded {result.upserted_count} new donations for {subject} to {collection_name}")
     else:
-        print(f"No new records for {first_name} {last_name} to upload")
+        print(f"No new records for {subject} to upload")
