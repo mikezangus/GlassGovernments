@@ -18,7 +18,7 @@ def main():
         create_log_file()
         current_state = None
         for constituency in user_inputs_list:
-            year, chamber, state = constituency.split("_")
+            year, chamber, state = constituency.split("_")[:3]
             if chamber.lower() == "house":
                 district = constituency.split("_")[3]
             elif chamber.lower() == "senate":

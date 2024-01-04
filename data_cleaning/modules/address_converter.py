@@ -23,6 +23,7 @@ def get_coordinates(address, failed_conversions):
     
     
 def convert_addresses_to_coordinates(data, subject):
+    indent = f"{' ' * len(subject) + 3}"
     data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"] 
     total_address_count = len(data["full_address"])
     conversion_start_time = time.time()
@@ -55,8 +56,8 @@ def convert_addresses_to_coordinates(data, subject):
                 projected_total_remaining_time_printout = f"{(projected_total_remaining_time):.1f} minutes"
             projected_total_end_time = time.strftime('%H:%M:%S', time.localtime(conversion_start_time + projected_total_time * 60))
             loop_current_minute = f"Minute {int(loop_elapsed_time)} at {time.strftime('%H:%M:%S', time.localtime(time.time()))} | "
-            print(f"{' ' * 9}{loop_current_minute}Converted {format(conversion_count, ',')} of {format(total_address_count, ',')} addresses at {int(loop_conversion_rate)} addresses per minute")
-            print(f"{' ' * (9 + len(loop_current_minute))}{loop_conversion_percentage:.1f}% complete, projected to complete in {projected_total_remaining_time_printout} at {projected_total_end_time}")
+            print(f"{indent}{loop_current_minute} - Converted {format(conversion_count, ',')} of {format(total_address_count, ',')} addresses at {int(loop_conversion_rate)} addresses per minute")
+            print(f"{indent + len(loop_current_minute)}{loop_conversion_percentage:.1f}% complete, projected to complete in {projected_total_remaining_time_printout} at {projected_total_end_time}")
             conversion_last_update_time = time.time()
     end_time = time.time()
     conversion_total_time = (end_time - conversion_start_time) / 60
