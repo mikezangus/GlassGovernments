@@ -14,7 +14,7 @@ cd GlassGovernments
 ### 2. Create virtual environment
 #### For conda
 ```bash
-conda create --glassgovernments_env python=3.9.8
+conda create -n glassgovernments_env python
 conda activate glassgovernments_env
 ```
 #### For venv
