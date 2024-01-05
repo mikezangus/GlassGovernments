@@ -1,11 +1,11 @@
 import os
 import sys
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service as FirefoxService
 
-from .firefox_driver_utilities.firefox_app_downloader import download_firefox_app
-from .firefox_driver_utilities.geckodriver_downloader import download_geckodriver
+from .firefox_app_downloader import download_firefox_app
+from .geckodriver_downloader import download_geckodriver
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_collecting_modules_dir = os.path.dirname(current_dir)
@@ -14,9 +14,9 @@ project_dir = os.path.dirname(data_collecting_dir)
 sys.path.append(project_dir)
 from project_directories import load_data_dir, load_downloads_container_dir
 
-firefox_driver_utilities_dir = os.path.join(current_dir, "firefox_driver_utilities")
-firefox_binary_path = os.path.join(firefox_driver_utilities_dir, "Firefox.app", "Contents", "MacOS", "firefox")
-geckodriver_path = os.path.join(firefox_driver_utilities_dir, "geckodriver")
+
+firefox_binary_path = os.path.join(current_dir, "Firefox.app", "Contents", "MacOS", "firefox")
+geckodriver_path = os.path.join(current_dir, "geckodriver")
 data_dir = load_data_dir(project_dir)
 downloads_container_dir = load_downloads_container_dir(data_dir)
 
@@ -25,20 +25,21 @@ def firefox_driver():
     
     if not os.path.isfile(firefox_binary_path):
         if not download_firefox_app():
-            print(f"\nRestart the data collection driver after installing and saving the Firefox app to directory:\n{firefox_driver_utilities_dir}\n")
+            print(f"\nRestart the data collection driver after installing and saving the Firefox app to directory:\n{current_dir}\n")
             return False, None
+    for file_name in os.listdir(current_dir):
+        if file_name.lower().startswith("firefox_latest"):
+            os.remove(os.path.join(current_dir, file_name))
     if not os.path.isfile(geckodriver_path):
         if not download_geckodriver():
             return False, None
-    for file_name in os.listdir(firefox_driver_utilities_dir):
-        if file_name.lower().startswith("firefox_latest"):
-            os.remove(os.path.join(firefox_driver_utilities_dir, file_name))
-        
-    geckodriver_log_path = os.path.join(firefox_driver_utilities_dir, "geckodriver.log")
+    geckodriver_log_path = os.path.join(current_dir, "geckodriver.log")
+    if geckodriver_log_path not in os.listdir(current_dir):
+        os.makedirs(geckodriver_log_path)
     
     options = Options()
-    options.binary = FirefoxBinary(firefox_binary_path)
-    options.headless = True
+    options.binary_location = firefox_binary_path
+    options.add_argument("--headless")
 
     profile = webdriver.FirefoxProfile()
    
@@ -59,12 +60,8 @@ def firefox_driver():
 
     profile.set_preference("layout.css.devPixelsPerPx", "1")
 
-    driver = webdriver.Firefox(
-        firefox_profile = profile,
-        executable_path = geckodriver_path,
-        options = options,
-        service_log_path = geckodriver_log_path
-    )
+    service = FirefoxService(geckodriver_path, log_path = geckodriver_log_path)
+    driver = webdriver.Firefox(options, service)
     
     driver.maximize_window()
     return True, driver

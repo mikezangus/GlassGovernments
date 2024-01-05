@@ -26,7 +26,7 @@ def download_geckodriver():
 
         geckodriver_response = requests.get(url)
         geckodriver_filename = url.split("/")[-1]
-        print(f"Installing {geckodriver_filename} from {url}")
+        print(f"Starting to install {geckodriver_filename} from {url}")
         with open(geckodriver_filename, "wb") as file:
             file.write(geckodriver_response.content)
         
@@ -38,7 +38,7 @@ def download_geckodriver():
                 zip_ref.extractall(current_dir)
 
         os.remove(geckodriver_filename)
-
+        print(f"Succeeded in installing {geckodriver_filename}")
         return True
 
     except:

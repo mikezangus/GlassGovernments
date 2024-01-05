@@ -3,8 +3,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from engine import scrape_one_candidate
+from modules.firefox.firefox_driver import firefox_driver
 from modules.sub_modules.element_locators import locator_financial_totals, locator_candidate_count
-from modules.sub_modules.firefox_driver import firefox_driver
 from modules.sub_modules.message_writer import write_failure_message
 from modules.sub_modules.web_utilities import load_base_url
 
