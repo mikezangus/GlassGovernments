@@ -28,7 +28,7 @@ def clean_one_candidate(candidate: str):
     data, raw_file_loaded = load_raw_file(year, chamber, state, raw_file_name, raw_data_dir, district)
     if not raw_file_loaded:
         return False
-    data = inject_candidate_info(data, state, district, last_name, first_name, party)
+    data = inject_candidate_info(data, state, chamber, district, last_name, first_name, party)
     data = convert_addresses_to_coordinates(data, subject)
     data = arrange_columns(data)
     save_cleaned_file(data, year, chamber, state, raw_file_name, cleaned_data_dir, district)
