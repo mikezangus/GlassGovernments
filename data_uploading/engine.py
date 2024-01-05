@@ -13,7 +13,7 @@ def upload_one_candidate(candidate: str, cleaned_data_dir: str):
     constituency = candidate[:split_index]
     cleaned_file_name = candidate[split_index + 1:]
     year, chamber, state, district = constituency.split("_")
-    last_name, first_name, party = cleaned_file_name.split("_")[3:6]
+    last_name, first_name = cleaned_file_name.split("_")[3:5]
 
     subject = f"{state}-{district} candidate {first_name} {last_name}"
 
