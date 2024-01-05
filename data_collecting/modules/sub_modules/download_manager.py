@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from .message_writer import write_failure_message, write_success_message
+from .message_writer import write_success_message, write_failure_message
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 modules_dir = os.path.dirname(current_dir)
@@ -27,15 +27,18 @@ def clear_downloads_container():
                 os.remove(file_path)
         return True
     except:
+        message = write_failure_message("clear downloads container")
+        print(message)
         return False
 
 
 def find_downloaded_file():
-    action = f"find file in {downloads_container_dir}"
     if os.listdir(downloads_container_dir):
-        message = write_success_message(action)
+        message = write_success_message("find downloaded file")
         print(message)
         return True
+    message = write_failure_message("find downloaded file")
+    print(message)
     return False
 
 

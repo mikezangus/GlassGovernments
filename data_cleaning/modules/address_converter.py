@@ -23,7 +23,7 @@ def get_coordinates(address, failed_conversions):
     
     
 def convert_addresses_to_coordinates(data, subject):
-    indent = f"{' ' * len(subject) + 3}"
+    indent = ' ' * (len(subject) + 2)
     data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"] 
     total_address_count = len(data["full_address"])
     conversion_start_time = time.time()
