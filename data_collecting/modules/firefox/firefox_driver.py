@@ -34,31 +34,27 @@ def firefox_driver():
         if not download_geckodriver():
             return False, None
     geckodriver_log_path = os.path.join(current_dir, "geckodriver.log")
-    if geckodriver_log_path not in os.listdir(current_dir):
-        os.makedirs(geckodriver_log_path)
     
     options = Options()
     options.binary_location = firefox_binary_path
     options.add_argument("--headless")
-
-    profile = webdriver.FirefoxProfile()
    
-    profile.set_preference("browser.cache.disk.enable", False)
-    profile.set_preference("browser.cache.memory.enable", False)
-    profile.set_preference("browser.cache.offline.enable", False)
-    profile.set_preference("browser.privatebrowsing.autostart", True)
-    profile.set_preference("network.http.use-cache", False)
+    options.set_preference("browser.cache.disk.enable", False)
+    options.set_preference("browser.cache.memory.enable", False)
+    options.set_preference("browser.cache.offline.enable", False)
+    options.set_preference("browser.privatebrowsing.autostart", True)
+    options.set_preference("network.http.use-cache", False)
 
-    profile.set_preference("browser.download.alwaysOpenPanel", False)
-    profile.set_preference("browser.download.dir", downloads_container_dir)
-    profile.set_preference("browser.download.folderList", 2)
-    profile.set_preference("browser.download.manager.showAlertOnComplete", False)
-    profile.set_preference("browser.download.manager.showWhenStarting", False)
-    profile.set_preference("browser.download.manager.useWindow", False)
-    profile.set_preference("browser.download.panel.shown", False)
-    profile.set_preference("browser.download.useDownloadDir", True)
+    options.set_preference("browser.download.alwaysOpenPanel", False)
+    options.set_preference("browser.download.dir", downloads_container_dir)
+    options.set_preference("browser.download.folderList", 2)
+    options.set_preference("browser.download.manager.showAlertOnComplete", False)
+    options.set_preference("browser.download.manager.showWhenStarting", False)
+    options.set_preference("browser.download.manager.useWindow", False)
+    options.set_preference("browser.download.panel.shown", False)
+    options.set_preference("browser.download.useDownloadDir", True)
 
-    profile.set_preference("layout.css.devPixelsPerPx", "1")
+    options.set_preference("layout.css.devPixelsPerPx", "1")
 
     service = FirefoxService(geckodriver_path, log_path = geckodriver_log_path)
     driver = webdriver.Firefox(options, service)
