@@ -11,19 +11,18 @@
 git clone https://github.com/mikezangus/GlassGovernments.git
 cd GlassGovernments
 ```
-### 2. Create virtual environment
+### 2. Create environment
 #### For conda
 ```bash
 conda create -n glassgovernments_env python
 conda activate glassgovernments_env
 ```
-#### For venv
-##### If on Unix
+#### For venv on Unix
 ```bash
 python3 -m venv glassgovernments_env
 source glassgovernments_env/bin/activate
 ```
-##### If on Windows
+#### For venv on Windows
 ```bash
 python3 -m venv glassgovernments_env
 glassgovernments_env\Scripts\activate
