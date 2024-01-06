@@ -23,10 +23,15 @@ def get_coordinates(address, failed_conversions):
 
 
 def print_conversion_update(subject, start_time, conversion_count, total_address_count):
+
     indent = " " * (len(subject) + 2)
+
     elapsed_time = (datetime.now() - start_time).total_seconds() / 60
     conversion_percentage = conversion_count / total_address_count * 100
     current_conversion_rate = conversion_count / elapsed_time
+    current_minute_message = f" Minute {elapsed_time:.0f} at {datetime.now().strftime('%H:%M:%S')} - "
+    print(f"{indent}{current_minute_message}Converted {format(conversion_count, ',')} of {format(total_address_count, ',')} addresses at {current_conversion_rate:.1f} addresses per minute")
+    
     projected_total_time = total_address_count / current_conversion_rate
     projected_remaining_time = projected_total_time - elapsed_time
     if projected_remaining_time >= 60:
@@ -34,8 +39,6 @@ def print_conversion_update(subject, start_time, conversion_count, total_address
     else:
         projected_remaining_time_message = f"{projected_remaining_time:.1f} minutes"
     projected_total_end_time = (start_time + timedelta(minutes = projected_total_time)).strftime('%H:%M:%S')
-    current_minute_message = f" Minute {elapsed_time} at {datetime.now().strftime('%H:%M:%S')} - "
-    print(f"{indent}{current_minute_message}Converted {format(conversion_count, ',')} of {format(total_address_count, ',')} addresses at {current_conversion_rate:.1f} addresses per minute")
     current_minute_indent = " " * (len(indent) + len(current_minute_message))
     print(f"{current_minute_indent}{conversion_percentage:.1f}% complete, projected to complete in {projected_remaining_time_message} at {projected_total_end_time}")
     return datetime.now()
