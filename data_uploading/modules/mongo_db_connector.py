@@ -3,7 +3,7 @@ import os
 from pymongo import MongoClient
 
 
-def load_db():
+def connect_to_mongo_db(subject):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_uploading_path = os.path.dirname(current_dir)
     project_dir = os.path.dirname(data_uploading_path)
@@ -11,5 +11,5 @@ def load_db():
     config["uri"] = f"mongodb+srv://{config['mongoUsername']}:{config['mongoPassword']}@{config['mongoCluster']}.px0sapn.mongodb.net/{config['mongoDatabase']}?retryWrites=true&w=majority"
     client = MongoClient(config["uri"])
     db = client[config["mongoDatabase"]]
-    print("\nSuccessfully pinged database")
+    print(f"\n{subject} | Successfully connected to MongoDB")
     return db

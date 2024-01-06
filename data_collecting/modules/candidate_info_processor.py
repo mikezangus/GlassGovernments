@@ -1,7 +1,6 @@
 import logging
 import re
 import time
-from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -16,7 +15,7 @@ def process_candidate_info(driver, subject, elements: list, css_selector_base: s
         last_name, first_name = full_name[0].rstrip(",").replace(" ", "-"), full_name[1].replace(" ", "-")
         total_receipts = float(re.sub(pattern = "[,$]", repl = "", string = element_total_receipts))
         if total_receipts == 0.00 or 0:
-            print(f"Total donation amount: ${total_receipts:,.2f}, moving on")
+            print(f"{subject} | Total donation amount: ${total_receipts:,.2f}, moving on")
             return False, None, None, None
         if element_party.lower() == "no party affiliation":
             party = "NO-PARTY-AFFILIATION"
@@ -28,9 +27,7 @@ def process_candidate_info(driver, subject, elements: list, css_selector_base: s
         element_candidate_button = WebDriverWait(driver, 5).until(EC.presence_of_element_located(locator_candidate_button))
         time.sleep(1)
         driver.execute_script("arguments[0].click();", element_candidate_button)
-        start_time = datetime.now()
-        print(f"{start_time.strftime('%H:%M:%S')} | Starting to scrape for {first_name} {last_name} ({party})")
-        print(f"Total donation amount: ${total_receipts:,.2f}")
+        print(f"{subject} | Total donation amount: ${total_receipts:,.2f}")
         return True, first_name, last_name, party
     except Exception as e:
         message = write_failure_message(action, subject, exception = e, notes = "Possible abnormal naming structure")

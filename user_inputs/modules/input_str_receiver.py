@@ -16,7 +16,7 @@ def input_state_str(action: str, state_choices: list):
     state_input_str = input_choice(action, "state", state_choices, commands).upper()
     return state_input_str
 
-def input_district_str(action: str, source: str, district_choices: list):
+def input_house_district_str(action: str, source: str, district_choices: list):
     commands = load_commands("district")
     if source.lower() == "internet":
         district_choices = None

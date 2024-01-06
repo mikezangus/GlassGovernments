@@ -16,7 +16,7 @@ def process_chamber_input_str(chamber_input_str: str, chamber_choices_list: list
         chamber_input_split = chamber_input_str.replace(" ", "").split(",")
         chamber_input_list = [c.strip() for c in chamber_input_split]
     else:
-        chamber_input_list = [chamber_input_str]
+        chamber_input_list = [chamber_input_str.lower()]
     return chamber_input_list
 
 
@@ -48,20 +48,20 @@ def process_state_input_str(state_input_str: str, state_choices_list: list):
     return state_input_list
 
 
-def process_district_input_str(district_input_str: str, district_choices_list: list):
+def process_house_district_input_str(district_input_str: str, district_choices_list: list):
     if "all but" in district_input_str.lower():
         district_input_split = district_input_str[7:].replace(" ", "").split(",")
         excluded_districts = [d.strip() for d in district_input_split]
         district_input_list = [d for d in district_choices_list if d not in excluded_districts]
     elif "all starting" in district_input_str.lower():
-        start_district = district_input_str.split(" ")[-1]
+        start_district = district_input_str.split(" ")[-1].zfill(2)
         if start_district in district_choices_list:
             start_index = district_choices_list.index(start_district)
             district_input_list = district_choices_list[start_index:]
     elif "all from" in district_input_str.lower():
         district_input_split = district_input_str.split(" ")
-        start_district = district_input_split[2]
-        end_district = district_input_split[-1]
+        start_district = district_input_split[2].zfill(2)
+        end_district = district_input_split[-1].zfill(2)
         if start_district and end_district in district_choices_list:
             start_index = district_choices_list.index(start_district)
             end_index = district_choices_list.index(end_district) + 1
@@ -70,7 +70,7 @@ def process_district_input_str(district_input_str: str, district_choices_list: l
         district_input_list = district_choices_list
     elif "," in district_input_str:
         district_input_split = district_input_str.replace(" ", "").split(",")
-        district_input_list = [d.strip().upper() for d in district_input_split]
+        district_input_list = [d.zfill(2) for d in district_input_split]
     else:
         district_input_list = [district_input_str]
     return district_input_list

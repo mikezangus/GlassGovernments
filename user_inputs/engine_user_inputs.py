@@ -1,4 +1,4 @@
-from .modules.choices_generator import generate_chamber_choices, generate_state_choices, generate_district_choices, generate_candidate_choices
+from .modules.choices_generator import generate_chamber_choices, generate_state_choices, generate_house_district_choices, generate_candidate_choices
 from us_states.us_state_loader import load_states
 
 
@@ -30,7 +30,7 @@ def process_one_district(output_list: list, source: str, year: str, chamber: str
 
 def process_multiple_districts(output_list: list, source: str, year: str, chamber: str, state: str, district_list: list = None, data_dir: str = None):
     if not district_list:
-        district_list = generate_district_choices(source, year, chamber, state, data_dir)
+        district_list = generate_house_district_choices(source, year, chamber, state, data_dir)
     for district in district_list:
         output_list = process_one_district(output_list, source, year, chamber, state, district, data_dir)
     return output_list

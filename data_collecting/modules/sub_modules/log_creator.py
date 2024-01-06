@@ -15,8 +15,9 @@ def create_log_file():
         current_datetime = datetime.now()
         year = str(current_datetime.year)
         month = str(current_datetime.month).zfill(2)
+        day = str(current_datetime.day).zfill(2)
         current_datetime_str = datetime.now().strftime("%Y_%m_%d_%H-%M-%S")
-        log_dir = os.path.join(data_collecting_dir, "logs", year, month)
+        log_dir = os.path.join(data_collecting_dir, "logs", year, month, day)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
         log_file_name = f"scraper_log_{current_datetime_str}.log"
@@ -26,10 +27,10 @@ def create_log_file():
             level = logging.INFO,
             format = "%(asctime)s - %(levelname)s - %(message)s"
         )
-        message = f"{write_success_message(action = action)} at {log_file_path}"
+        message = f"{write_success_message(action)} at:\n{log_file_path}"
         print(message)
         return True
-    except:
-        message = write_failure_message(action = action)
+    except Exception as e:
+        message = write_failure_message(action, exception = e)
         print(message)
         return False

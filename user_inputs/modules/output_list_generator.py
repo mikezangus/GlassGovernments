@@ -1,6 +1,6 @@
-from .choices_generator import generate_year_choices, generate_chamber_choices, generate_state_choices, generate_district_choices, generate_candidate_choices
-from .input_str_receiver import input_year_str, input_chamber_str, input_state_str, input_district_str, input_candidate_str
-from .input_list_processor import process_year_input_str, process_chamber_input_str, process_state_input_str, process_district_input_str, process_candidate_output_str
+from .choices_generator import generate_year_choices, generate_chamber_choices, generate_state_choices, generate_house_district_choices, generate_candidate_choices
+from .input_str_receiver import input_year_str, input_chamber_str, input_state_str, input_house_district_str, input_candidate_str
+from .input_list_processor import process_year_input_str, process_chamber_input_str, process_state_input_str, process_house_district_input_str, process_candidate_output_str
 
 
 def output_year_list(action: str, source: str, data_dir: str = None):
@@ -24,10 +24,10 @@ def output_state_list(action: str, source: str, year: str, chamber: str, data_di
     return state_output_list
 
 
-def output_district_list(action: str, source: str, year: str, chamber: str, state: str, data_dir: str = None):
-    district_choices_list = generate_district_choices(source, year, chamber, state, data_dir)
-    district_input_str = input_district_str(action, source, district_choices_list)
-    district_output_list = process_district_input_str(district_input_str, district_choices_list)
+def output_house_district_list(action: str, source: str, year: str, chamber: str, state: str, data_dir: str = None):
+    district_choices_list = generate_house_district_choices(source, year, chamber, state, data_dir)
+    district_input_str = input_house_district_str(action, source, district_choices_list)
+    district_output_list = process_house_district_input_str(district_input_str, district_choices_list)
     return district_output_list
 
 

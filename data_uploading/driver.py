@@ -11,14 +11,18 @@ from project_directories import load_data_dir, load_cleaned_data_dir
 
 
 def main():
-
-    data_dir = load_data_dir(project_dir)
-    cleaned_data_dir = load_cleaned_data_dir(data_dir)
-
-    candidate_list = get_user_inputs("upload", "files", cleaned_data_dir)
-    print(f"User inputs list via data uploading driver:\n{candidate_list}")
-    for candidate in candidate_list:
-        upload_one_candidate(candidate, cleaned_data_dir)
+    try:
+        data_dir = load_data_dir(project_dir)
+        cleaned_data_dir = load_cleaned_data_dir(data_dir)
+        candidate_list = get_user_inputs("upload", "files", cleaned_data_dir)
+        print(f"\nCandidate list via data uploading driver:\n{candidate_list}")
+        for candidate in candidate_list:
+            upload_one_candidate(candidate, cleaned_data_dir)
+    except Exception as e:
+        print(f"\nFailed to upload inputted data. Exception: {e}")
+    finally:
+        print(f"\nFinished uploading inputted data")
+        print(f"\nExiting data uploading driver")
 
 
 if __name__ == "__main__":

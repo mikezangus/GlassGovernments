@@ -17,12 +17,11 @@ def generate_year_choices(source: str, data_dir: str = None):
 
 
 def generate_chamber_choices():
-    chamber_choices = ["house", "senate"]
+    chamber_choices = ["House", "Senate"]
     return chamber_choices
 
 
 def generate_state_choices(source: str, year: str, chamber: str, data_dir: str = None):
-    print(f"input source via generate state choices: {source}")
     if source.lower().strip() == "internet":
         us_state_all_list, _ = load_states()
         state_choices = us_state_all_list
@@ -32,7 +31,7 @@ def generate_state_choices(source: str, year: str, chamber: str, data_dir: str =
     return state_choices
 
 
-def generate_district_choices(source: str, year: str, chamber: str, state: str, data_dir: str = None):
+def generate_house_district_choices(source: str, year: str, chamber: str, state: str, data_dir: str = None):
     if source.lower() == "internet":
         _, us_state_at_large_list = load_states()
         if state in us_state_at_large_list:

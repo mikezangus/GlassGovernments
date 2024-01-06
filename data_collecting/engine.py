@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from modules.candidate_finder import find_candidate
 from modules.candidate_info_processor import process_candidate_info
@@ -10,12 +11,13 @@ from modules.sub_modules.message_writer import write_start_message, write_succes
 from modules.sub_modules.web_utilities import load_base_url
 
 
-def scrape_one_candidate(driver, action: str, subject, year: str, chamber: str, state: str, candidate: int, district: str = None):
+def scrape_one_candidate(driver, action, subject, year: str, chamber: str, state: str, candidate: int, district: str = None):
     css_selector_base = f"#DataTables_Table_0 > tbody:nth-child(2) > tr:nth-child({candidate})"
     css_selectors_candidate = [" > td:nth-child(1)", " > td:nth-child(2)", " > td:nth-child(3)"]
     max_attempts = 5
     for attempt in range(max_attempts):
-        start_message = write_start_message(action, subject, attempt, max_attempts)
+        start_time = datetime.now().strftime('%H:%M:%S')
+        start_message = write_start_message(action, subject, attempt, max_attempts, time = start_time)
         print(f"{'-' * 100}\n{start_message}")
         load_base_url(driver, subject, year, chamber, state, district)
         if candidate > 9:
@@ -25,7 +27,7 @@ def scrape_one_candidate(driver, action: str, subject, year: str, chamber: str, 
             continue
         candidate_info_processed, first_name, last_name, party = process_candidate_info(driver, subject, elements, css_selector_base)
         if attempt == 0:
-            subject = subject + f" {first_name} {last_name}"
+            subject = f"{subject} {first_name} {last_name}"
         if not district:
             district = chamber.upper()
         if not candidate_info_processed:
@@ -47,10 +49,12 @@ def scrape_one_candidate(driver, action: str, subject, year: str, chamber: str, 
         elif not click_close_download_button(driver, subject):
             continue
         else:
-            success_message = write_success_message(action, subject, attempt, max_attempts)
-            print(f"{success_message}\n{'-' * 100}")
+            end_time = datetime.now().strftime('%H:%M:%S')
+            success_message = write_success_message(action, subject, attempt, max_attempts, time = end_time)
+            print(success_message)
             return True
-    failure_message = write_failure_message(action, subject, attempt, max_attempts)
+    end_time = datetime.now().strftime('%H:%M:%S')
+    failure_message = write_failure_message(action, subject, attempt, max_attempts, time = end_time)
     print(f"{failure_message}\n{'-' * 100}")
     logging.info(failure_message)
     return False

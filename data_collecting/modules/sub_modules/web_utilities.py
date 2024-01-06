@@ -38,7 +38,7 @@ def load_base_url(driver, subject, year: str, chamber: str, state: str, district
     try:
         driver.get(url)
         load_web_page(driver, subject)
-        print(f"Successfully loaded {url}")
+        print(f"{subject} | Successfully loaded {url}")
         return True
     except Exception as e:
         message = write_failure_message(action, subject, exception = e)
@@ -47,15 +47,15 @@ def load_base_url(driver, subject, year: str, chamber: str, state: str, district
         return False
     
 
-def handle_rate_limit(driver, element):
+def handle_rate_limit(driver, subject, element):
     wait_time_minutes = 30
     text_downloads_pane = element.text
     if "maximum downloads" in text_downloads_pane.lower() or "server error" in text_downloads_pane.lower():
         current_time = datetime.now()
         end_time = current_time + timedelta(minutes = wait_time_minutes)
-        print(f"Rate limit hit at {current_time.strftime('%H:%M:%S')}, trying again in {wait_time_minutes} minutes at {end_time.strftime('%H:%M:%S')}")
+        print(f"{subject} | Rate limit hit at {current_time.strftime('%H:%M:%S')}, trying again in {wait_time_minutes} minutes at {end_time.strftime('%H:%M:%S')}")
         time.sleep(wait_time_minutes * 60)
         resume_time = datetime.now()
-        print(f"Rate limit wait over at {resume_time.strftime('%H:%M:%S')}, refreshing page and trying again")
+        print(f"{subject} | Rate limit wait over at {resume_time.strftime('%H:%M:%S')}, refreshing page and trying again")
         driver.refresh()
         return

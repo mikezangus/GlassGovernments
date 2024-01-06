@@ -61,13 +61,13 @@ def click_download_button(driver, subject):
         WebDriverWait(driver, 120).until_not(EC.text_to_be_present_in_element(locator_downloads_pane, text_preparing_download))
         try:
             element_download_button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(locator_download_button))
-            print(f"Started to {action} for {subject}")
+            print(f"{subject} | Started to {action}")
             driver.execute_script("arguments[0].click();", element_download_button)
             time.sleep(1)
-            if find_downloaded_file():
+            if find_downloaded_file(subject):
                 return True
         except Exception:
-            handle_rate_limit(driver, element_downloads_pane)
+            handle_rate_limit(driver, subject, element_downloads_pane)
     except Exception as e:
         message = write_failure_message(action, subject, None, None, e)
         print(message)

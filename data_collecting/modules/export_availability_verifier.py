@@ -7,7 +7,7 @@ from modules.sub_modules.message_writer import write_success_message
 from modules.sub_modules.web_utilities import load_web_page
 
 
-def get_donation_count(driver):
+def get_donation_count(driver, subject):
     for _ in range(5):
         try:
             element_donation_count = WebDriverWait(driver, 10).until(EC.presence_of_element_located(locator_donation_count))
@@ -17,21 +17,21 @@ def get_donation_count(driver):
                 time.sleep(5)
                 continue
             elif donation_count == 0:
-                print(f"Total donation count: 0")
+                print(f"{subject} | Total donation count: 0")
                 return False, None
             else:
-                print(f"Total donation count: {donation_count:,}")
+                print(f"{subject} | Total donation count: {donation_count:,}")
                 return True, donation_count
         except Exception:
             continue
-    print(f"Failed to get donation count")
+    print(f"{subject} | Failed to get donation count")
     return False, None
 
 
 def read_export_message(driver, subject, donation_count: int):
     export_message = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator_export_message)).text.lower()
     if "no data to export" in export_message:
-        message = f"No data to export for {subject}"
+        message = f"{subject}No data to export"
         print(message)
         logging.info(message)
         return False
@@ -46,7 +46,7 @@ def read_export_message(driver, subject, donation_count: int):
 def verify_export_button_enabled(driver, subject):
     element_export_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located(locator_export_button))
     if "is-disabled" in element_export_button.get_attribute("class"):
-        message = f"Export button disabled for {subject}, moving on"
+        message = f"{subject}Export button disabled for, moving on"
         print(message)
         logging.info(message)
         return False
@@ -57,7 +57,7 @@ def verify_export_available(driver, subject):
     action = "verify that export is available"
     load_web_page(driver, subject)
     WebDriverWait(driver, 30).until(EC.visibility_of_element_located(locator_data_container))
-    success, donation_count = get_donation_count(driver)
+    success, donation_count = get_donation_count(driver, subject)
     if not success:
         return False
     elif not read_export_message(driver, subject, donation_count):

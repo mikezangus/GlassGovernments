@@ -38,7 +38,7 @@ def download_geckodriver():
                 zip_ref.extractall(current_dir)
 
         os.remove(geckodriver_filename)
-        print(f"Succeeded in installing {geckodriver_filename}")
+        print(f"Succeeded to install {geckodriver_filename}")
         return True
 
     except:

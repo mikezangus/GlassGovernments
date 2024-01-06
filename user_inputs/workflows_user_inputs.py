@@ -1,7 +1,7 @@
 import os
 import sys
 
-from .modules.output_list_generator import output_year_list, output_chamber_list, output_state_list, output_district_list, output_candidate_list
+from .modules.output_list_generator import output_year_list, output_chamber_list, output_state_list, output_house_district_list, output_candidate_list
 from .engine_user_inputs import process_multiple_years, process_multiple_chambers, process_multiple_states, process_one_state, process_multiple_districts, process_one_district, process_multiple_candidates, process_one_candidate
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,7 +13,7 @@ from us_states.us_state_loader import load_states
 def determine_workflow_internet(action: str, source: str, year: str, chamber: str, state: str):
 
     if chamber.lower() == "house":
-        district_list = output_district_list(action, source, year, chamber, state)
+        district_list = output_house_district_list(action, source, year, chamber, state)
         if len(district_list) > 1:
             output_list_districts = process_multiple_districts([], source, year, chamber, state, district_list)
             return output_list_districts
@@ -33,7 +33,7 @@ def determine_workflow_files(action: str, source: str, year: str, chamber: str, 
         if state in us_state_at_large_list:
             district_list = ["00"]
         else:
-            district_list = output_district_list(action, source, year, chamber, state, data_dir)
+            district_list = output_house_district_list(action, source, year, chamber, state, data_dir)
         if len(district_list) > 1:
             output_list_districts = process_multiple_districts([], source, year, chamber, state, district_list, data_dir)
             return output_list_districts

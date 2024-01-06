@@ -8,8 +8,7 @@ from .firefox_app_downloader import download_firefox_app
 from .geckodriver_downloader import download_geckodriver
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_collecting_modules_dir = os.path.dirname(current_dir)
-data_collecting_dir = os.path.dirname(data_collecting_modules_dir)
+data_collecting_dir = os.path.dirname(current_dir)
 project_dir = os.path.dirname(data_collecting_dir)
 sys.path.append(project_dir)
 from project_directories import load_data_dir, load_downloads_container_dir
@@ -17,15 +16,15 @@ from project_directories import load_data_dir, load_downloads_container_dir
 
 firefox_binary_path = os.path.join(current_dir, "Firefox.app", "Contents", "MacOS", "firefox")
 geckodriver_path = os.path.join(current_dir, "geckodriver")
-data_dir = load_data_dir(project_dir)
-downloads_container_dir = load_downloads_container_dir(data_dir)
 
 
 def firefox_driver():
+
+    data_dir = load_data_dir(project_dir)
+    downloads_container_dir = load_downloads_container_dir(data_dir)
     
     if not os.path.isfile(firefox_binary_path):
         if not download_firefox_app():
-            print(f"\nRestart the data collection driver after installing and saving the Firefox app to directory:\n{current_dir}\n")
             return False, None
     for file_name in os.listdir(current_dir):
         if file_name.lower().startswith("firefox_latest"):

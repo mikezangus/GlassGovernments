@@ -10,12 +10,14 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_dir = os.path.dirname(current_dir)
 sys.path.append(project_dir)
 from project_directories import load_data_dir, load_raw_data_dir, load_cleaned_data_dir
-data_dir = load_data_dir(project_dir)
-raw_data_dir = load_raw_data_dir(data_dir)
-cleaned_data_dir = load_cleaned_data_dir(data_dir)
+
 
 
 def clean_one_candidate(candidate: str):
+
+    data_dir = load_data_dir(project_dir)
+    raw_data_dir = load_raw_data_dir(data_dir)
+    cleaned_data_dir = load_cleaned_data_dir(data_dir)
 
     split_index = [pos for pos, char in enumerate(candidate) if char == "_"][3]
     constituency = candidate[:split_index]
@@ -23,7 +25,7 @@ def clean_one_candidate(candidate: str):
     year, chamber, state, district = constituency.split("_")
     last_name, first_name, party = raw_file_name.split("_")[3:6]
 
-    subject = f"{state}-{district} candidate {first_name} {last_name}"
+    subject = f"{year} {state}-{district} {first_name} {last_name}"
 
     data, raw_file_loaded = load_raw_file(year, chamber, state, raw_file_name, raw_data_dir, district)
     if not raw_file_loaded:
@@ -31,5 +33,5 @@ def clean_one_candidate(candidate: str):
     data = inject_candidate_info(data, state, chamber, district, last_name, first_name, party)
     data = convert_addresses_to_coordinates(data, subject)
     data = arrange_columns(data)
-    save_cleaned_file(data, year, chamber, state, raw_file_name, cleaned_data_dir, district)
+    save_cleaned_file(data, subject, year, chamber, state, raw_file_name, cleaned_data_dir, district)
     return True

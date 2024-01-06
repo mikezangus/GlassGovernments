@@ -24,5 +24,6 @@ def covert_data_types(cleaned_file_path: str):
     )
     data.drop(
         columns = ["contribution_latitude", "contribution_longitude"],
-        inplace = True)
+        inplace = True
+    )
     return data
