@@ -28,11 +28,11 @@ def print_conversion_update(subject, start_time, conversion_count, total_address
 
     elapsed_time = (datetime.now() - start_time).total_seconds() / 60
     conversion_percentage = conversion_count / total_address_count * 100
-    current_conversion_rate = conversion_count / elapsed_time
+    conversion_rate = conversion_count / elapsed_time
     current_minute_message = f" Minute {elapsed_time:.0f} at {datetime.now().strftime('%H:%M:%S')} - "
-    print(f"{indent}{current_minute_message}Converted {format(conversion_count, ',')} of {format(total_address_count, ',')} addresses at {current_conversion_rate:.1f} addresses per minute")
+    print(f"{indent}{current_minute_message}Converted {format(conversion_count, ',')} of {format(total_address_count, ',')} addresses at {conversion_rate:.1f} addresses per minute")
     
-    projected_total_time = total_address_count / current_conversion_rate
+    projected_total_time = total_address_count / conversion_rate
     projected_remaining_time = projected_total_time - elapsed_time
     if projected_remaining_time >= 60:
         projected_remaining_time_message = f"{(projected_remaining_time / 60):.1f} hour(s)"
