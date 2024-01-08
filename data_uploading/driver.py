@@ -15,13 +15,15 @@ def main():
         data_dir = load_data_dir(project_dir)
         cleaned_data_dir = load_cleaned_data_dir(data_dir)
         candidate_list = get_user_inputs("upload", "files", cleaned_data_dir)
+        candidate_amount = len(candidate_list)
         print(f"\nCandidate list via data uploading driver:\n{candidate_list}")
-        for candidate in candidate_list:
-            upload_one_candidate(candidate, cleaned_data_dir)
+        print(f"\nStarted to upload data for {candidate_amount:,} candidates\n")
+        for i, candidate in enumerate(candidate_list):
+            upload_one_candidate(candidate, cleaned_data_dir, i, candidate_amount)
     except Exception as e:
         print(f"\nFailed to upload inputted data. Exception: {e}")
     finally:
-        print(f"\nFinished uploading inputted data")
+        print(f"\nFinished uploading data for {candidate_amount} candidates")
         print(f"\nExiting data uploading driver")
 
 

@@ -14,7 +14,7 @@ def verify_constituency_exists(driver, subject):
     try:
         element_financial_totals = WebDriverWait(driver, 60).until(EC.presence_of_element_located(locator_financial_totals))
         if "we don't have" in element_financial_totals.text.lower():
-            print(f"{subject} doesn't exist")
+            print(f"{subject} | Doesn't exist")
             return False
         return True
     except Exception as e:
@@ -45,7 +45,7 @@ def scrape_candidates(driver, action, subject, year: str, chamber: str, state: s
         subject = None
         subject = f"{year} {state}-{district} [{candidate}/{candidate_count}]"
         if not scrape_one_candidate(driver, action, subject, year, chamber, state, candidate, district):
-            message = f"Skipping {subject}"
+            message = f"{subject} | Skipping"
             print(message)
     return
 

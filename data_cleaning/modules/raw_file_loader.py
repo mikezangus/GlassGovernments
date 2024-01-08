@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 
-def load_raw_file(year: str, chamber: str, state: str, raw_file_name: str, raw_data_dir: str, district: str):
+def load_raw_file(subject, year: str, chamber: str, state: str, raw_file_name: str, raw_data_dir: str, district: str):
     relevant_cols = [
         "transaction_id",
         "entity_type_desc",
@@ -23,8 +23,8 @@ def load_raw_file(year: str, chamber: str, state: str, raw_file_name: str, raw_d
         data = data[data["fec_election_year"] == year]
         return data, True
     except pd.errors.EmptyDataError:
-        print(f"{raw_file_name} is empty, moving on")
+        print(f"{subject} | File is empty, moving on")
         return pd.DataFrame(), False
     except Exception as e:
-        print(f"Unexpected error occured with {raw_file_name}. Error: {e}")
+        print(f"{subject} | Unexpected error occured. Error: {e}")
         return pd.DataFrame(), False

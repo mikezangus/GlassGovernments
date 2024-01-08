@@ -6,9 +6,10 @@ def covert_data_types(cleaned_file_path: str):
         filepath_or_buffer = cleaned_file_path,
         sep = ",",
         dtype = {
-            "candidate_constituency": str,
-            "contribution_receipt_amount": float,
-            "candidate_office_district": str
+            "election_year": str,
+            "election_constituency": str,
+            "contribution_amount": float,
+            "contributor_office_district": str
         }
     )
     data["contribution_location"] = data.apply(
