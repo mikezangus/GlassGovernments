@@ -30,7 +30,7 @@ def print_conversion_update(subject, start_time, conversion_count, total_address
     conversion_percentage = conversion_count / total_address_count * 100
     conversion_rate = conversion_count / elapsed_time
     current_minute_message = f" Minute {elapsed_time:.0f} at {datetime.now().strftime('%H:%M:%S')} - "
-    print(f"{indent}{current_minute_message}Converted {format(conversion_count, ',')} of {format(total_address_count, ',')} addresses at {conversion_rate:.1f} addresses per minute")
+    print(f"{indent}{current_minute_message}Converted {conversion_count:,} of {total_address_count:,} addresses at {conversion_rate:.1f} addresses per minute")
     
     projected_total_time = total_address_count / conversion_rate
     projected_remaining_time = projected_total_time - elapsed_time
@@ -44,11 +44,16 @@ def print_conversion_update(subject, start_time, conversion_count, total_address
     return datetime.now()
     
     
-def convert_addresses_to_coordinates(data, subject):
+def convert_addresses_to_coordinates(data, subject, candidate: str, purgatory: bool):
     data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"] 
     total_address_count = len(data["full_address"])
+    if not purgatory:
+        if total_address_count > 1000:
+            print(f"\n{'-' * 100}\n{subject} | Added to purgatory list, will clean later. Address count: {total_address_count:,}")
+            puragtory_candidate = candidate
+            return None, puragtory_candidate
     start_time = datetime.now()
-    print(f"{'-' * 100}\n{subject} | Starting to convert {format(total_address_count, ',')} addresses to coordinates at {start_time.strftime('%H:%M:%S')}")
+    print(f"\n{'-' * 100}\n{subject} | Starting to convert {total_address_count:,} addresses to coordinates at {start_time.strftime('%H:%M:%S')}")
     last_update_time = start_time
     conversion_count = 0
     failed_conversions = {"count": 0}
@@ -69,8 +74,12 @@ def convert_addresses_to_coordinates(data, subject):
         if (datetime.now() - last_update_time).total_seconds() >= minute_interval * 60:
             last_update_time = print_conversion_update(subject, start_time, conversion_count, total_address_count)
     end_time = datetime.now()
+    total_conversions = total_address_count - failed_conversions['count']
     total_time = (end_time - start_time).total_seconds() / 60
     conversion_rate = total_address_count / total_time
-    print(f"{subject} | Finished converting {format((total_address_count - failed_conversions['count']), ',')} out of {format(total_address_count, ',')} addresses to coordinates in {total_time:.1f} minutes at {conversion_rate:.1f} addresses per minute")
-    data.drop(columns = ["contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"], inplace = True)
-    return data
+    print(f"{subject} | Finished converting {total_conversions:,} out of {total_address_count:,} addresses to coordinates in {total_time:.1f} minutes at {conversion_rate:.1f} addresses per minute")
+    obsolete_columns = [
+        "contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"
+    ]
+    data.drop(columns = obsolete_columns, inplace = True)
+    return data, None
