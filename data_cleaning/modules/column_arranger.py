@@ -1,23 +1,22 @@
 def arrange_columns(data):
     col_order = [
         "transaction_id",
+        "election_year",
+        "election_type",
+        "election_state",
+        "election_chamber",
+        "election_constituency",
         "candidate_last_name",
         "candidate_first_name",
-        "fec_election_year",
-        "candidate_state",
-        "candidate_chamber",
-        "candidate_constituency",
         "candidate_party",
-        "contribution_receipt_date",
-        "contribution_receipt_amount",
-        "entity_type_desc",
+        "contribution_date",
+        "contribution_entity",
         "contribution_latitude",
         "contribution_longitude",
-        "fec_election_type_desc",
-        "donor_committee_name",
-        "candidate_office_full",
-        "candidate_office_state",
-        "candidate_office_district"
+        "contribution_amount",
+        "contributor_office_full",
+        "contributor_office_state",
+        "contributor_office_district"
     ]
     data = data.reindex(columns = col_order)
     return data
