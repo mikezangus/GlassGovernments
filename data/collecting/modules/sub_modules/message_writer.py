@@ -19,7 +19,7 @@ def write_base_message(context, action, subject = None, attempt = None, max_atte
         next_action_message = ""
 
     if exception:
-        exception_message = f" Excepton: {exception}"
+        exception_message = f". Excepton: {exception}"
     else:
         exception_message = ""
 

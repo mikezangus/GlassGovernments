@@ -2,7 +2,7 @@ from datetime import datetime
 from pymongo import GEOSPHERE, UpdateOne
 
 
-def upload_data(db, data, subject, year: str):
+def upload_data(db, data: object, subject, year: str):
     try:
         collection_name = f"{year}x"
         start_time = datetime.now().strftime('%H:%M:%S')

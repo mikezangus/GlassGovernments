@@ -3,21 +3,17 @@ import os
 import sys
 from .message_writer import write_success_message, write_failure_message
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-modules_dir = os.path.dirname(current_dir)
-data_collecting_dir = os.path.dirname(modules_dir)
-project_dir = os.path.dirname(data_collecting_dir)
-sys.path.append(project_dir)
-from project_directories import load_data_dir, load_downloads_container_dir, load_raw_data_dir
-
-
-data_dir = load_data_dir(project_dir)
-downloads_container_dir = load_downloads_container_dir(data_dir)
-raw_data_dir = load_raw_data_dir(data_dir)
+sub_modules_dir = os.path.dirname(os.path.abspath(__file__))
+modules_dir = os.path.dirname(sub_modules_dir)
+collecting_dir = os.path.dirname(modules_dir)
+data_dir = os.path.dirname(collecting_dir)
+sys.path.append(data_dir)
+from data_directories import load_downloads_container_dir, load_raw_files_dir
 
 
 def clear_downloads_container():
     try:
+        downloads_container_dir = load_downloads_container_dir()
         for file_name in os.listdir(downloads_container_dir):
             file_path = os.path.join(downloads_container_dir, file_name)
             if os.path.isfile(file_path):
@@ -30,6 +26,7 @@ def clear_downloads_container():
 
 
 def find_downloaded_file(subject):
+    downloads_container_dir = load_downloads_container_dir()
     if os.listdir(downloads_container_dir):
         message = write_success_message("find downloaded file", subject)
         print(message)
@@ -40,6 +37,8 @@ def find_downloaded_file(subject):
 
 
 def save_downloaded_file(subject, year: str, chamber: str, state: str, last_name: str, first_name: str, party: str, district: str = None):
+    raw_data_dir = load_raw_files_dir()
+    downloads_container_dir = load_downloads_container_dir()
     action = f"save file to {raw_data_dir}"
     for downloaded_file_name in os.listdir(downloads_container_dir):
         downloaded_file_path = os.path.join(downloads_container_dir, downloaded_file_name)

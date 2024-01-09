@@ -4,9 +4,9 @@ from scraper import scrape_constituency
 from firefox.firefox_driver import firefox_driver
 from modules.sub_modules.log_creator import create_log_file
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_dir = os.path.dirname(current_dir)
-sys.path.append(project_dir)
+collecting_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.dirname(collecting_dir)
+sys.path.append(data_dir)
 from caffeinate import start_caffeinate, stop_caffeinate
 from user_inputs.driver_user_inputs import get_user_inputs
 

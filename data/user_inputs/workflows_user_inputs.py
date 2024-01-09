@@ -5,9 +5,10 @@ from .modules.output_list_generator import output_year_list, output_chamber_list
 from .engine_user_inputs import process_multiple_years, process_multiple_chambers, process_multiple_states, process_one_state, process_multiple_districts, process_one_district, process_multiple_candidates, process_one_candidate
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_dir = os.path.dirname(current_dir)
+data_dir = os.path.dirname(current_dir)
+project_dir = os.path.dirname(data_dir)
 sys.path.append(project_dir)
-from us_states.us_state_loader import load_states
+from geography.usa.states.usa_state_loader import load_states
 
 
 def determine_workflow_internet(action: str, source: str, year: str, chamber: str, state: str):
@@ -29,6 +30,7 @@ def determine_workflow_internet(action: str, source: str, year: str, chamber: st
 def determine_workflow_files(action: str, source: str, year: str, chamber: str, state: str, data_dir: str):
 
     if chamber.lower() == "house":
+        
         _, us_state_at_large_list = load_states()
         if state in us_state_at_large_list:
             district_list = ["00"]
@@ -57,28 +59,28 @@ def determine_workflow_files(action: str, source: str, year: str, chamber: str, 
         return output_candidate
     
 
-def determine_workflow(action: str, source: str, data_dir: str = None):
+def determine_workflow(action: str, source: str, input_data_dir: str = None):
      
-    year_list = output_year_list(action, source, data_dir)
+    year_list = output_year_list(action, source, input_data_dir)
     if len(year_list) > 1:
-        output_list = process_multiple_years([], source, year_list, data_dir)
+        output_list = process_multiple_years([], source, year_list, input_data_dir)
         return output_list
     year = year_list[0]
 
     chamber_list = output_chamber_list(action)
     if len(chamber_list) > 1:
-        output_list = process_multiple_chambers([], source, year, chamber_list, data_dir)
+        output_list = process_multiple_chambers([], source, year, chamber_list, input_data_dir)
         return output_list
     chamber = chamber_list[0].upper()
 
-    state_list = output_state_list(action, source, year, chamber, data_dir)
+    state_list = output_state_list(action, source, year, chamber, input_data_dir)
     if len(state_list) > 1:
-        output_list = process_multiple_states([], source, year, chamber, state_list, data_dir)
+        output_list = process_multiple_states([], source, year, chamber, state_list, input_data_dir)
         return output_list
     state = state_list[0]
 
     if source.lower() == "internet":
         output_list = determine_workflow_internet(action, source, year, chamber, state)
     elif source.lower() == "files":
-        output_list = determine_workflow_files(action, source, year, chamber, state, data_dir)
+        output_list = determine_workflow_files(action, source, year, chamber, state, input_data_dir)
     return output_list

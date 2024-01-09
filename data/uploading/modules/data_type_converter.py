@@ -1,9 +1,9 @@
 import pandas as pd
 
 
-def covert_data_types(cleaned_file_path: str):
+def covert_data_types(input_file_path: str):
     data = pd.read_csv(
-        filepath_or_buffer = cleaned_file_path,
+        filepath_or_buffer = input_file_path,
         sep = ",",
         dtype = {
             "election_year": str,
