@@ -45,8 +45,8 @@ def process_multiple_districts(output_list: list, source: str, year: str, chambe
 
 def process_one_state(output_list: list, source: str, year: str, chamber: str, state: str, input_data_dir: str = None):
     if chamber.lower() == "house":
-        _, us_state_at_large_list = load_states()
-        if state in us_state_at_large_list:
+        _, usa_state_at_large_list = load_states()
+        if state in usa_state_at_large_list:
             output_list = process_one_district(output_list, source, year, chamber, state, "00", input_data_dir)
         else:
             output_list = process_multiple_districts(output_list, source, year, chamber, state, input_data_dir = input_data_dir)

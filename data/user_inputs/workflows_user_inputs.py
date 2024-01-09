@@ -31,8 +31,8 @@ def determine_workflow_files(action: str, source: str, year: str, chamber: str, 
 
     if chamber.lower() == "house":
         
-        _, us_state_at_large_list = load_states()
-        if state in us_state_at_large_list:
+        _, usa_state_at_large_list = load_states()
+        if state in usa_state_at_large_list:
             district_list = ["00"]
         else:
             district_list = output_house_district_list(action, source, year, chamber, state, data_dir)

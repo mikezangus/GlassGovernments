@@ -24,8 +24,8 @@ def generate_chamber_choices():
 
 def generate_state_choices(source: str, year: str, chamber: str, input_data_dir: str = None):
     if source.lower().strip() == "internet":
-        us_state_all_list, _ = load_states()
-        state_choices = us_state_all_list
+        usa_state_all_list, _ = load_states()
+        state_choices = usa_state_all_list
     elif source.lower().strip() == "files":
         states_dir = os.path.join(input_data_dir, year, chamber)
         state_choices = sorted([s for s in os.listdir(states_dir) if not s.startswith(".")])
@@ -34,8 +34,8 @@ def generate_state_choices(source: str, year: str, chamber: str, input_data_dir:
 
 def generate_house_district_choices(source: str, year: str, chamber: str, state: str, input_data_dir: str = None):
     if source.lower() == "internet":
-        _, us_state_at_large_list = load_states()
-        if state in us_state_at_large_list:
+        _, usa_state_at_large_list = load_states()
+        if state in usa_state_at_large_list:
             district_choices = ["00"]
         else:
             district_choices = []
