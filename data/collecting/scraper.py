@@ -51,22 +51,26 @@ def scrape_candidates(driver, action, subject, year: str, chamber: str, state: s
 
 
 def scrape_constituency(action: str, year: str, chamber: str, state: str, district: str = None):
-    _, driver = firefox_driver()
-    if not driver:
-        return False
-    print("\nStarting Firefox driver\n")
-    subject = None
-    if district:
-        subject = f"{year} {state}-{district}"
-    else:
-        subject = f"{year} {state}-{chamber}"
-    load_base_url(driver, subject, year, chamber, state, district)
-    if not verify_constituency_exists(driver, subject):
-        return False
-    candidate_count = get_candidate_count(driver, subject)
-    if candidate_count is None:
-        return False
-    scrape_candidates(driver, action, subject, year, chamber, state, candidate_count, district)
-    print("\nQuitting Firefox driver\n")
-    driver.quit()
-    return True
+    try:
+        _, driver = firefox_driver()
+        if not driver:
+            print(f"\nFailed to load Firefox driver\n")
+            return False
+        print("\nStarting Firefox driver\n")
+        subject = None
+        if district:
+            subject = f"{year} {state}-{district}"
+        else:
+            subject = f"{year} {state}-{chamber}"
+        load_base_url(driver, subject, year, chamber, state, district)
+        if not verify_constituency_exists(driver, subject):
+            return False
+        candidate_count = get_candidate_count(driver, subject)
+        if candidate_count is None:
+            return False
+        scrape_candidates(driver, action, subject, year, chamber, state, candidate_count, district)
+        print("\nQuitting Firefox driver\n")
+        driver.quit()
+        return True
+    except Exception as e:
+        print(f"Exception occured in the scrape_constituency function:\n{e}")
