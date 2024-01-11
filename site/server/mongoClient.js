@@ -12,7 +12,7 @@ const client = new MongoClient(uri);
 const connectToMongo = async () => {
     try {
         await client.connect();
-        console.log(`Connected to cluster at uri: ${uri}`);
+        console.log(`Connected to cluster at uri:\n${uri}`);
     } catch (err) {
         console.error("Failed to connect to cluster. Error: ", err);
         process.exit(1);
