@@ -16,15 +16,15 @@ def covert_data_types(input_file_path: str):
         lambda row: {
             "type": "Point",
             "coordinates": [
-                row["contribution_longitude"],
-                row["contribution_latitude"]
+                row["contributor_longitude"],
+                row["contributor_latitude"]
             ]
         }
-        if pd.notnull(row["contribution_latitude"]) and pd.notnull(row["contribution_longitude"])
+        if pd.notnull(row["contributor_latitude"]) and pd.notnull(row["contributor_longitude"])
         else None, axis = 1
     )
     data.drop(
-        columns = ["contribution_latitude", "contribution_longitude"],
+        columns = ["contributor_latitude", "contributor_longitude"],
         inplace = True
     )
     return data
