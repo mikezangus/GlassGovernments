@@ -33,6 +33,12 @@ def load_converting_dir():
     return converting_dir
 
 
+def load_purgatory_list_dir():
+    purgatory_list_dir = os.path.join(data_dir, "converting", "purgatory_lists")
+    ensure_dir_exists(purgatory_list_dir)
+    return purgatory_list_dir
+
+
 def load_data_uploading_dir():
     uploading_dir = os.path.join(data_dir, "uploading")
     ensure_dir_exists(uploading_dir)

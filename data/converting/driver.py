@@ -2,6 +2,7 @@ import os
 import sys
 
 from engine import convert_one_candidate
+from modules.purgatory_list_populator import extract_purgatory_list
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 converting_dir = os.path.dirname(current_dir)
@@ -22,25 +23,19 @@ def main():
         candidate_list = get_user_inputs("convert", "files", input_files_dir)
         print(f"\nCandidate list via data converting driver:\n{candidate_list}")
         candidate_count = len(candidate_list)
-        purgatory_candidate_list = []
 
         for i, candidate in enumerate(candidate_list):
-            success, purgatory_candidate = convert_one_candidate(candidate, i, candidate_count, False)
-            if purgatory_candidate:
-                purgatory_candidate_list.append(purgatory_candidate)
-                print(f"\n{'~' * 100}\n{'~' * 100}\nCurrent purgatory list length: {len(purgatory_candidate_list)}\n{'~' * 100}\n{'~' * 100}\n")
-                continue
-            elif not success:
+            if not convert_one_candidate(candidate, i, candidate_count, False):
                 print(f"\nFailed to convert data for {candidate}")
                 continue
-
-        purgatory_candidate_count = len(purgatory_candidate_list)
-        if purgatory_candidate_count > 0:
-            print(f"\n{'~' * 100}\n{'~' * 100}\nStarting to convert purgatory candidates\n")
-            print(f"Purgatory candidates: {purgatory_candidate_list}")
-            print(f"Purgatory candidate count: {purgatory_candidate_count}")
-            for j, purgatory_candidate in enumerate(purgatory_candidate_list):
-                success, _ = convert_one_candidate(purgatory_candidate, j, purgatory_candidate_count, True)
+        
+        purgatory_list = extract_purgatory_list()
+        print(f"\nPurgatory list via data converting driver:\n{purgatory_list}")
+        purgatory_count = len(purgatory_list)
+        for i, purgatory_candidate in enumerate(purgatory_list):
+            if not convert_one_candidate(purgatory_candidate, i, purgatory_count, True):
+                print(f"\nFailed to convert data for purgatory candidate {purgatory_candidate}")
+                continue
 
     except Exception as e:
         print(f"\nFailed to convert inputted data. Exception: {e}")
