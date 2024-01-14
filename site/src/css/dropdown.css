@@ -63,8 +63,3 @@
     flex-grow: 1;
     text-align: left;
 }
-
-.dropdown__item-funding {
-    flex-grow: 1;
-    text-align: right;
-}

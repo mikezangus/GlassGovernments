@@ -6,7 +6,6 @@ const { getDB } = require("../mongoClient");
 router.get("/", async(req, res) => {
 
     const selectedChamber = req.query.chamber;
-    console.log("Selected chamber: ", selectedChamber);
 
     if (!selectedChamber) {
         return res.status(400).send("Chamber selection is required");
@@ -19,6 +18,7 @@ router.get("/", async(req, res) => {
             "election_state", { election_chamber: selectedChamber }
         );
         res.json(states);
+        console.log(states);
     } catch (err) {
         console.error("Error fetching states: ", err);
         res.status(500).send("Internal server error");

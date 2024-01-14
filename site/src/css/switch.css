@@ -1,0 +1,26 @@
+.switch-container {
+  display: inline-flex;
+  background-color: #ccc;
+  border: 0px solid #ccc;
+  border-radius: 20px;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.switch-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #ccc;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+  color: rgb(65, 65, 65);
+  border-radius: 20px;
+}
+
+.switch-button.active {
+  background-color: #fff;
+  color: #000000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

@@ -1,42 +1,65 @@
 import React, { useState } from "react";
-import DropdownDistricts from "./components/DropdownDistricts";
-import DropdownCandidates from "./components/DropdownCandidates";
-import PanelCandidate from "./components/PanelCandidate";
+import SelectChamber from "./components/Chambers";
+import SelectState from "./components/States";
+import SelectDistrict from "./components/Districts";
+import SelectCandidate from "./components/Candidates";
+
 
 export default function App() {
 
+    const [selectedChamber, setSelectedChamber] = useState(null);
+    const [selectedState, setSelectedState] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
-    const [totalRaised, setTotalRaised] = useState(0);
 
+    const handleChamberSelection = (chamber) => {
+        setSelectedChamber(chamber);
+        setSelectedState(null);
+    };
+    const handleStateSelection = (state) => {
+        setSelectedState(state);
+        setSelectedDistrict(null);
+    };
     const handleDistrictSelection = (district) => {
         setSelectedDistrict(district);
-        setSelectedCandidate(null);
+        setSelectedCandidate(null)
     };
-
     const handleCandidateSelection = (candidate) => {
         setSelectedCandidate(candidate);
-        setTotalRaised(candidate.totalFunding);
-    };
+    }
 
     return (
         <main>
-            <div className="app-container" style={{ display: "flex" }}>
-                <div className="left-container" style={{ width: "50%" }}>
-                    <DropdownDistricts
-                        onSelectedDistrict={handleDistrictSelection}
-                        selectedDistrict={selectedDistrict}
-                    />
-                    {selectedDistrict && (
-                        <DropdownCandidates
-                            selectedDistrict={selectedDistrict}
-                            onSelectedCandidate={handleCandidateSelection}
-                            selectedCandidate={selectedCandidate}
-                        />
-                    )}
-                </div>
-                <PanelCandidate candidate={selectedCandidate} totalRaised={totalRaised}/>
-            </div>
+
+            <SelectChamber
+                onChamberSelect={handleChamberSelection}
+            />
+
+            {selectedChamber && (
+                <SelectState
+                    selectedChamber={selectedChamber}
+                    onStateSelect={handleStateSelection}
+
+                />
+            )}
+
+            {selectedChamber && selectedState && (
+                <SelectDistrict
+                    selectedChamber={selectedChamber}
+                    selectedState={selectedState}
+                    onDistrictSelect={handleDistrictSelection}
+                />
+            )}
+
+            {selectedChamber && selectedState && selectedDistrict && (
+                <SelectCandidate
+                    selectedChamber={selectedChamber}
+                    selectedState={selectedState}
+                    selectedDistrict={selectedDistrict}
+                    onCandidateSelect={handleCandidateSelection}
+                />
+            )}
+
         </main>
     );
 };

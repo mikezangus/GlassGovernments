@@ -15,8 +15,8 @@ connectToMongo();
 
 app.use("/api/chambers", chambersRoute);
 app.use("/api/states", statesRoute);
-// app.use("/api/districts", districtsRoute);
-// app.use("/api/candidates", candidatesRoute);
+app.use("/api/districts", districtsRoute);
+app.use("/api/candidates", candidatesRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
