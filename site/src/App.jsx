@@ -3,6 +3,7 @@ import SelectChamber from "./components/Chambers";
 import SelectState from "./components/States";
 import SelectDistrict from "./components/Districts";
 import SelectCandidate from "./components/Candidates";
+import DisplayCandidate from "./components/Candidate";
 
 
 export default function App() {
@@ -11,6 +12,7 @@ export default function App() {
     const [selectedState, setSelectedState] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
+    const [displayedCandidate, setDisplayedCandidate] = useState(null);
 
     const handleChamberSelection = (chamber) => {
         setSelectedChamber(chamber);
@@ -22,44 +24,67 @@ export default function App() {
     };
     const handleDistrictSelection = (district) => {
         setSelectedDistrict(district);
-        setSelectedCandidate(null)
+        setSelectedCandidate(null);
     };
     const handleCandidateSelection = (candidate) => {
         setSelectedCandidate(candidate);
+        setDisplayedCandidate(null);
+    };
+    const handleCandidateDisplay = (candidate) => {
+        setDisplayedCandidate(candidate)
     }
 
     return (
+
         <main>
 
-            <SelectChamber
-                onChamberSelect={handleChamberSelection}
-            />
+            <div className="left-half">
 
-            {selectedChamber && (
-                <SelectState
-                    selectedChamber={selectedChamber}
-                    onStateSelect={handleStateSelection}
-
+                <SelectChamber
+                    onChamberSelect={handleChamberSelection}
                 />
-            )}
 
-            {selectedChamber && selectedState && (
-                <SelectDistrict
-                    selectedChamber={selectedChamber}
-                    selectedState={selectedState}
-                    onDistrictSelect={handleDistrictSelection}
-                />
-            )}
+                {selectedChamber && (
+                    <SelectState
+                        chamber={selectedChamber}
+                        onStateSelect={handleStateSelection}
+                    />
+                )}
 
-            {selectedChamber && selectedState && selectedDistrict && (
-                <SelectCandidate
-                    selectedChamber={selectedChamber}
-                    selectedState={selectedState}
-                    selectedDistrict={selectedDistrict}
-                    onCandidateSelect={handleCandidateSelection}
-                />
-            )}
+                {selectedChamber && selectedState && (
+                    <SelectDistrict
+                        chamber={selectedChamber}
+                        state={selectedState}
+                        onDistrictSelect={handleDistrictSelection}
+                    />
+                )}
+
+                {selectedChamber && selectedState && selectedDistrict && (
+                    <SelectCandidate
+                        chamber={selectedChamber}
+                        state={selectedState}
+                        district={selectedDistrict}
+                        onCandidateSelect={handleCandidateSelection}
+                    />
+                )}
+                
+            </div>
+
+            <div className="right-half">
+                
+                {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
+                    <DisplayCandidate
+                        chamber={selectedChamber}
+                        state={selectedState}
+                        district={selectedDistrict}
+                        candidate={selectedCandidate}
+                        onCandidateDisplay={handleCandidateDisplay}
+                    />
+                )}
+
+            </div>
 
         </main>
+
     );
 };
