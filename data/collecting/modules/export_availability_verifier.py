@@ -31,12 +31,12 @@ def get_donation_count(driver, subject):
 def read_export_message(driver, subject, donation_count: int):
     export_message = WebDriverWait(driver, 30).until(EC.presence_of_element_located(locator_export_message)).text.lower()
     if "no data to export" in export_message:
-        message = f"{subject}No data to export"
+        message = f"{subject} | No data to export"
         print(message)
         logging.info(message)
         return False
     elif donation_count >= 500000 and "bulk data" in export_message:
-        message = f"{subject}'s data needs to be downloaded at:\nhttps://www.fec.gov/data/browse-data/?tab=bulk-data"
+        message = f"{subject} | Data needs to be downloaded at:\nhttps://www.fec.gov/data/browse-data/?tab=bulk-data"
         print(message)
         logging.info(message)
         return False
@@ -46,7 +46,7 @@ def read_export_message(driver, subject, donation_count: int):
 def verify_export_button_enabled(driver, subject):
     element_export_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located(locator_export_button))
     if "is-disabled" in element_export_button.get_attribute("class"):
-        message = f"{subject}Export button disabled for, moving on"
+        message = f"{subject} | Export button disabled for, moving on"
         print(message)
         logging.info(message)
         return False

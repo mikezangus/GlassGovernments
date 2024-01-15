@@ -43,7 +43,10 @@ def scrape_candidates(driver, action, subject, year: str, chamber: str, state: s
     print(f"\n{'-' * 100}\n{'-' * 100}\n{subject} | Starting to {action} all {candidate_count} candidates")
     for candidate in range(1, candidate_count + 1):
         subject = None
-        subject = f"{year} {state}-{district} [{candidate}/{candidate_count}]"
+        if chamber.lower() == "house":
+            subject = f"{year} {state}-{district} [{candidate}/{candidate_count}]"
+        elif chamber.lower() == "senate":
+            subject = f"{year} {state}-{chamber} [{candidate}/{candidate_count}]"
         if not scrape_one_candidate(driver, action, subject, year, chamber, state, candidate, district):
             message = f"{subject} | Skipping"
             print(message)
@@ -58,9 +61,9 @@ def scrape_constituency(action: str, year: str, chamber: str, state: str, distri
             return False
         print("\nStarting Firefox driver\n")
         subject = None
-        if district:
+        if chamber.lower() == "house":
             subject = f"{year} {state}-{district}"
-        else:
+        elif chamber.lower() == "senate":
             subject = f"{year} {state}-{chamber}"
         load_base_url(driver, subject, year, chamber, state, district)
         if not verify_constituency_exists(driver, subject):
