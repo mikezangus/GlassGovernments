@@ -1,0 +1,19 @@
+:root {
+    --font-family: "Anonymous Pro", monospace;
+    --color-white: #fff;
+    --color-dropdown-bg: #191919;
+    --transition-duration: 0.3s;
+}
+
+.panel-candidate {
+    padding: 25px;
+    width: 50%;
+    height: auto;
+    float: right;
+    border-radius: 5%;
+}
+
+.panel-candidate.white-background {
+    background-color: var(--color-white);
+    color: black;
+}

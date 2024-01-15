@@ -10,3 +10,15 @@ body {
 main {
     padding: 25px;
 }
+
+.left-half {
+    padding: 25px;
+    width: 50%;
+    float: left
+}
+
+.right-half {
+    padding: 25px;
+    width: 50%;
+    float: right
+}
