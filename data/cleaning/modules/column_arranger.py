@@ -12,13 +12,13 @@ def arrange_columns(data: object):
         "contribution_date",
         "contribution_entity",
         "contribution_amount",
-        "contributor_street_1",
-        "contributor_city",
-        "contributor_state",
-        "contributor_zip",
-        "contributor_office_full",
-        "contributor_office_state",
-        "contributor_office_district"
+        "contribution_street",
+        "contribution_city",
+        "contribution_state",
+        "contribution_zip",
+        "contribution_office_full",
+        "contribution_office_state",
+        "contribution_office_district"
     ]
     data = data.reindex(columns = column_order)
     return data

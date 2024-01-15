@@ -46,8 +46,13 @@ def print_conversion_update(subject, start_time, conversion_count: int, total_ad
     
 def convert_addresses_to_coordinates(data: object, subject):
 
-    data["full_address"] = data["contributor_street_1"] + ", " + data["contributor_city"] + ", " + data["contributor_state"] + " " + data["contributor_zip"]
+    data["full_address"] = data["contribution_street"] + ", " + data["contribution_city"] + ", " + data["contribution_state"] + " " + data["contribution_zip"]
     total_address_count = len(data["full_address"])
+
+    if "contribution_latitude" not in data.columns:
+        data["contribution_latitude"] = None
+    if "contribution_longitude" not in data.columns:
+        data["contribution_longitude"] = None
 
     start_time = datetime.now()
     print(f"\n{'-' * 100}\n{subject} | Starting to convert {total_address_count:,} addresses to coordinates at {start_time.strftime('%H:%M:%S')}")
@@ -57,11 +62,6 @@ def convert_addresses_to_coordinates(data: object, subject):
     failed_conversions = {"count": 0}
 
     for idx, address in enumerate(data["full_address"]):
-
-        if "contribution_latitude" not in data.columns:
-            data["contribution_latitude"] = None
-        if "contribution_longitude" not in data.columns:
-            data["contribution_longitude"] = None
 
         latitude, longitude = get_coordinates(address, failed_conversions)
 
@@ -85,9 +85,9 @@ def convert_addresses_to_coordinates(data: object, subject):
 
     print(f"{subject} | Finished converting {total_conversions:,} out of {total_address_count:,} addresses to coordinates in {total_time:.1f} minutes at {conversion_rate:.1f} addresses per minute")
 
-    obsolete_columns = [
-        "contributor_street_1", "contributor_city", "contributor_state", "contributor_zip", "full_address"
+    dropped_columns = [
+        "contribution_street", "contribution_city", "contribution_state", "contribution_zip", "full_address"
     ]
-    data.drop(columns = obsolete_columns, inplace = True)
+    data.drop(columns = dropped_columns, inplace = True)
 
     return data
