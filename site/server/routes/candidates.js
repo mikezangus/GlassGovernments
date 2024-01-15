@@ -5,38 +5,41 @@ const { getDB } = require("../mongoClient");
 
 router.get("/", async(req, res) => {
 
-    const selectedChamber = req.query.chamber;
-    const selectedState = req.query.state;
-    const selectedDistrict = req.query.district;
+    const { chamber, state, district } = req.query;
 
-    if (!selectedChamber || !selectedState || !selectedDistrict) {
-        return res.status(400).send("Chamber, state, and district selection requried")
-    }
+    if (!chamber || !state || !district) return res.status(400).send("Chamber, state, and district selection requried");
 
     try {
+
         const db = getDB();
         const collection = db.collection("2022x");
+
         const query = {
-            election_chamber: selectedChamber,
-            election_state: selectedState,
-            election_constituency: selectedDistrict
-        }
+            election_chamber: chamber,
+            election_state: state,
+            election_constituency: district
+        };
+
+        const group = {
+            _id: {
+                firstName: "$candidate_first_name",
+                lastName: "$candidate_last_name",
+                party: "$candidate_party"
+            },
+            totalContributionAmount: {
+                $sum: "$contribution_amount"
+            }
+        };
+
         const candidates = await collection.aggregate([
             { $match: query },
-            { $group: {
-                _id: {
-                    firstName: "$candidate_first_name",
-                    lastName: "$candidate_last_name",
-                    party: "$candidate_party"
-                }
-            }}
+            { $group: group }
         ]).toArray();
-        res.json(candidates.map(candidate => ({
-            firstName: candidate._id.firstName,
-            lastName: candidate._id.lastName,
-            party: candidate._id.party
-        })));
+
+        res.json(candidates);
+
         console.log("Candidates: ", candidates)
+
     } catch (err) {
         console.error("Error fetching candidates: ", err);
         res.status(500).send("Internal server error")

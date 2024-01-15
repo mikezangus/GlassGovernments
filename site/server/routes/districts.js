@@ -5,20 +5,16 @@ const { getDB } = require("../mongoClient");
 
 router.get("/", async(req, res) => {
 
-    const selectedChamber = req.query.chamber;
-    const selectedState = req.query.state;
-
-    if (!selectedChamber  || !selectedState) {
-        return res.status(400).send("Chamber and state selection is required");
-    }
-
+    const { chamber, state } = req.query;
+    if (!chamber || !state) return res.status(400).send("Chamber and state selection is required");
+    
     try {
         const db = getDB();
         const collection = db.collection("2022x");
         const districts = await collection.distinct(
             "election_constituency", {
-                election_chamber: selectedChamber,
-                election_state: selectedState
+                election_chamber: chamber,
+                election_state: state
             }
         );
         res.json(districts);
@@ -26,8 +22,7 @@ router.get("/", async(req, res) => {
     } catch (err) {
         console.error("Error fetching districts: ", err);
         res.status(500).send("Internal server error");
-    }
-
+    };
 });
 
 module.exports = router;
