@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import "../css/dropdown.css";
 
 
-export default function SelectDistrict({ selectedChamber, selectedState, onDistrictSelect, selectedDistrict }) {
+export default function SelectDistrict({ chamber, state, onDistrictSelect }) {
 
+    const district = null;
     const [districts, setDistricts] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
 
     const fetchDistricts = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/api/districts?state=${encodeURIComponent(selectedState)}&chamber=${encodeURIComponent(selectedChamber)}`);
+            const response = await fetch(`http://localhost:4000/api/districts?state=${encodeURIComponent(state)}&chamber=${encodeURIComponent(chamber)}`);
             if (!response.ok) throw new Error("Network response for districts endpoint was not ok");
             const data = await response.json();
             setDistricts(data);
@@ -19,10 +20,10 @@ export default function SelectDistrict({ selectedChamber, selectedState, onDistr
     };
 
     useEffect(() => {
-        if (selectedChamber && selectedState) {
+        if (chamber && state) {
             fetchDistricts();
         }
-    }, [selectedChamber, selectedState]);
+    }, [chamber, state]);
 
     const handleDistrictClick = (district) => {
         onDistrictSelect(district);
@@ -34,7 +35,7 @@ export default function SelectDistrict({ selectedChamber, selectedState, onDistr
     return (
         <div className="dropdown">
             <button className="dropdown__button" onClick={toggleDropdown}>
-                {selectedDistrict ? `District selected: ${selectedDistrict}` : "Click to select a district"}
+                {district ? `District selected: ${district}` : "Click to select a district"}
             </button>
             {isOpen && (
                 <div className="dropdown__menu" style={{ display: "block" }}>

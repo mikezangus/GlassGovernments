@@ -13,12 +13,12 @@ export default function SelectChamber({ onChamberSelect }) {
             const data = await response.json();
             setChambers(data);
             if (data.length > 0) {
-                const firstChamber = data[0]._id;
-                setDefaultSelectedChamber(firstChamber);
-                onChamberSelect(firstChamber);
+                const defaultChamber = data[0];
+                setDefaultSelectedChamber(defaultChamber);
+                onChamberSelect(defaultChamber);
             }
         } catch (error) {
-            console.error("Error fetching chambers data ", error)
+            console.error("Chambers.jsx — Error fetching data: ", error)
         }
     };
 
@@ -26,20 +26,20 @@ export default function SelectChamber({ onChamberSelect }) {
         fetchChambers();
     }, []);
 
-    const handleChamberClick = (chamberId) => {
-        setDefaultSelectedChamber(chamberId);
-        onChamberSelect(chamberId);
+    const handleChamberClick = (chamber) => {
+        setDefaultSelectedChamber(chamber);
+        onChamberSelect(chamber);
     };
 
     return (
         <div className="switch-container">
             {chambers.map((chamber) => (
                 <button
-                    key={chamber._id}
-                    className={`switch-button ${defaultSelectedChamber === chamber._id ? "active" : ""}`}
-                    onClick={() => handleChamberClick(chamber._id)}
+                    key={chamber}
+                    className={`switch-button ${defaultSelectedChamber === chamber ? "active" : ""}`}
+                    onClick={() => handleChamberClick(chamber)}
                 >
-                    {chamber._id}
+                    {chamber}
                 </button>
             ))}
         </div>
