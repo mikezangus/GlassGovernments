@@ -2,16 +2,16 @@ import os
 import pandas as pd
 
 
-def load_file(subject, year: str, chamber: str, state: str, cleaned_file_name: str, cleaned_files_dir: str, district: str):
+def load_file(subject, year: str, chamber: str, state: str, input_file_name: str, input_file_dir: str, district: str):
 
     if chamber.lower() == "house":
-        cleaned_file_path = os.path.join(cleaned_files_dir, year, chamber, state, district, cleaned_file_name)
+        input_file_path = os.path.join(input_file_dir, year, chamber, state, district, input_file_name)
     elif chamber.lower() == "senate":
-        cleaned_file_path = os.path.join(cleaned_files_dir, year, chamber, state, cleaned_file_name)
+        input_file_path = os.path.join(input_file_dir, year, chamber, state, input_file_name)
 
     try:
         data = pd.read_csv(
-            filepath_or_buffer = cleaned_file_path,
+            filepath_or_buffer = input_file_path,
             sep = ",",
             dtype = str
         )
