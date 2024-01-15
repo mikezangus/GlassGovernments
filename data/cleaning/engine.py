@@ -4,6 +4,7 @@ import sys
 from modules.column_arranger import arrange_columns
 from modules.column_injector import inject_columns
 from modules.column_renamer import rename_columns
+from modules.date_cleaner import clean_date
 from modules.file_loader import load_file
 from modules.file_saver import save_file
 
@@ -35,6 +36,8 @@ def clean_one_candidate(candidate: str, i: int, candidate_count: int):
     data = rename_columns(data)
 
     data = arrange_columns(data)
+
+    data = clean_date(data)
 
     output_files_dir = load_cleaned_files_dir()
     save_file(data, subject, year, chamber, state, input_file_name, output_files_dir, district)
