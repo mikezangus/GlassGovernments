@@ -32,11 +32,8 @@ def convert_one_candidate(candidate: str, i: int, candidate_count: int, purgator
         data_length = count_addresses(data)
 
         if data_length >= 1000 and not purgatory_status:
-            print("populating purgatory file")
             populate_purgatory_file(candidate)
-            return True
-        else:
-            print("not populating purgatory file")
+            return True, "purgatory"
 
         data = convert_addresses_to_coordinates(data, subject)
         
@@ -45,8 +42,8 @@ def convert_one_candidate(candidate: str, i: int, candidate_count: int, purgator
         output_files_dir = load_converted_files_dir()
         save_file(data, subject, year, chamber, state, input_file_name, output_files_dir, district)
         
-        return True
+        return True, None
     
     except:
 
-        return False
+        return False, None

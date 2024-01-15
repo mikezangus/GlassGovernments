@@ -23,19 +23,25 @@ def main():
         candidate_list = get_user_inputs("convert", "files", input_files_dir)
         print(f"\nCandidate list via data converting driver:\n{candidate_list}")
         candidate_count = len(candidate_list)
+        purgatory_status = False
 
         for i, candidate in enumerate(candidate_list):
-            if not convert_one_candidate(candidate, i, candidate_count, False):
+            success, purgatory = convert_one_candidate(candidate, i, candidate_count, False)
+            if purgatory:
+                purgatory_status = True
+                continue
+            if not success:
                 print(f"\nFailed to convert data for {candidate}")
                 continue
         
-        purgatory_list = extract_purgatory_list()
-        print(f"\nPurgatory list via data converting driver:\n{purgatory_list}")
-        purgatory_count = len(purgatory_list)
-        for i, purgatory_candidate in enumerate(purgatory_list):
-            if not convert_one_candidate(purgatory_candidate, i, purgatory_count, True):
-                print(f"\nFailed to convert data for purgatory candidate {purgatory_candidate}")
-                continue
+        if purgatory_status:
+            purgatory_list = extract_purgatory_list()
+            print(f"\nPurgatory list via data converting driver:\n{purgatory_list}")
+            purgatory_count = len(purgatory_list)
+            for i, purgatory_candidate in enumerate(purgatory_list):
+                if not convert_one_candidate(purgatory_candidate, i, purgatory_count, True):
+                    print(f"\nFailed to convert data for purgatory candidate {purgatory_candidate}")
+                    continue
 
     except Exception as e:
         print(f"\nFailed to convert inputted data. Exception: {e}")
