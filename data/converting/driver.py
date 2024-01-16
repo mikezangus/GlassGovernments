@@ -3,10 +3,9 @@ import subprocess
 import sys
 
 from engine import convert_one_candidate
-from modules.purgatory_list_populator import extract_purgatory_list
+from modules.purgatory_manager import extract_purgatory_list
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-converting_dir = os.path.dirname(current_dir)
+converting_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.dirname(converting_dir)
 caffeinate_path = os.path.join(data_dir, "caffeinate.sh")
 sys.path.append(data_dir)
@@ -27,7 +26,9 @@ def main():
         purgatory_status = False
 
         for i, candidate in enumerate(candidate_list):
-            success, purgatory = convert_one_candidate(candidate, i, candidate_count, False)
+            split_index = [pos for pos, char in enumerate(candidate) if char == "_"][3]
+            constituency = candidate[:split_index]
+            success, purgatory = convert_one_candidate(candidate, i, candidate_count, constituency, False)
             if purgatory:
                 purgatory_status = True
                 continue
@@ -36,11 +37,11 @@ def main():
                 continue
         
         if purgatory_status:
-            purgatory_list = extract_purgatory_list()
+            purgatory_list = extract_purgatory_list(constituency)
             print(f"\nPurgatory list via data converting driver:\n{purgatory_list}")
             purgatory_count = len(purgatory_list)
             for i, purgatory_candidate in enumerate(purgatory_list):
-                if not convert_one_candidate(purgatory_candidate, i, purgatory_count, True):
+                if not convert_one_candidate(purgatory_candidate, i, purgatory_count, constituency, True):
                     print(f"\nFailed to convert data for purgatory candidate {purgatory_candidate}")
                     continue
 
