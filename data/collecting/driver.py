@@ -1,18 +1,19 @@
-import sys
 import os
+import subprocess
+import sys
 from scraper import scrape_constituency
 from firefox.firefox_driver import firefox_driver
 from modules.sub_modules.log_creator import create_log_file
 
 collecting_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.dirname(collecting_dir)
+caffeinate_path = os.path.join(data_dir, "caffeinate.sh")
 sys.path.append(data_dir)
-from caffeinate import start_caffeinate, stop_caffeinate
 from user_inputs.driver_user_inputs import get_user_inputs
 
 
 def main():
-    caffeinate = start_caffeinate()
+    subprocess.run([caffeinate_path, "start"])
     try:
         driver_loaded, driver = firefox_driver()
         if not driver_loaded:
@@ -38,7 +39,7 @@ def main():
     except Exception as e:
         print(f"\nFailed to scrape inputted data. Exception: {e}")
     finally:
-        stop_caffeinate(caffeinate)
+        subprocess.run([caffeinate_path, "stop"])
         print(f"\nFinished scraping inputted data")
         print("\nQuitting data collecting driver\n")
 

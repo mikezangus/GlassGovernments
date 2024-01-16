@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 
 from engine import convert_one_candidate
@@ -7,15 +8,15 @@ from modules.purgatory_list_populator import extract_purgatory_list
 current_dir = os.path.dirname(os.path.abspath(__file__))
 converting_dir = os.path.dirname(current_dir)
 data_dir = os.path.dirname(converting_dir)
+caffeinate_path = os.path.join(data_dir, "caffeinate.sh")
 sys.path.append(data_dir)
-from caffeinate import start_caffeinate, stop_caffeinate
 from data_directories import load_cleaned_files_dir
 from user_inputs.driver_user_inputs import get_user_inputs
 
 
 def main():
 
-    caffeinate = start_caffeinate()
+    subprocess.run([caffeinate_path, "start"])
 
     try:
 
@@ -47,7 +48,7 @@ def main():
         print(f"\nFailed to convert inputted data. Exception: {e}")
 
     finally:
-        stop_caffeinate(caffeinate)
+        subprocess.run([caffeinate_path, "stop"])
 
 
 if __name__ == "__main__":
