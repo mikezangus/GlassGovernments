@@ -2,8 +2,7 @@ import os
 import sys
 from engine import clean_one_candidate
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-cleaning_dir = os.path.dirname(current_dir)
+cleaning_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.dirname(cleaning_dir)
 sys.path.append(data_dir)
 from data_directories import load_raw_files_dir

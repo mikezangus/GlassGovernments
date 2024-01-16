@@ -2,7 +2,6 @@ import os
 import sys
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.service import Service as FirefoxService
 
 from .firefox_app_downloader import download_firefox_app
 from .geckodriver_downloader import download_geckodriver
@@ -52,8 +51,7 @@ def firefox_driver():
 
     options.set_preference("layout.css.devPixelsPerPx", "1")
 
-    service = FirefoxService(geckodriver_path, log_path = geckodriver_log_path)
-    driver = webdriver.Firefox(options, service)
+    driver = webdriver.Firefox(executable_path = geckodriver_path, firefox_options = options, log_path = geckodriver_log_path)
     
     driver.maximize_window()
     return True, driver
