@@ -15,7 +15,7 @@ def load_purgatory_file(constituency: str):
     return purgatory_path
 
 
-def populate_purgatory_file(subject, constituency: str, candidate: str):
+def populate_purgatory_file(constituency: str, candidate: str):
     try:
         file_path = load_purgatory_file(constituency)
         if not os.path.exists(file_path):
@@ -23,11 +23,9 @@ def populate_purgatory_file(subject, constituency: str, candidate: str):
         with open(file_path, "r+") as file:
             lines = [line.strip() for line in file.readlines()]
             if candidate not in lines:
-                print(f"{'-' * 100}\n{subject} | Queued in purgatory list, will convert later")
                 file.write(candidate + "\n")
                 return True
             else:
-                print(f"{subject} | Already in purgatory list")
                 return False
     except Exception as e:
         print(f"Error populating purgatory file: {e}")

@@ -14,7 +14,7 @@ sys.path.append(data_dir)
 from data_directories import load_cleaned_files_dir, load_converted_files_dir
 
 
-def convert_one_candidate(candidate: str, i: int, candidate_count: int, constituency: str, purgatory_status: bool):
+def convert_one_candidate(candidate: str, i: int, candidate_count: int, purgatory_status: bool, constituency: str):
         
     try:
 
@@ -31,7 +31,8 @@ def convert_one_candidate(candidate: str, i: int, candidate_count: int, constitu
         data_length = count_addresses(data)
 
         if data_length >= 1000 and not purgatory_status:
-            populate_purgatory_file(subject, constituency, candidate)
+            populate_purgatory_file(constituency, candidate)
+            print(f"{'-' * 100}\n{subject} | Queued in purgatory list, will convert {data_length:,} addresses later")
             return True, "purgatory"
 
         data = convert_addresses_to_coordinates(data, subject)
