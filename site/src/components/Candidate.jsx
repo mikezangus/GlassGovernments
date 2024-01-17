@@ -3,7 +3,7 @@ import "../css/panel.css";
 import { MapContainer, TileLayer } from "react-leaflet";
 
 
-function getPartyColor (party) {
+function getPartyColor(party) {
     switch (party) {
         case "DEMOCRATIC": return "darkblue";
         case "GREEN": return "darkgreen";
@@ -29,12 +29,12 @@ function calculatePercentage(part, total) {
 };
 
 
-function createHeatmap ({ data }) {
+function createHeatmap({ data }) {
 
 }
 
 
-export default function DisplayCandidate ({ chamber, state, district, candidate }) {
+export default function DisplayCandidate({ chamber, state, district, candidate }) {
 
     const { _id: { firstName, lastName, party }, totalContributionAmount } = candidate;
     const [entityContributions, setEntityContributions] = useState([]);
@@ -94,7 +94,7 @@ export default function DisplayCandidate ({ chamber, state, district, candidate 
             )}
             {candidate && (
                 <div className="map">
-                    
+
                 </div>
             )}
         </div>

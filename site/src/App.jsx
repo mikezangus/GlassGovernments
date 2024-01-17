@@ -23,7 +23,6 @@ export default function App() {
         setSelectedDistrict(null);
         calculateDistrictCount(selectedChamber, state)
     };
-
     const handleDistrictSelection = (district) => {
         setSelectedDistrict(district);
         setSelectedCandidate(null);
@@ -86,11 +85,11 @@ export default function App() {
                         onCandidateSelect={handleCandidateSelection}
                     />
                 )}
-                
+
             </div>
 
             <div className="right-half">
-                
+
                 {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
                     <DisplayCandidate
                         chamber={selectedChamber}
