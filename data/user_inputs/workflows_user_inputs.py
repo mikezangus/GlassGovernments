@@ -52,7 +52,7 @@ def determine_workflow_files(action: str, source: str, year: str, chamber: str, 
     elif chamber.lower() == "senate":
         candidate_list = output_candidate_list(action, year, chamber, state, data_dir)
         if len(candidate_list) > 1:
-            output_list_candidates = process_multiple_candidates([], year, chamber, state, candidate_list = candidate_list, data_dir = data_dir)
+            output_list_candidates = process_multiple_candidates([], year, chamber, state, candidate_list = candidate_list, input_data_dir = data_dir)
             return output_list_candidates
         candidate = candidate_list[0]
         output_candidate = [process_one_candidate(year, chamber, state, candidate = candidate)]
