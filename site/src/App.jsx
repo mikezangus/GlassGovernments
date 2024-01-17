@@ -21,7 +21,9 @@ export default function App() {
     const handleStateSelection = (state) => {
         setSelectedState(state);
         setSelectedDistrict(null);
+        calculateDistrictCount(selectedChamber, state)
     };
+
     const handleDistrictSelection = (district) => {
         setSelectedDistrict(district);
         setSelectedCandidate(null);
@@ -32,7 +34,24 @@ export default function App() {
     };
     const handleCandidateDisplay = (candidate) => {
         setDisplayedCandidate(candidate)
-    }
+    };
+    const calculateDistrictCount = async (chamber, state) => {
+        try {
+            const params = new URLSearchParams({
+                chamber: chamber,
+                state: state
+            });
+            const url = `http://localhost:4000/api/districts?${params.toString()}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Network response for districts endpoint was not ok");
+            const data = await response.json();
+            if (data.length === 1) {
+                handleDistrictSelection(data[0]);
+            }
+        } catch (error) {
+            console.error("Error calculating district amount ", error);
+        };
+    };
 
     return (
 
@@ -51,7 +70,7 @@ export default function App() {
                     />
                 )}
 
-                {selectedChamber && selectedState && (
+                {selectedChamber && selectedState && selectedDistrict === null && (
                     <SelectDistrict
                         chamber={selectedChamber}
                         state={selectedState}
