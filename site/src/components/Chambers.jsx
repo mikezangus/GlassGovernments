@@ -8,7 +8,8 @@ export default function SelectChamber({ onChamberSelect }) {
 
     const fetchChambers = async () => {
         try {
-            const response = await fetch("http://localhost:4000/api/chambers");
+            const url = "http://localhost:4000/api/chambers";
+            const response = await fetch(url);
             if (!response.ok) throw new Error("Network response for chambers endpoint was not ok");
             const data = await response.json();
             setChambers(data);

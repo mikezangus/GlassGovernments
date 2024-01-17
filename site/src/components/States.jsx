@@ -4,13 +4,14 @@ import "../css/dropdown.css";
 
 export default function SelectState({ chamber, onStateSelect }) {
 
-    const state = null;
     const [states, setStates] = useState([]);
+    const [selectedState, setSelectedState] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
     const fetchStates = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/api/states?chamber=${encodeURIComponent(chamber)}`);
+            const url = `http://localhost:4000/api/states?chamber=${encodeURIComponent(chamber)}`
+            const response = await fetch(url);
             if (!response.ok) throw new Error("Network response for states endpoint was not ok");
             const data = await response.json();
             setStates(data);
@@ -27,6 +28,7 @@ export default function SelectState({ chamber, onStateSelect }) {
 
     const handleStateClick = (state) => {
         onStateSelect(state);
+        setSelectedState(state);
         setIsOpen(false);
     };
 
@@ -35,7 +37,7 @@ export default function SelectState({ chamber, onStateSelect }) {
     return (
         <div className="dropdown">
             <button className="dropdown__button" onClick={toggleDropdown}>
-                {state ? `State selected: ${state}` : "Click to select a state"}
+                {selectedState ? `State selected: ${selectedState}` : "Click to select a state"}
             </button>
             {isOpen && (
                 <div className="dropdown__menu" style={{ display: "block" }}>

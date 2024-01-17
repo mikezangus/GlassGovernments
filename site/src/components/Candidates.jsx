@@ -21,13 +21,19 @@ function sortCandidates(candidates) {
 
 export default function SelectCandidate({ chamber, state, district, onCandidateSelect }) {
 
-    const candidate = null;
     const [candidates, setCandidates] = useState([]);
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
     const fetchCandidates = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/api/candidates?district=${encodeURIComponent(district)}&state=${encodeURIComponent(state)}&chamber=${encodeURIComponent(chamber)}`);
+            const params = new URLSearchParams({
+                chamber: chamber,
+                state: state,
+                district: district
+            });
+            const url = `http://localhost:4000/api/candidates?${params.toString()}`;
+            const response = await fetch(url); 
             if(!response.ok) throw new Error("Network response for candidates endpoint was not ok");
             const data = await response.json();
             const sortedData = sortCandidates(data);
@@ -45,6 +51,7 @@ export default function SelectCandidate({ chamber, state, district, onCandidateS
 
     const handleCandidateClick = (candidate) => {
         onCandidateSelect(candidate);
+        setSelectedCandidate(candidate._id)
         setIsOpen(false);
     };
 
@@ -53,7 +60,7 @@ export default function SelectCandidate({ chamber, state, district, onCandidateS
     return (
         <div className="dropdown">
             <button className="dropdown__button" onClick={toggleDropdown}>
-                {"Click to select a candidate"}
+                {selectedCandidate ? `Candidate selected: ${selectedCandidate.lastName}` : "Click to select a candidate"}
             </button>
             {isOpen && (
                 <div className="dropdown__menu" style={{ display: "block" }}>
