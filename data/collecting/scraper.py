@@ -6,7 +6,7 @@ from engine import scrape_one_candidate
 from firefox.firefox_driver import firefox_driver
 from modules.sub_modules.element_locators import locator_financial_totals, locator_candidate_count
 from modules.sub_modules.message_writer import write_failure_message
-from modules.sub_modules.web_utilities import load_base_url
+from modules.sub_modules.web_utilities import load_base_url, quit_driver
 
 
 def verify_constituency_exists(driver, subject):
@@ -57,9 +57,9 @@ def scrape_constituency(action: str, year: str, chamber: str, state: str, distri
     try:
         _, driver = firefox_driver()
         if not driver:
-            print(f"\nFailed to load Firefox driver\n")
+            print(f"\nFailed to load web driver\n")
             return False
-        print("\nStarting Firefox driver\n")
+        print("\nSuccessfully started web driver\n")
         subject = None
         if chamber.lower() == "house":
             subject = f"{year} {state}-{district}"
@@ -72,8 +72,7 @@ def scrape_constituency(action: str, year: str, chamber: str, state: str, distri
         if candidate_count is None:
             return False
         scrape_candidates(driver, action, subject, year, chamber, state, candidate_count, district)
-        print("\nQuitting Firefox driver\n")
-        driver.quit()
+        quit_driver(driver)
         return True
     except Exception as e:
         print(f"Exception occured in the scrape_constituency function:\n{e}")

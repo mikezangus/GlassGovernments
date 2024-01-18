@@ -4,6 +4,7 @@ import sys
 from scraper import scrape_constituency
 from firefox.firefox_driver import firefox_driver
 from modules.sub_modules.log_creator import create_log_file
+from modules.sub_modules.web_utilities import quit_driver
 
 collecting_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.dirname(collecting_dir)
@@ -20,7 +21,7 @@ def main():
             print("\nQuitting data collection driver\n")
             return
         else:
-            driver.quit()
+            quit_driver(driver)
         constituency_list = get_user_inputs("scrape", "internet")
         print(f"\nConstituency list via data collection driver:\n{constituency_list}")
         create_log_file()

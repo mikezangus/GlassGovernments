@@ -1,4 +1,5 @@
 import logging
+import threading
 import time
 from datetime import datetime, timedelta
 from selenium.webdriver.support.ui import WebDriverWait
@@ -46,6 +47,22 @@ def load_base_url(driver, subject, year: str, chamber: str, state: str, district
         logging.info(message)
         return False
     
+
+def quit_driver(driver, timeout = 5):
+    def driver_quit():
+        driver.quit()
+    for _ in range(10):
+        quit_thread = threading.Thread(target = driver_quit)
+        quit_thread.start()
+        quit_thread.join(timeout)
+        if quit_thread.is_alive():
+            continue
+        else:
+            print("\nSuccessfully quit web driver\n")
+            return True
+    print("\nFailed to quit web driver\n")
+    return False
+
 
 def handle_rate_limit(driver, subject, element):
     wait_time_minutes = 30
