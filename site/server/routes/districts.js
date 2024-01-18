@@ -3,7 +3,7 @@ const router = express.Router();
 const { getDB } = require("../mongoClient");
 
 
-router.get("/", async(req, res) => {
+module.exports = router.get("/", async(req, res) => {
 
     const { chamber, state } = req.query;
     if (!chamber || !state) return res.status(400).send("Chamber and state selection is required");
@@ -24,5 +24,3 @@ router.get("/", async(req, res) => {
         res.status(500).send("Internal server error");
     };
 });
-
-module.exports = router;

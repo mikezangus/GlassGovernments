@@ -64,28 +64,30 @@ export default function DisplayCandidateInfo({ chamber, state, district, candida
     const partyColor = candidate ? getPartyColor(party) : "gray";
 
     return (
-        <div className="panel">
-            {candidate && (
-                <div className="info">
-                    <h1>
-                        {firstName} {lastName}
-                    </h1>
-                    <h2>
-                        <span style={{ color: partyColor }}>
-                            {party}
-                        </span>
-                        , {state}-{district}
-                    </h2>
-                    <h3>
-                        Total: {formatCurrency(totalContributionAmount)}
-                        {entityContributions.map((contribution, index) => (
-                            <li key={index}>
-                                {contribution._id}: {formatCurrency(contribution.entityContributionAmount)} | {calculatePercentage(contribution.entityContributionAmount, totalContributionAmount)}%
-                            </li>
-                        ))}
-                    </h3>
-                </div>
-            )}
+        <div className="top-half">
+            <div className="panel">
+                {candidate && (
+                    <div className="info">
+                        <h1>
+                            {firstName} {lastName}
+                        </h1>
+                        <h2>
+                            <span style={{ color: partyColor }}>
+                                {party}
+                            </span>
+                            , {state}-{district}
+                        </h2>
+                        <h3>
+                            Total: {formatCurrency(totalContributionAmount)}
+                            {entityContributions.map((contribution, index) => (
+                                <li key={index}>
+                                    {contribution._id}: {formatCurrency(contribution.entityContributionAmount)} | {calculatePercentage(contribution.entityContributionAmount, totalContributionAmount)}%
+                                </li>
+                            ))}
+                        </h3>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

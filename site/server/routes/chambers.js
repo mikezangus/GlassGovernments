@@ -3,7 +3,7 @@ const router = express.Router();
 const { getDB } = require("../mongoClient");
 
 
-router.get("/", async(req, res) => {
+module.exports = router.get("/", async(req, res) => {
     try {
         const db = getDB();
         const collection = db.collection("2022x");
@@ -15,5 +15,3 @@ router.get("/", async(req, res) => {
         res.status(500).send("Internal server error");
     };
 });
-
-module.exports = router;
