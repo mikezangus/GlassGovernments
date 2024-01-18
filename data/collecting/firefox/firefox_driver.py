@@ -14,8 +14,8 @@ from data_directories import load_downloads_container_dir
 
 
 def firefox_driver():
-
-    firefox_binary_path = os.path.join(firefox_dir, "Firefox.app", "Contents", "MacOS", "firefox")
+    
+    firefox_binary_path = os.path.join(firefox_dir, "Firefox Developer Edition.app", "Contents", "MacOS", "firefox")
     geckodriver_path = os.path.join(firefox_dir, "geckodriver")
     downloads_container_dir = load_downloads_container_dir()
     
