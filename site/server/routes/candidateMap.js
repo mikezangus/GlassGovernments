@@ -3,7 +3,7 @@ const router = express.Router();
 const { getDB } = require("../mongoClient");
 
 
-router.get("/", async (req, res) => {
+module.exports = router.get("/", async (req, res) => {
 
     const { chamber, state, district, firstName, lastName, party } = req.query;
 
@@ -23,29 +23,29 @@ router.get("/", async (req, res) => {
             candidate_first_name: firstName,
             candidate_last_name: lastName,
             candidate_party: party,
-            "contribution_location.coordinates": { $exists: true, $ne: null }
         };
 
         const projection = {
             _id: 0,
-            lat: "$contribution_location.coordinates.1",
-            lng: "$contribution_location.coordinates.0",
+            lat: { $arrayElemAt: ["$contribution_location.coordinates", 1] },
+            lng: { $arrayElemAt: ["$contribution_location.coordinates", 0] },
             amount: "$contribution_amount"
         };
 
-        const candidateMapData = await collection.find(query).project(projection).toArray();
+        const pipeline = [
+            { $match: query },
+            { $project: projection }
+        ];
 
-        const filteredMapData = candidateMapData.filter(item => item.lat != null && item.lng != null);
+        const data = await collection.aggregate(pipeline).toArray();
 
-        res.json(filteredMapData);
+        res.json(data);
 
-        console.log("Candidate map data: ", filteredMapData);
+        console.log("Candidate map data: ", data);
 
     } catch (err) {
-        console.error("Error fetching candidate info: ", err);
+        console.error("Error fetching candidate coordinates: ", err);
         res.status(500).send("Internal server error")
     };
 
 });
-
-module.exports = router;

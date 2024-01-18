@@ -13,7 +13,12 @@ main {
     padding: 25px;
 }
 
-.left-half, .right-half {
+.left-half {
     padding: 25px;
-    width: 48%;
+    width: 30%;
+}
+
+.right-half {
+    padding: 25px;
+    width: 69%
 }
