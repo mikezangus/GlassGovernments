@@ -3,7 +3,8 @@ import SelectChamber from "./components/Chambers";
 import SelectState from "./components/States";
 import SelectDistrict from "./components/Districts";
 import SelectCandidate from "./components/Candidates";
-import DisplayCandidate from "./components/Candidate";
+import DisplayCandidateInfo from "./components/CandidateInfo";
+import DisplayCandidateMap from "./components/CandidateMap";
 
 
 export default function App() {
@@ -91,7 +92,17 @@ export default function App() {
             <div className="right-half">
 
                 {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
-                    <DisplayCandidate
+                    <DisplayCandidateInfo
+                        chamber={selectedChamber}
+                        state={selectedState}
+                        district={selectedDistrict}
+                        candidate={selectedCandidate}
+                        onCandidateDisplay={handleCandidateDisplay}
+                    />
+                )}
+
+                {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
+                    <DisplayCandidateMap
                         chamber={selectedChamber}
                         state={selectedState}
                         district={selectedDistrict}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../css/panel.css";
-import { MapContainer, TileLayer } from "react-leaflet";
 
 
 function getPartyColor(party) {
@@ -29,12 +28,7 @@ function calculatePercentage(part, total) {
 };
 
 
-function createHeatmap({ data }) {
-
-}
-
-
-export default function DisplayCandidate({ chamber, state, district, candidate }) {
+export default function DisplayCandidateInfo({ chamber, state, district, candidate }) {
 
     const { _id: { firstName, lastName, party }, totalContributionAmount } = candidate;
     const [entityContributions, setEntityContributions] = useState([]);
@@ -49,9 +43,9 @@ export default function DisplayCandidate({ chamber, state, district, candidate }
                 lastName: lastName,
                 party: party
             });
-            const url = `http://localhost:4000/api/candidate?${params.toString()}`;
+            const url = `http://localhost:4000/api/candidateinfo?${params.toString()}`;
             const response = await fetch(url);
-            if (!response.ok) throw new Error("Network response for display candidate was not ok")
+            if (!response.ok) throw new Error("Network response for display candidate info was not ok")
             const data = await response.json();
             const sortedData = sortEntities(data)
             setEntityContributions(sortedData);
@@ -90,11 +84,6 @@ export default function DisplayCandidate({ chamber, state, district, candidate }
                             </li>
                         ))}
                     </h3>
-                </div>
-            )}
-            {candidate && (
-                <div className="map">
-
                 </div>
             )}
         </div>

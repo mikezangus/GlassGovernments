@@ -32,14 +32,14 @@ router.get("/", async(req, res) => {
             }
         };
 
-        const candidateData = await collection.aggregate([
+        const candidateInfo = await collection.aggregate([
             { $match: query },
             { $group: group }
         ]).toArray();
 
-        res.json(candidateData);
+        res.json(candidateInfo);
 
-        console.log("Candidate data: ", candidateData)
+        console.log("Candidate info: ", candidateInfo)
 
     } catch (err) {
         console.error("Error fetching candidate info: ", err);
