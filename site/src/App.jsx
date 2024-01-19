@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SelectChamber from "./components/Chambers";
 import SelectState from "./components/States";
 import SelectDistrict from "./components/Districts";
@@ -11,6 +11,7 @@ export default function App() {
 
     const [selectedChamber, setSelectedChamber] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
+    const [districtCount, setDistrictCount] = useState(0);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [displayedCandidate, setDisplayedCandidate] = useState(null);
@@ -37,21 +38,23 @@ export default function App() {
     };
     const calculateDistrictCount = async (chamber, state) => {
         try {
-            const params = new URLSearchParams({
-                chamber: chamber,
-                state: state
-            });
+            const params = new URLSearchParams({ chamber, state });
             const url = `http://localhost:4000/api/districts?${params.toString()}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error("Network response for districts endpoint was not ok");
             const data = await response.json();
-            if (data.length === 1) {
-                handleDistrictSelection(data[0]);
-            }
+            if (data.length === 1) { handleDistrictSelection(data[0]) };
+            setDistrictCount(data.length);
         } catch (error) {
             console.error("Error calculating district amount ", error);
+            setDistrictCount(0);
         };
     };
+    useEffect(() => {
+        if (selectedChamber === "HOUSE" && selectedState) {
+            calculateDistrictCount(selectedChamber, selectedState);
+        }
+    }, [selectedChamber, selectedState])
 
     return (
 
@@ -70,7 +73,7 @@ export default function App() {
                     />
                 )}
 
-                {selectedChamber && selectedState && selectedDistrict === null && (
+                {selectedChamber === "HOUSE" && selectedState && districtCount > 1 && (
                     <SelectDistrict
                         chamber={selectedChamber}
                         state={selectedState}
