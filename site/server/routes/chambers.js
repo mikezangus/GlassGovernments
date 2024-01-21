@@ -3,7 +3,7 @@ const router = express.Router();
 const { getDB } = require("../mongoClient");
 
 
-module.exports = router.get("/", async(req, res) => {
+module.exports = router.get("/", async (req, res) => {
     try {
         const db = getDB();
         const collection = db.collection("2022x");

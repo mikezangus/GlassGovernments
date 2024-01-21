@@ -20,18 +20,17 @@ module.exports = router.get("/", async (req, res) => {
             candidate_party: party
         };
         const group = {
-            _id: { firstName, lastName, party },
-            totalContributionAmount: { $sum: "$contribution_amount" }
+            _id: "$contribution_entity",
+            entityContributionAmount: { $sum: "$contribution_amount" }
         };
-        const candidateInfo = await collection.aggregate([
+        const candidateEntities = await collection.aggregate([
             { $match: query },
             { $group: group }
         ]).toArray();
-        res.json(candidateInfo);
-        console.log("Candidate info: ", candidateInfo)
-
+        res.json(candidateEntities);
+        console.log("Candidate entities: ", candidateEntities)
     } catch (err) {
-        console.error("Candidate Info | Fetching error: ", err);
+        console.error("Candidate Entities | Error fetching data: ", err);
         res.status(500).send("Internal server error")
     }
 });
