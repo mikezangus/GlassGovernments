@@ -2,7 +2,6 @@ import * as turf from "@turf/turf";
 
 
 export default function calculateCentroids(clusters) {
-    console.log("Clusters: ", clusters)
     const centroids = {};
     clusters.forEach(cluster => {
         const clusterId = cluster.properties.cluster;
