@@ -5,8 +5,9 @@ import SelectDistrict from "./components/districts/Districts";
 import useCountDistricts from "./components/districts/DistrictCounter";
 import SelectCandidate from "./components/candidates/Candidates";
 import ShowInfo from "./components/candidate/info/ShowInfo"
-import ShowEntities from "./components/candidate/entitites/Entities";
+import ShowEntities from "./components/candidate/entitites/ShowEntities";
 import ShowClusters from "./components/candidate/clusters/ShowClusters";
+import ShowMap from "./components/candidate/map/ShowMap";
 
 import "./css/index.css"
 
@@ -92,8 +93,16 @@ export default function App() {
                         candidate={selectedCandidate}
                     />
                 )}
-                {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
+                {/* {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
                     <ShowClusters
+                        chamber={selectedChamber}
+                        state={selectedState}
+                        district={selectedDistrict}
+                        candidate={selectedCandidate}
+                    />
+                )} */}
+                {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
+                    <ShowMap
                         chamber={selectedChamber}
                         state={selectedState}
                         district={selectedDistrict}
