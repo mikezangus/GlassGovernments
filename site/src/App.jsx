@@ -4,10 +4,7 @@ import SelectState from "./components/states/States";
 import SelectDistrict from "./components/districts/Districts";
 import useCountDistricts from "./components/districts/DistrictCounter";
 import SelectCandidate from "./components/candidates/Candidates";
-import ShowInfo from "./components/candidate/info/ShowInfo"
-import ShowEntities from "./components/candidate/entitites/ShowEntities";
-import ShowClusters from "./components/candidate/clusters/ShowClusters";
-import ShowMap from "./components/candidate/map/ShowMap";
+import RenderCandidate from "./components/candidate/RenderCandidate";
 
 import "./css/index.css"
 
@@ -78,36 +75,12 @@ export default function App() {
             <div className="right-half">
 
                 {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
-                    <ShowInfo
+                   <RenderCandidate
                         chamber={selectedChamber}
                         state={selectedState}
                         district={selectedDistrict}
                         candidate={selectedCandidate}
-                    />
-                )}
-                {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
-                    <ShowEntities
-                        chamber={selectedChamber}
-                        state={selectedState}
-                        district={selectedDistrict}
-                        candidate={selectedCandidate}
-                    />
-                )}
-                {/* {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
-                    <ShowClusters
-                        chamber={selectedChamber}
-                        state={selectedState}
-                        district={selectedDistrict}
-                        candidate={selectedCandidate}
-                    />
-                )} */}
-                {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
-                    <ShowMap
-                        chamber={selectedChamber}
-                        state={selectedState}
-                        district={selectedDistrict}
-                        candidate={selectedCandidate}
-                    />
+                   />
                 )}
 
             </div>

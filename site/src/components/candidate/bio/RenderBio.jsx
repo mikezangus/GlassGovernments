@@ -1,11 +1,10 @@
 import React from "react";
 import "../../../css/panel.css";
 import colorParty from "../utilities/colorParty";
-import formatCurrency from "../utilities/formatCurrency";
 
 
-export default function RenderInfo(state, district, candidate) {
-    const { _id: { firstName, lastName, party }, totalContributionAmount } = candidate;
+export default function RenderBio({ state, district, candidate }) {
+    const { _id: { firstName, lastName, party} } = candidate;
     const partyColor = candidate ? colorParty(party) : "gray";
     return (
         <div className="panel">
@@ -18,9 +17,6 @@ export default function RenderInfo(state, district, candidate) {
                         {party}
                     </span>
                     , {state}-{district}
-                </h2>
-                <h2>
-                    TOTAL: {formatCurrency(totalContributionAmount)}
                 </h2>
             </div>
         </div>

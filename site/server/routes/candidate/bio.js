@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { getDB } = require("../mongoClient");
+const { getDB } = require("../../mongoClient");
 
 
 module.exports = router.get("/", async (req, res) => {
-    const name = "Candidate Coordinates Endpoint";
+    const name = "Candidate Bio Endpoint"
     const { chamber, state, district, firstName, lastName, party } = req.query;
     if (!chamber || !state || !district || !firstName || !lastName || !party) {
-        return res.status(400).send("Chamber, state, district, and candidate selections required")
+        return res.status(400).send("Chamber, state, district, and candidate selections required");
     };
     try {
         const db = getDB();
@@ -18,23 +18,18 @@ module.exports = router.get("/", async (req, res) => {
             election_constituency: district,
             candidate_first_name: firstName,
             candidate_last_name: lastName,
-            candidate_party: party,
+            candidate_party: party
         };
-        const projection = {
-            _id: 0,
-            lat: { $arrayElemAt: ["$contribution_location.coordinates", 1] },
-            lng: { $arrayElemAt: ["$contribution_location.coordinates", 0] },
-            amount: "$contribution_amount"
-        };
-        const pipeline = [
+        const group = { _id: { firstName, lastName, party } };
+        const pipleline = [
             { $match: query },
-            { $project: projection }
+            { $group: group }
         ];
-        const data = await collection.aggregate(pipeline).toArray();
+        const data = await collection.aggregate(pipleline).toArray();
         res.json(data);
-        console.log(`${name}: `, data);
+        console.log(`${name} | Data: `, data);
     } catch (err) {
-        console.error(`${name} | Error: `, err);
+        console.error(`${name} | Error:`, err);
         res.status(500).send("Internal server error");
     };
 });

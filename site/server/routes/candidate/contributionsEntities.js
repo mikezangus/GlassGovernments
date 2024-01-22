@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { getDB } = require("../mongoClient");
+const { getDB } = require("../../mongoClient");
 
 
 module.exports = router.get("/", async (req, res) => {
+    const name = "Candidate Entities Endpoint";
     const { chamber, state, district, firstName, lastName, party } = req.query;
     if (!chamber || !state || !district || !firstName || !lastName || !party) {
-        return res.status(400).send("Chamber, state, district, and candidate selections required")
+        return res.status(400).send("Chamber, state, district, and candidate selections required");
     };
     try {
         const db = getDB();
@@ -20,18 +21,18 @@ module.exports = router.get("/", async (req, res) => {
             candidate_party: party
         };
         const group = {
-            _id: { firstName, lastName, party },
-            totalContributionAmount: { $sum: "$contribution_amount" }
+            _id: "$contribution_entity",
+            entityContributionAmount: { $sum: "$contribution_amount" }
         };
-        const candidateInfo = await collection.aggregate([
+        const pipeline = [
             { $match: query },
             { $group: group }
-        ]).toArray();
-        res.json(candidateInfo);
-        console.log("Candidate info: ", candidateInfo)
-
+        ];
+        const data = await collection.aggregate(pipeline).toArray();
+        res.json(data);
+        console.log(`${name}: `, data);
     } catch (err) {
-        console.error("Candidate Info | Fetching error: ", err);
-        res.status(500).send("Internal server error")
-    }
+        console.error(`${name} | Error: `, err);
+        res.status(500).send("Internal server error");
+    };
 });

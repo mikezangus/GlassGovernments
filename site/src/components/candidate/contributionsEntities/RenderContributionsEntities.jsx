@@ -4,16 +4,15 @@ import formatCurrency from "../utilities/formatCurrency";
 import calculatePercentage from "../utilities/calculatePercentage";
 
 
-export default function RenderEntities({ candidate, entities }) {
-    console.log("Entities via renderer: ", entities)
+export default function RenderContributionsEntities({ candidate, entities }) {
     const { totalContributionAmount } = candidate;
     return (
         <div className="panel">
             <div className="info">
                     {entities.map((contribution, index) => (
-                        <li key={index}>
+                        <h4 key={index}>
                             {contribution._id}: {formatCurrency(contribution.entityContributionAmount)} | {calculatePercentage(contribution.entityContributionAmount, totalContributionAmount)}%
-                        </li>
+                        </h4>
                     ))}
             </div>
         </div>

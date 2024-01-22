@@ -12,7 +12,7 @@ export default function CreateHeatmapLayer({ coordinates }) {
             coord.lat, coord.lng, coord.amount
         ]);
         const heatmapLayer = L.heatLayer(points, {
-            radius: 20, blur: 15, maxZoom: 17
+            radius: 20, blur: 20, maxZoom: 17
         });
         heatmapLayer.addTo(map);
         return () => {map.removeLayer(heatmapLayer)};

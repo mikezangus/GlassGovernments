@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getDB } = require("../mongoClient");
+const { getDB } = require("../../mongoClient");
 
 
 module.exports = router.get("/", async (req, res) => {
-    const name = "Candidate Entities Endpoint";
+    const name = "Candidate Coordinates Endpoint";
     const { chamber, state, district, firstName, lastName, party } = req.query;
     if (!chamber || !state || !district || !firstName || !lastName || !party) {
         return res.status(400).send("Chamber, state, district, and candidate selections required")
@@ -18,15 +18,17 @@ module.exports = router.get("/", async (req, res) => {
             election_constituency: district,
             candidate_first_name: firstName,
             candidate_last_name: lastName,
-            candidate_party: party
+            candidate_party: party,
         };
-        const group = {
-            _id: "$contribution_entity",
-            entityContributionAmount: { $sum: "$contribution_amount" }
+        const projection = {
+            _id: 0,
+            lat: { $arrayElemAt: ["$contribution_location.coordinates", 1] },
+            lng: { $arrayElemAt: ["$contribution_location.coordinates", 0] },
+            amount: "$contribution_amount"
         };
         const pipeline = [
             { $match: query },
-            { $group: group }
+            { $project: projection }
         ];
         const data = await collection.aggregate(pipeline).toArray();
         res.json(data);

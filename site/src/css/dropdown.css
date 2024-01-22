@@ -1,5 +1,4 @@
 :root {
-    --font-family: "Anonymous Pro", monospace;
     --color-white: #fff;
     --color-dropdown-bg: #191919;
     --transition-duration: 0.3s;
@@ -10,14 +9,12 @@
 }
 
 .dropdown__title {
-    font-family: var(--font-family);
     font-size: 24px;
     color: var(--color-white);
     margin-bottom: 10px;
 }
 
 .dropdown__button {
-    font-family: var(--font-family);
     font-size: 16px;
     color: var(--color-white);
     background-color: transparent;
@@ -32,7 +29,6 @@
 .dropdown__menu {
     display: none;
     position: static;
-    /* flex-direction: column; */
     background-color: var(--color-dropdown-bg);
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);    
     z-index: 1;
@@ -54,7 +50,6 @@
     color: var(--color-white);
     text-decoration: none;
     padding: 8px 16px;
-    font-family: var(--font-family);
     cursor: pointer;
     transition: background-color var(--transition-duration) ease;
 }

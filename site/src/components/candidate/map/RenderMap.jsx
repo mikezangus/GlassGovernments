@@ -11,6 +11,7 @@ export default function RenderMap({ candidate, coordinates }) {
             key={`${firstName}-${lastName}-${party}`}
             center={position}
             zoom={4}
+            maxZoom ={10}
             style={{ height: "500px", width: "100% " }}
         >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
