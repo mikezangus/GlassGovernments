@@ -1,20 +1,21 @@
 import React from "react";
-import "../../../css/panel.css";
 import formatCurrency from "../utilities/formatCurrency";
 import calculatePercentage from "../utilities/calculatePercentage";
+import "../../../css/candidate.css";
+import capitalize from "../utilities/capitalize";
 
 
 export default function RenderContributionsEntities({ candidate, entities }) {
     const { totalContributionAmount } = candidate;
     return (
-        <div className="panel">
-            <div className="info">
-                    {entities.map((contribution, index) => (
-                        <h4 key={index}>
-                            {contribution._id}: {formatCurrency(contribution.entityContributionAmount)} | {calculatePercentage(contribution.entityContributionAmount, totalContributionAmount)}%
-                        </h4>
-                    ))}
-            </div>
-        </div>
+        <>
+            {entities.map((contribution, index) => (
+                <div className="contributions">
+                    <div className="entities" key={index}>
+                        {capitalize(contribution._id)}: {formatCurrency(contribution.entityContributionAmount)} | {calculatePercentage(contribution.entityContributionAmount, totalContributionAmount)}%
+                    </div>
+                </div>
+            ))}
+        </>
     );
 };

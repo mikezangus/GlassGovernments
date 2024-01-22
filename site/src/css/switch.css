@@ -1,25 +1,33 @@
+:root {
+  --color-white: #fff;
+  --color-offwhite: #ccc;
+  --color-gray: #414141;
+  --radius: 20px
+}
+
 .switch-container {
   display: inline-flex;
-  background-color: #ccc;
-  border: 0px solid #ccc;
-  border-radius: 20px;
   overflow: hidden;
+  border-radius: var(--radius);
+  border: 0px solid var(--color-offwhite);
+  background-color: var(--color-offwhite);
+
 }
 
 .switch-button {
   padding: 10px 20px;
   border: none;
-  background-color: #ccc;
+  background-color: var(--color-offwhite);
+  color: var(--color-gray);
   cursor: pointer;
   outline: none;
-  font-size: 16px;
+  font-size: var(--font-size);
   transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
-  color: rgb(65, 65, 65);
-  border-radius: 20px;
+  border-radius: var(--radius);
 }
 
 .switch-button.active {
-  background-color: #fff;
+  background-color: var(--color-white);
   color: #000000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

@@ -1,0 +1,34 @@
+.body {
+    width: 100%;
+    padding: 20px;
+    border-radius: 0%;
+}
+
+.bio {
+    width: 100%;
+}
+
+.bio .name {
+    width: 100%;
+    font-size: 30px;
+    font-weight: bolder;
+}
+
+.bio .party-constituency {
+    width: 100%;
+    font-size: 25px;
+}
+
+.contributions .total {
+    width: 100%;
+    font-size: 25px;
+}
+
+.contributions .entities {
+    width: 100%;
+    font-size: 20px;
+}
+
+.map {
+    width: 100%;
+}

@@ -42,7 +42,7 @@
 .dropdown__item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: left;
     width: auto;
     margin-bottom: 5px;
     background-color: transparent;

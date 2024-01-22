@@ -1,23 +1,22 @@
 import React from "react";
-import "../../../css/panel.css";
 import colorParty from "../utilities/colorParty";
+import "../../../css/candidate.css";
+import capitalize from "../utilities/capitalize";
 
 
 export default function RenderBio({ state, district, candidate }) {
     const { _id: { firstName, lastName, party} } = candidate;
     const partyColor = candidate ? colorParty(party) : "gray";
     return (
-        <div className="panel">
-            <div className="info">
-                <h1>
-                    {firstName} {lastName}
-                </h1>
-                <h2>
-                    <span style={{ color: partyColor }}>
-                        {party}
-                    </span>
-                    , {state}-{district}
-                </h2>
+        <div className="bio">
+            <div className="name">
+                {firstName} {lastName}
+            </div>
+            <div className="party-constituency">
+                <span style={{ color: partyColor }}>
+                    {capitalize(party)}
+                </span>
+                , {state}-{district}
             </div>
         </div>
     );
