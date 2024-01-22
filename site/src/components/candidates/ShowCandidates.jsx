@@ -1,9 +1,9 @@
 import { useState } from "react";
-import useFetchCandidates from "./CandidatesFetcher";
-import CandidatesDropdown from "./CandidateSelector"
+import useFetchCandidates from "./useFetchCandidates";
+import RenderCandidates from "./RenderCandidates";
 
 
-export default function SelectCandidate({ chamber, state, district, onCandidateSelect }) {
+export default function ShowCandidates({ chamber, state, district, onCandidateSelect }) {
 
     const [candidates, setCandidates] = useState([]);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -18,6 +18,14 @@ export default function SelectCandidate({ chamber, state, district, onCandidateS
         setIsOpen(false);
     };
 
-    return CandidatesDropdown(candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick);
+    return (
+        <RenderCandidates
+            candidates={candidates}
+            selectedCandidate={selectedCandidate}
+            isOpen={isOpen}
+            toggleDropdown={toggleDropdown}
+            handleCandidateClick={handleCandidateClick}
+        />
+    );
     
 };

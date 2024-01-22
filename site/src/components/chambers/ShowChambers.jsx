@@ -1,9 +1,9 @@
 import { useState } from "react";
-import useFetchChambers from "./ChambersFetcher";
-import ChambersSwitch from "./ChamberSelector";
+import useFetchChambers from "./useFetchChambers";
+import RenderChambers from "./RenderChambers";
 
 
-export default function SelectChamber({ onChamberSelect }) {
+export default function ShowChambers({ onChamberSelect }) {
 
     const [chambers, setChambers] = useState([]);
     const [defaultChamber, setDefaultChamber] = useState(null);
@@ -15,6 +15,12 @@ export default function SelectChamber({ onChamberSelect }) {
         onChamberSelect(chamber);
     };
 
-    return ChambersSwitch(chambers, defaultChamber, handleChamberClick);
+    return (
+        <RenderChambers
+            chambers={chambers}
+            defaultChamber={defaultChamber}
+            handleChamberClick={handleChamberClick}
+        />
+    );
 
 };

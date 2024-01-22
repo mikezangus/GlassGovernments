@@ -2,7 +2,7 @@ import React from "react";
 import "../../css/switch.css";
 
 
-export default function ChambersSwitch(chambers, defaultChamber, handleChamberClick) {
+export default function RenderChambers({ chambers, defaultChamber, handleChamberClick }) {
     return (
         <div className="switch-container">
             {chambers.map((chamber) => (
@@ -15,5 +15,5 @@ export default function ChambersSwitch(chambers, defaultChamber, handleChamberCl
                 </button>
             ))}
         </div>
-    )
+    );
 };

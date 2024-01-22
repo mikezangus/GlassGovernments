@@ -1,9 +1,9 @@
 import React from "react";
 import "../../css/dropdown.css";
-import formatContributionAmount from "./ContributionFormatter";
+import formatContributionAmount from "./utilities/formatContributionAmount";
 
 
-export default function CandidatesDropdown(candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick) {
+export default function RenderCandidates({ candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick }) {
     return (
         <div className="dropdown">
             <button className="dropdown__button" onClick={toggleDropdown}>

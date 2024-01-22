@@ -2,7 +2,7 @@ import React from "react";
 import "../../css/dropdown.css";
 
 
-export default function DistrictsDropdown(districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick) {
+export default function RenderDistricts({ districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick }) {
     return (
         <div className="dropdown">
             <button className="dropdown__button" onClick={toggleDropdown}>

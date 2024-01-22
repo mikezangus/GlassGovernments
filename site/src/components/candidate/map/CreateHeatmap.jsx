@@ -4,7 +4,7 @@ import "leaflet.heat";
 import L from "leaflet";
 
 
-export default function CreateHeatmapLayer({ coordinates }) {
+export default function CreateHeatmap({ coordinates }) {
     const map = useMap();
     useEffect(() => {
         if (!map || !coordinates || coordinates.length === 0) return;

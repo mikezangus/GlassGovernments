@@ -1,9 +1,9 @@
 import { useState } from "react";
-import useFetchDistricts from "./DistrictsFetcher";
-import DistrictsDropdown from "./DistrictSelector";
+import useFetchDistricts from "./useFetchDistricts";
+import RenderDistricts from "./RenderDistricts";
 
 
-export default function SelectDistrict({ chamber, state, onDistrictSelect }) {
+export default function ShowDistricts({ chamber, state, onDistrictSelect }) {
 
     const [districts, setDistricts] = useState([]);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
@@ -18,6 +18,14 @@ export default function SelectDistrict({ chamber, state, onDistrictSelect }) {
         setIsOpen(false);
     };
 
-    return DistrictsDropdown(districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick);
+    return (
+        <RenderDistricts
+            districts={districts}
+            selectedDistrict={selectedDistrict}
+            isOpen={isOpen}
+            toggleDropdown={toggleDropdown}
+            handleDistrictClick={handleDistrictClick}
+        />
+    );
     
 };

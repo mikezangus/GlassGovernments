@@ -2,7 +2,7 @@ import React from "react";
 import "../../css/dropdown.css";
 
 
-export default function StatesDropdown(states, selectedState, isOpen, toggleDropdown, handleStateClick) {
+export default function RenderStates({ states, selectedState, isOpen, toggleDropdown, handleStateClick }) {
     return (
         <div className="dropdown">
             <button className="dropdown__button" onClick={toggleDropdown}>

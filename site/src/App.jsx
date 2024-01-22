@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import SelectChamber from "./components/chambers/Chambers";
-import SelectState from "./components/states/States";
-import SelectDistrict from "./components/districts/Districts";
-import useCountDistricts from "./components/districts/DistrictCounter";
-import SelectCandidate from "./components/candidates/Candidates";
+import ShowChambers from "./components/chambers/ShowChambers";
+import ShowStates from "./components/states/ShowStates";
+import ShowDistricts from "./components/districts/ShowDistricts";
+import useCountDistricts from "./components/districts/useCountDistricts";
+import ShowCandidates from "./components/candidates/ShowCandidates";
 import RenderCandidate from "./components/candidate/RenderCandidate";
 
 import "./css/index.css"
@@ -15,7 +15,6 @@ export default function App() {
     const [selectedState, setSelectedState] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
-    const [displayedCandidate, setDisplayedCandidate] = useState(null);
 
     const handleChamberSelection = (chamber) => {
         setSelectedChamber(chamber);
@@ -32,29 +31,27 @@ export default function App() {
     const districtCount = useCountDistricts(selectedChamber, selectedState, handleDistrictSelection);
     const handleCandidateSelection = (candidate) => {
         setSelectedCandidate(candidate);
-        setDisplayedCandidate(null);
     };
-
 
     return (
 
         <main>
 
-            <div className="left-half">
+            <div className="leff">
 
-                <SelectChamber
+                <ShowChambers
                     onChamberSelect={handleChamberSelection}
                 />
 
                 {selectedChamber && (
-                    <SelectState
+                    <ShowStates
                         chamber={selectedChamber}
                         onStateSelect={handleStateSelection}
                     />
                 )}
 
                 {selectedChamber === "HOUSE" && selectedState && districtCount > 1 && (
-                    <SelectDistrict
+                    <ShowDistricts
                         chamber={selectedChamber}
                         state={selectedState}
                         onDistrictSelect={handleDistrictSelection}
@@ -62,7 +59,7 @@ export default function App() {
                 )}
 
                 {selectedChamber && selectedState && selectedDistrict && (
-                    <SelectCandidate
+                    <ShowCandidates
                         chamber={selectedChamber}
                         state={selectedState}
                         district={selectedDistrict}
@@ -72,7 +69,7 @@ export default function App() {
 
             </div>
 
-            <div className="right-half">
+            <div className="right">
 
                 {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
                    <RenderCandidate

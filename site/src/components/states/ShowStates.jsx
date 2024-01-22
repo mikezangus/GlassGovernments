@@ -1,9 +1,9 @@
 import { useState } from "react";
-import useFetchStates from "./StatesFetcher";
-import StatesDropdown from "./StateSelector";
+import useFetchStates from "./useFetchStates";
+import RenderStates from "./RenderStates";
 
 
-export default function SelectState({ chamber, onStateSelect }) {
+export default function ShowStates({ chamber, onStateSelect }) {
 
     const [states, setStates] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
@@ -18,6 +18,14 @@ export default function SelectState({ chamber, onStateSelect }) {
         setIsOpen(false);
     };
 
-    return StatesDropdown(states, selectedState, isOpen, toggleDropdown, handleStateClick);
+    return (
+        <RenderStates
+            states={states}
+            selectedState={selectedState}
+            isOpen={isOpen}
+            toggleDropdown={toggleDropdown}
+            handleStateClick={handleStateClick}
+        />
+    );
     
 };
