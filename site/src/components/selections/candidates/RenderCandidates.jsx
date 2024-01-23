@@ -1,22 +1,28 @@
 import React from "react";
-import "../../css/dropdown.css";
+import "../../../css/dropdown.css";
 import formatContributionAmount from "./utilities/formatContributionAmount";
 
 
 export default function RenderCandidates({ candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick }) {
     return (
         <div className="dropdown">
-            <button className="dropdown__button" onClick={toggleDropdown}>
-                {selectedCandidate ? `${selectedCandidate._id.firstName} ${selectedCandidate._id.lastName}` : "Click to select a candidate"}
+            <button className="button" onClick={toggleDropdown}>
+                {
+                    selectedCandidate
+                        ? `Candidate: ${selectedCandidate._id.firstName} ${selectedCandidate._id.lastName}`
+                        : "Select a candidate ▽"
+                }
             </button>
             {isOpen && (
-                <div className="dropdown__menu" style={{ display: "block" }}>
+                <div className="menu">
                     {candidates.map((candidate) => {
                         const { _id: { firstName, lastName, party }, totalContributionAmount } = candidate;
-                        const partyFormatted = party ? `(${party.charAt(0)})` : "";
+                        const partyFormatted = party
+                            ? `(${party.charAt(0)})`
+                            : "";
                         return (
                             <button
-                                className="dropdown__item"
+                                className="item"
                                 key={`${firstName}-${lastName}-${party}`}
                                 onClick={() => handleCandidateClick(candidate)}
                             >

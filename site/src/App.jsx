@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import ShowChambers from "./components/chambers/ShowChambers";
-import ShowStates from "./components/states/ShowStates";
-import ShowDistricts from "./components/districts/ShowDistricts";
-import useCountDistricts from "./components/districts/useCountDistricts";
-import ShowCandidates from "./components/candidates/ShowCandidates";
+import RenderHeader from "./components/header/Header";
+import RenderSelections from "./components/selections/RenderSelections";
 import RenderCandidate from "./components/candidate/RenderCandidate";
-
 import "./css/index.css"
 
 
@@ -28,61 +24,41 @@ export default function App() {
         setSelectedDistrict(district);
         setSelectedCandidate(null);
     };
-    const districtCount = useCountDistricts(selectedChamber, selectedState, handleDistrictSelection);
     const handleCandidateSelection = (candidate) => {
         setSelectedCandidate(candidate);
     };
 
     return (
 
-        <main>
+        <body>
 
-            <div className="leff">
+            <RenderHeader/>
+            
+            <main>
 
-                <ShowChambers
-                    onChamberSelect={handleChamberSelection}
+                <RenderSelections
+                    handleChamberSelection={handleChamberSelection}
+                    selectedChamber={selectedChamber}
+                    handleStateSelection={handleStateSelection}
+                    selectedState={selectedState}
+                    handleDistrictSelection={handleDistrictSelection}
+                    selectedDistrict={selectedDistrict}
+                    handleCandidateSelection={handleCandidateSelection}
                 />
 
-                {selectedChamber && (
-                    <ShowStates
-                        chamber={selectedChamber}
-                        onStateSelect={handleStateSelection}
-                    />
-                )}
-
-                {selectedChamber === "HOUSE" && selectedState && districtCount > 1 && (
-                    <ShowDistricts
-                        chamber={selectedChamber}
-                        state={selectedState}
-                        onDistrictSelect={handleDistrictSelection}
-                    />
-                )}
-
-                {selectedChamber && selectedState && selectedDistrict && (
-                    <ShowCandidates
-                        chamber={selectedChamber}
-                        state={selectedState}
-                        district={selectedDistrict}
-                        onCandidateSelect={handleCandidateSelection}
-                    />
-                )}
-
-            </div>
-
-            <div className="right">
 
                 {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
-                   <RenderCandidate
+                <RenderCandidate
                         chamber={selectedChamber}
                         state={selectedState}
                         district={selectedDistrict}
                         candidate={selectedCandidate}
-                   />
+                />
                 )}
 
-            </div>
+            </main>
 
-        </main>
+        </body>
 
     );
 };

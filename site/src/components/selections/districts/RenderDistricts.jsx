@@ -1,18 +1,22 @@
 import React from "react";
-import "../../css/dropdown.css";
+import "../../../css/dropdown.css";
 
 
 export default function RenderDistricts({ districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick }) {
     return (
         <div className="dropdown">
-            <button className="dropdown__button" onClick={toggleDropdown}>
-                {selectedDistrict ? `District selected: ${selectedDistrict}` : "Click to select a district"}
+            <button className="button" onClick={toggleDropdown}>
+                {
+                    selectedDistrict
+                        ? `District: ${selectedDistrict}`
+                        : "Select a district ▽"
+                }
             </button>
             {isOpen && (
-                <div className="dropdown__menu" style={{ display: "block" }}>
+                <div className="menu">
                     {districts.map((district) => (
                         <button
-                            className="dropdown__item"
+                            className="item"
                             key={district}
                             onClick={() => handleDistrictClick(district)}
                         >

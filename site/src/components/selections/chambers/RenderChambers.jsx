@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/switch.css";
+import "../../../css/switch.css";
 
 
 export default function RenderChambers({ chambers, defaultChamber, handleChamberClick }) {
