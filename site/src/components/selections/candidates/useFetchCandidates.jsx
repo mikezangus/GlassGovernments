@@ -1,8 +1,7 @@
 import { useEffect } from "react";
-import sortCandidates from "./utilities/sortCandidates";
 
 
-export default function useFetchCandidates(chamber, state, district, setCandidates) {
+export default function useFetchCandidates(year, chamber, state, district, setCandidates) {
     const name = "Fetch Candidates Hook";
     const fetchCandidates = async () => {
         try {
@@ -10,14 +9,14 @@ export default function useFetchCandidates(chamber, state, district, setCandidat
             const url = `http://localhost:4000/api/candidates?${params.toString()}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
-            const data = await response.json();
-            const sortedData = sortCandidates(data);
-            setCandidates(sortedData);
+            let data = await response.json();
+            data = data.sort((a, b) => b.totalContributionAmount - a.totalContributionAmount);
+            setCandidates(data);
         } catch (error) {
             console.error(`${name} | Error: `, error);
         };
     };
     useEffect(() => {
-        if (chamber && state && district) fetchCandidates();
-    }, [chamber, state, district]);
+        if (year && chamber && state && district) fetchCandidates();
+    }, [year, chamber, state, district]);
 };

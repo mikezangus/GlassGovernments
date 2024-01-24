@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 
-export default function useFetchChambers(setChambers, setDefaultChamber, onChamberSelect) {
+export default function useFetchChambers(year, setChambers, setDefaultChamber, onChamberSelect) {
     const name = "Fetch Chambers Hook";
     const fetchChambers = async () => {
         try {
@@ -20,6 +20,7 @@ export default function useFetchChambers(setChambers, setDefaultChamber, onChamb
         };
     };
     useEffect(() => {
-        fetchChambers();
-    }, []);
+        if (year) fetchChambers();
+    }, [year]);
+
 };

@@ -3,12 +3,12 @@ import useFetchChambers from "./useFetchChambers";
 import RenderChambers from "./RenderChambers";
 
 
-export default function ShowChambers({ onChamberSelect }) {
+export default function ShowChambers({ year, onChamberSelect }) {
 
     const [chambers, setChambers] = useState([]);
     const [defaultChamber, setDefaultChamber] = useState(null);
 
-    useFetchChambers(setChambers, setDefaultChamber, onChamberSelect);
+    useFetchChambers(year, setChambers, setDefaultChamber, onChamberSelect);
 
     const handleChamberClick = (chamber) => {
         setDefaultChamber(chamber);

@@ -3,13 +3,13 @@ import useFetchStates from "./useFetchStates";
 import RenderStates from "./RenderStates";
 
 
-export default function ShowStates({ chamber, onStateSelect }) {
+export default function ShowStates({ year, chamber, onStateSelect }) {
 
     const [states, setStates] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
-    useFetchStates(chamber, setStates);
+    useFetchStates(year, chamber, setStates);
 
     const toggleDropdown = () => setIsOpen(!isOpen);
     const handleStateClick = (state) => {

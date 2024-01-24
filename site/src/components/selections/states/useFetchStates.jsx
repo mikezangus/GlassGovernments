@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 
-export default function useFetchStates(chamber, setStates) {
+export default function useFetchStates(year, chamber, setStates) {
     const name = "Fetch States Hook";
     const fetchStates = async () => {
         try {
@@ -16,6 +16,6 @@ export default function useFetchStates(chamber, setStates) {
         };
     };
     useEffect(() => {
-        if (chamber) fetchStates();
-    }, [chamber]);
+        if (year, chamber) fetchStates();
+    }, [year, chamber]);
 };

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 
-export default function useFetchDistricts(chamber, state, setDistricts) {
+export default function useFetchDistricts(year, chamber, state, setDistricts) {
     const name = "Fetch Districts Hook";
     const fetchDistricts = async () => {
         try {
@@ -16,6 +16,6 @@ export default function useFetchDistricts(chamber, state, setDistricts) {
         };
     };
     useEffect(() => {
-        if (chamber && state) fetchDistricts();
-    }, [chamber, state]);
+        if (year && chamber && state) fetchDistricts();
+    }, [year, chamber, state]);
 };

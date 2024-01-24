@@ -7,11 +7,16 @@ import "./css/index.css"
 
 export default function App() {
 
+    const [selectedYear, setSelectedYear] = useState(null);
     const [selectedChamber, setSelectedChamber] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
 
+    const handleYearSelection = (year) => {
+        setSelectedYear(year);
+        setSelectedChamber(null);
+    }
     const handleChamberSelection = (chamber) => {
         setSelectedChamber(chamber);
         setSelectedState(null);
@@ -32,11 +37,13 @@ export default function App() {
 
         <body>
 
-            <RenderHeader/>
-            
+            <RenderHeader />
+
             <main>
 
                 <RenderSelections
+                    handleYearSelection={handleYearSelection}
+                    selectedYear={selectedYear}
                     handleChamberSelection={handleChamberSelection}
                     selectedChamber={selectedChamber}
                     handleStateSelection={handleStateSelection}
@@ -47,13 +54,14 @@ export default function App() {
                 />
 
 
-                {selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
-                <RenderCandidate
+                {selectedYear && selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
+                    <RenderCandidate
+                        year={selectedYear}
                         chamber={selectedChamber}
                         state={selectedState}
                         district={selectedDistrict}
                         candidate={selectedCandidate}
-                />
+                    />
                 )}
 
             </main>
