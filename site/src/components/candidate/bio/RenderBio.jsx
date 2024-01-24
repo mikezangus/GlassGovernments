@@ -1,7 +1,7 @@
 import React from "react";
-import colorParty from "../utilities/colorParty";
+import colorParty from "../../utilities/colorParty";
 import "../../../css/candidate.css";
-import capitalize from "../utilities/capitalize";
+import capitalizeWords from "../../utilities/capitalizeWords";
 
 
 export default function RenderBio({ state, district, candidate }) {
@@ -14,7 +14,7 @@ export default function RenderBio({ state, district, candidate }) {
             </div>
             <div className="party-constituency">
                 <span style={{ color: partyColor }}>
-                    {capitalize(party)}
+                    {capitalizeWords(party)}
                 </span>
                 , {state}-{district}
             </div>
