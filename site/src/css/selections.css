@@ -1,0 +1,5 @@
+.selections {
+    width: 30%;
+    display: inline-block;
+    flex-direction: column;
+}

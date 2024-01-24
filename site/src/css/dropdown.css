@@ -1,60 +1,55 @@
-:root {
-    --color-white: #fff;
-    --color-dropdown-bg: #191919;
-    --transition-duration: 0.3s;
-}
-
 .dropdown {
-    width: auto;
-}
-
-.dropdown__title {
-    font-size: 24px;
-    color: var(--color-white);
-    margin-bottom: 10px;
-}
-
-.dropdown__button {
-    font-size: 16px;
-    color: var(--color-white);
+    position: relative;
+    overflow: hidden;
+    width: 345px;
+    margin-bottom: 25px;
+    box-shadow: 5px 5px 10px 0 var(--color-black);
+    color: var(--color-black);
     background-color: transparent;
+}
+
+.dropdown .button {
+    box-sizing: border-box;
+    background-color: var(--color-white);
+    font-size: var(--font-size-small);
+    color: var(--color-black);
     border: 1px solid var(--color-white);
-    padding: 10px 15px;
+    padding: 10px 25px;
     cursor: pointer;
     transition: background-color var(--transition-duration) ease;
-    width: auto;
+    width: 100%;
     text-align: left;
+    border-radius: 23px;
+    box-shadow: 0px 1px 10px 1px var(--color-gray);
 }
 
-.dropdown__menu {
-    display: none;
-    position: static;
-    background-color: var(--color-dropdown-bg);
+.dropdown .button.active {
+    border-radius: 23px 23px 0 0;
+}
+
+.dropdown .menu {
+    padding-top: 10px;
+    box-sizing: border-box;
+    max-height: 310px;
+    overflow-y: auto;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);    
-    z-index: 1;
-    border-radius: 4px;
-    margin-top: 2px;
-    border: 1px solid var(--color-white);
-    padding: 10px;
-    width: auto;
+    border-radius: 0 0 30px 30px;
+    width: 100%;
+    background-color: var(--color-white);
 }
 
-.dropdown__item {
+.dropdown .item {
+    box-sizing: border-box;
+    display: flex;
+    font-size: var(--font-size-extra-small);
     display: flex;
     justify-content: space-between;
-    align-items: left;
-    width: auto;
+    align-items: "flex-start";
+    width: 100%;
     margin-bottom: 5px;
     background-color: transparent;
     border: none;
-    color: var(--color-white);
-    text-decoration: none;
-    padding: 8px 16px;
+    padding: 6px 25px;
     cursor: pointer;
     transition: background-color var(--transition-duration) ease;
-}
-
-.dropdown__item-name {
-    flex-grow: 1;
-    text-align: left;
 }

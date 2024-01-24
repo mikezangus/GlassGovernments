@@ -1,34 +1,39 @@
-.body {
-    width: 100%;
+.candidate {
+    box-sizing: border-box;
+    color: var(--color-black);
+    width: 50%;
     padding: 20px;
-    border-radius: 0%;
+    border-radius: 2%;
+    background-color: var(--color-white);
+    box-shadow: 5px 5px 10px 0 var(--color-black);
+    height: fit-content;
 }
 
-.bio {
-    width: 100%;
+.candidate .bio {
+    width: auto;
 }
 
-.bio .name {
-    width: 100%;
-    font-size: 30px;
+.candidate .bio .name {
+    font-size: var(--font-size-large);
     font-weight: bolder;
 }
 
-.bio .party-constituency {
-    width: 100%;
-    font-size: 25px;
+.candidate .bio .party-constituency {
+    font-size: var(--font-size-medium);
 }
 
-.contributions .total {
-    width: 100%;
-    font-size: 25px;
+.candidate .contributions .total {
+    font-size: var(--font-size-medium);
+    margin-top: 5px;
 }
 
-.contributions .entities {
+.candidate .contributions .entities {
     width: 100%;
-    font-size: 20px;
+    font-size: var(--font-size-small);
+    margin-left: 25px;
 }
 
-.map {
+.candidate .map {
+    margin-top: 25px;
     width: 100%;
 }

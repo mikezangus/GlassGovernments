@@ -5,7 +5,10 @@ import "../../../css/dropdown.css";
 export default function RenderDistricts({ districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick }) {
     return (
         <div className="dropdown">
-            <button className="button" onClick={toggleDropdown}>
+            <button
+                className={`button ${isOpen ? "active" : ""}`}
+                onClick={toggleDropdown}
+            >
                 {
                     selectedDistrict
                         ? `District: ${selectedDistrict}`

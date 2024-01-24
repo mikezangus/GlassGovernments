@@ -10,7 +10,7 @@ export default function RenderCandidate({ chamber, state, district, candidate })
 
     return (
 
-        <div className="right">
+        <div className="candidate">
     
             <ShowBio
                 chamber={chamber}
