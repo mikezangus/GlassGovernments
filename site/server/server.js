@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { connectToMongo } = require("./mongoClient");
 
+const yearsRoute = require("./routes/years");
 const chambersRoute = require("./routes/chambers");
 const statesRoute = require("./routes/states");
 const districtsRoute = require("./routes/districts");
@@ -17,6 +18,7 @@ const PORT = 4000;
 app.use(cors());
 connectToMongo();
 
+app.use("/api/years", yearsRoute);
 app.use("/api/chambers", chambersRoute);
 app.use("/api/states", statesRoute);
 app.use("/api/districts", districtsRoute);
