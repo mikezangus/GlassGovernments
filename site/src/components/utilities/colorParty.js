@@ -1,6 +1,6 @@
 export default function colorParty(party) {
     switch (party) {
-        case "DEMOCRATIC": return "darkblue";
+        case "DEMOCRAT": return "darkblue";
         case "GREEN": return "darkgreen";
         case "INDEPENDENT": return "purple";
         case "LIBERTARIAN": return "gold";

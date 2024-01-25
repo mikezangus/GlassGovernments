@@ -53,7 +53,6 @@ export default function App() {
                     handleCandidateSelection={handleCandidateSelection}
                 />
 
-
                 {selectedYear && selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
                     <RenderCandidate
                         year={selectedYear}

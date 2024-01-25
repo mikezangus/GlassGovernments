@@ -14,6 +14,11 @@
     font-size: var(--font-size-large);
 }
 
+.header .title a {
+    color: var(--color-white);
+    text-decoration: none;
+}
+
 .header .links {
     display: flex;
     font-size: var(--font-size-extra-small)
@@ -23,6 +28,7 @@
     margin-left: auto;
     margin-right: 20px;
     color: var(--color-white);
+    text-decoration: none;
 }
 
 .header .links a:last-child {

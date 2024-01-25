@@ -14,12 +14,13 @@
 }
 
 .candidate .bio .name {
-    font-size: var(--font-size-large);
+    font-size: var(--font-size-huge);
     font-weight: bolder;
 }
 
 .candidate .bio .party-constituency {
     font-size: var(--font-size-medium);
+    font-weight: bold;
 }
 
 .candidate .contributions .total {

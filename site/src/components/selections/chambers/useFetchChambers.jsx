@@ -9,12 +9,12 @@ export default function useFetchChambers(year, setChambers, setDefaultChamber, o
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
             const data = await response.json();
-            setChambers(data);
             if (data.length > 0) {
                 const defaultChamber = data[0];
                 setDefaultChamber(defaultChamber);
                 onChamberSelect(defaultChamber);
-            };
+            }
+            setChambers(data);
         } catch (error) {
             console.error(`${name} | Error: `, error);
         };

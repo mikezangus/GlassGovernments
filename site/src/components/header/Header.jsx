@@ -6,15 +6,17 @@ export default function RenderHeader() {
     return (
         <div className="header">
             <div className="title">
-                Glass Governments
+                <a href="https://glassgovernments.com">
+                    Glass Governments
+                </a>
             </div>
             <div className="links">
                 <a
-                    href="https://github.com/mikezangus/GlassGovernments"
+                    href="https://glassgovernments.com/about"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Github
+                    About
                 </a>
                 <a
                     href="https://google.com"

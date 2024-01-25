@@ -11,7 +11,7 @@ export default function RenderDistricts({ districts, selectedDistrict, isOpen, t
             >
                 {
                     selectedDistrict
-                        ? `District: ${selectedDistrict}`
+                        ? `District: ${parseInt(selectedDistrict, 10).toString()}`
                         : "Select a district ▽"
                 }
             </button>
@@ -23,7 +23,7 @@ export default function RenderDistricts({ districts, selectedDistrict, isOpen, t
                             key={district}
                             onClick={() => handleDistrictClick(district)}
                         >
-                            {district}
+                            {`District ${parseInt(district, 10).toString()}`}
                         </button>
                     ))}
                 </div>
