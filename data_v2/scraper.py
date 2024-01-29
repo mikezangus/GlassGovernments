@@ -15,21 +15,12 @@ def verify_dir_exists(dir: str):
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-files_dir = os.path.join(current_dir, "files")
-verify_dir_exists(files_dir)
-downloads_container_dir = os.path.join(files_dir, "downloads_container")
-verify_dir_exists(downloads_container_dir)
-headers_dir = os.path.join(files_dir, "headers")
+data_files_dir = os.path.join(current_dir, "data_files")
+verify_dir_exists(data_files_dir)
+raw_dir = os.path.join(data_files_dir, "raw")
+verify_dir_exists(raw_dir)
+headers_dir = os.path.join(data_files_dir, "headers")
 verify_dir_exists(headers_dir)
-
-
-def load_driver():
-    driver_loaded, driver = firefox_driver()
-    if not driver_loaded:
-        print("Failed to load web driver")
-        driver.quit()
-        return
-    return driver
 
 
 def get_year():
@@ -37,16 +28,25 @@ def get_year():
     return year
 
 
+def create_downloads_container(year: str):
+    downloads_container_dir = os.path.join(data_files_dir, f"downloads_container_{year}")
+    verify_dir_exists(downloads_container_dir)
+    return downloads_container_dir
+
+
+def load_driver(download_dir: str):
+    driver_loaded, driver = firefox_driver(download_dir)
+    if not driver_loaded:
+        print("Failed to load web driver")
+        driver.quit()
+        return
+    return driver
+
+
 def load_page(driver):
     bulk_data_url = "https://www.fec.gov/data/browse-data/?tab=bulk-data"
     driver.get(bulk_data_url)
     return
-
-
-def set_download_dir(election_year: str):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    download_dir = os.path.join(current_dir, election_year)
-    return download_dir
 
 
 def toggle_candidate_master_pane(driver):
@@ -71,7 +71,7 @@ def toggle_candidate_master_pane(driver):
     return
 
 
-def find_input_year(driver, locator: str, input_year: int):
+def find_input_year(driver, locator: str, input_year: int, find_year: bool):
     years_list_element = WebDriverWait(driver, 30).until(
         EC.presence_of_element_located(locator)
     )
@@ -85,7 +85,7 @@ def find_input_year(driver, locator: str, input_year: int):
             election_year = years[1]
             print("Downloaded file for", input_year)
             break
-    if election_year:
+    if find_year:
         return election_year
     return
 
@@ -96,7 +96,7 @@ def download_candidate_master(driver, input_year: int):
         By.CSS_SELECTOR,
         "#first-content-1 > div:nth-child(3) > ul:nth-child(1)"
     )
-    election_year = find_input_year(driver, years_list_locator, input_year)
+    election_year = find_input_year(driver, years_list_locator, input_year, True)
     return election_year
 
 
@@ -127,7 +127,7 @@ def download_individual_contributions(driver, input_year: int):
         By.CSS_SELECTOR,
         "#first-content-6 > div:nth-child(2) > ul:nth-child(1)"
     )
-    find_input_year(driver, years_list_locator, input_year)
+    find_input_year(driver, years_list_locator, input_year, False)
     print("Downloaded individual contributions file")
     return
 
@@ -158,7 +158,7 @@ def download_committee_contributions(driver, input_year: int):
         By.CSS_SELECTOR,
         "#first-content-7 > div:nth-child(2) > ul:nth-child(1)"
     )
-    find_input_year(driver, years_list_locator, input_year)
+    find_input_year(driver, years_list_locator, input_year, False)
     print("Downloaded committee contributions file")
     return
 
@@ -189,7 +189,7 @@ def download_other_contributions(driver, input_year: int):
         By.CSS_SELECTOR,
         "ul.u-margin--bottom"
     )
-    find_input_year(driver, years_list_locator, input_year)
+    find_input_year(driver, years_list_locator, input_year, False)
     print("Downloaded other contributions file")
     return
 
@@ -217,31 +217,35 @@ def wait_for_downloads(src_dir):
                 break
         if not downloads_complete:
             time.sleep(1)
+    print("All files downloaded")
     return
 
 
-def move_files():
-    wait_for_downloads(downloads_container_dir)
-    for file_name in os.listdir(downloads_container_dir):
+def move_files(download_dir: str):
+    wait_for_downloads(download_dir)
+    for file_name in os.listdir(download_dir):
         if "header" in file_name.lower():
-            header_src_path = os.path.join(downloads_container_dir, file_name)
+            header_src_path = os.path.join(download_dir, file_name)
             header_dst_path = os.path.join(headers_dir, file_name)
             shutil.move(header_src_path, header_dst_path)
+            print("Finished moving", file_name)
         elif file_name.endswith(".zip"):
             year = file_name[-6:-4]
             if 80 <= int(year) <= 99:
-                year_dir = os.path.join(files_dir, "19" + year)
+                year_dir = os.path.join(raw_dir, "19" + year)
             else:
-                year_dir = os.path.join(files_dir, "20" + year)
+                year_dir = os.path.join(raw_dir, "20" + year)
             verify_dir_exists(year_dir)
-            year_src_path = os.path.join(downloads_container_dir, file_name)
+            year_src_path = os.path.join(download_dir, file_name)
             year_dst_path = os.path.join(year_dir, file_name)
             shutil.move(year_src_path, year_dst_path)
+            print("Finished moving", file_name)
+    shutil.rmtree(download_dir)
 
 
 
 def unzip_year_files(year: str):
-    year_dir = os.path.join(files_dir, year)
+    year_dir = os.path.join(raw_dir, year)
     for src_file_name in os.listdir(year_dir):
         file_type = src_file_name[:-6]
         src_path = os.path.join(year_dir, src_file_name)
@@ -250,12 +254,14 @@ def unzip_year_files(year: str):
             with zipfile.ZipFile(src_path, "r") as z:
                 z.extractall(dst_path)
                 os.remove(src_path)
+                print("Finished unzipping", src_file_name)
     return
 
 
 def main():
     input_year = get_year()
-    driver = load_driver()
+    download_dir = create_downloads_container(str(input_year))
+    driver = load_driver(download_dir)
     load_page(driver)
     election_year = download_candidate_master(driver, input_year)
     download_candidate_master_header(driver)
@@ -265,7 +271,7 @@ def main():
     download_committee_contributions_header(driver)
     download_other_contributions(driver, input_year)
     download_other_contributions_header(driver)
-    move_files()
+    move_files(download_dir)
     unzip_year_files(election_year)
 
 
