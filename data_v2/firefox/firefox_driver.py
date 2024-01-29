@@ -7,14 +7,9 @@ from .geckodriver_downloader import download_geckodriver
 
 
 
-def firefox_driver():
+def firefox_driver(download_dir: str):
 
     firefox_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(firefox_dir)
-    files_dir = os.path.join(parent_dir, "files")
-    downloads_container_dir = os.path.join(files_dir, "downloads_container")
-    if not os.path.exists(downloads_container_dir):
-        os.makedirs(downloads_container_dir)
     firefox_binary_path = os.path.join(firefox_dir, "Firefox Developer Edition.app", "Contents", "MacOS", "firefox")
     geckodriver_path = os.path.join(firefox_dir, "geckodriver")
     
@@ -40,7 +35,7 @@ def firefox_driver():
     options.set_preference("network.http.use-cache", False)
 
     options.set_preference("browser.download.alwaysOpenPanel", False)
-    options.set_preference("browser.download.dir", downloads_container_dir)
+    options.set_preference("browser.download.dir", download_dir)
     options.set_preference("browser.download.folderList", 2)
     options.set_preference("browser.download.manager.showAlertOnComplete", False)
     options.set_preference("browser.download.manager.showWhenStarting", False)
