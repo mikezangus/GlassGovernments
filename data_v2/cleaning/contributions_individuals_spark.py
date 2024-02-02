@@ -64,7 +64,7 @@ def load_committees(year: str, file_type: str, spark: SparkSession) -> list:
     src_file_path = os.path.join(src_file_dir, f"itcont.txt")
     df = spark.read.csv(
         path = src_file_path,
-        sep ="|",
+        sep = "|",
         inferSchema = True,
     ).select("_c0")
     row_count = df.count()
@@ -81,11 +81,9 @@ def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols:
     print("Headers:", headers)
     print("Columns:", cols)
     start_time = time.time()
-    print(f"\nStarted to load Full DataFrame at {time.strftime('%H:%M:%S', time.localtime(start_time))}")
-
+    print(f"\nStarted to load DataFrame at {time.strftime('%H:%M:%S', time.localtime(start_time))}")
     src_file_dir = get_src_file_dir(year, file_type)
     src_file_path = os.path.join(src_file_dir, f"itcont.txt")
-
     df = spark.read.csv(
         path = src_file_path,
         sep = "|",
@@ -117,6 +115,7 @@ def save_df(spark_df: SparkDataFrame, year: str, committee: str) -> str:
 
 def process_df(df: SparkDataFrame, year: str, committees: list) -> None:
     start_time = time.time()
+    print(f"\nStarted to process DataFrame at {time.strftime('%H:%M:%S', time.localtime(start_time))}")
     committee_count = len(committees)
     for i, committee in enumerate(committees):
         df_processed = df.filter(df["CMTE_ID"] == committee)
@@ -125,17 +124,17 @@ def process_df(df: SparkDataFrame, year: str, committees: list) -> None:
     total_time = (time.time() - start_time) / 60
     print("\nFinished processing committee files:")
     print(f"Duration: {total_time:,.2f} minutes")
-    print(f"Committee count: {committee_count:,}")
-    print(f"Rate: {(committee_count / total_time):,.2f} committees per minute\n")
+    print(f"File count: {committee_count:,}")
+    print(f"Rate: {(committee_count / total_time):,.2f} files per minute\n")
     return
 
 
 def main():
     file_type = "indiv"
-    spark = SparkSession.builder.appName("Individual contribtuions").getOrCreate()
     year = decide_year()
     headers = load_headers(file_type)
     cols = set_cols(headers)
+    spark = SparkSession.builder.appName("Individual contribtuions").getOrCreate()
     committees = load_committees(year, file_type, spark)
     df = load_df(year, file_type, spark, headers, cols)
     process_df(df, year, committees)
