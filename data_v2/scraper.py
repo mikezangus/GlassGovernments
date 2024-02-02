@@ -23,12 +23,12 @@ headers_dir = os.path.join(data_files_dir, "headers")
 verify_dir_exists(headers_dir)
 
 
-def get_year():
+def get_year() -> int:
     year = int(input("Year?\n> "))
     return year
 
 
-def create_downloads_container(year: str):
+def create_downloads_container(year: str) -> str:
     downloads_container_dir = os.path.join(data_files_dir, f"downloads_container_{year}")
     verify_dir_exists(downloads_container_dir)
     return downloads_container_dir
@@ -43,13 +43,13 @@ def load_driver(download_dir: str):
     return driver
 
 
-def load_page(driver):
+def load_page(driver) -> None:
     bulk_data_url = "https://www.fec.gov/data/browse-data/?tab=bulk-data"
     driver.get(bulk_data_url)
     return
 
 
-def toggle_candidate_master_pane(driver):
+def toggle_candidate_master_pane(driver) -> None:
     pane_locator = (By.CSS_SELECTOR, "#first-content-1")
     pane_element = WebDriverWait(driver, 30).until(
         EC.presence_of_element_located(pane_locator)
@@ -71,7 +71,7 @@ def toggle_candidate_master_pane(driver):
     return
 
 
-def find_input_year(driver, locator: str, input_year: int, find_year: bool):
+def find_input_year(driver, locator: str, input_year: int, find_year: bool) -> str | None:
     years_list_element = WebDriverWait(driver, 30).until(
         EC.presence_of_element_located(locator)
     )
@@ -90,7 +90,7 @@ def find_input_year(driver, locator: str, input_year: int, find_year: bool):
     return
 
 
-def download_candidate_master(driver, input_year: int):
+def download_candidate_master(driver, input_year: int) -> str:
     toggle_candidate_master_pane(driver)
     years_list_locator = (
         By.CSS_SELECTOR,
@@ -100,7 +100,7 @@ def download_candidate_master(driver, input_year: int):
     return election_year
 
 
-def download_candidate_master_header(driver):
+def download_candidate_master_header(driver) -> None:
     toggle_candidate_master_pane(driver)
     header_button_locator = (
         By.CSS_SELECTOR,
@@ -114,7 +114,7 @@ def download_candidate_master_header(driver):
     return
 
 
-def download_individual_contributions(driver, input_year: int):
+def download_individual_contributions(driver, input_year: int) -> None:
     button_locator = (
         By.CSS_SELECTOR,
         "button.js-accordion-trigger:nth-child(13)"
@@ -132,7 +132,7 @@ def download_individual_contributions(driver, input_year: int):
     return
 
 
-def download_individual_contributions_header(driver):
+def download_individual_contributions_header(driver) -> None:
     button_locator = (
         By.CSS_SELECTOR,
         "#first-content-6 > p:nth-child(3) > a:nth-child(1)"
@@ -145,7 +145,7 @@ def download_individual_contributions_header(driver):
     return
 
 
-def download_committee_contributions(driver, input_year: int):
+def download_committee_contributions(driver, input_year: int) -> None:
     button_locator = (
         By.CSS_SELECTOR,
         "button.js-accordion-trigger:nth-child(15)"
@@ -163,7 +163,7 @@ def download_committee_contributions(driver, input_year: int):
     return
 
 
-def download_committee_contributions_header(driver):
+def download_committee_contributions_header(driver) -> None:
     button_locator = (
         By.CSS_SELECTOR,
         "#first-content-7 > p:nth-child(3) > a:nth-child(1)"
@@ -241,6 +241,7 @@ def move_files(download_dir: str):
             shutil.move(year_src_path, year_dst_path)
             print("Finished moving", file_name)
     shutil.rmtree(download_dir)
+    return
 
 
 
