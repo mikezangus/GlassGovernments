@@ -3,6 +3,7 @@ import re
 import shutil
 import time
 import zipfile
+from pathlib import Path
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -14,8 +15,9 @@ def verify_dir_exists(dir: str):
         os.makedirs(dir, exist_ok = True)
 
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-data_files_dir = os.path.join(current_dir, "data_files")
+scraping_dir = Path(__file__).resolve().parent
+data_dir = scraping_dir.parent
+data_files_dir = os.path.join(data_dir, "data_files")
 verify_dir_exists(data_files_dir)
 raw_dir = os.path.join(data_files_dir, "raw")
 verify_dir_exists(raw_dir)
@@ -274,6 +276,7 @@ def main():
     download_other_contributions_header(driver)
     move_files(download_dir)
     unzip_year_files(election_year)
+    driver.quit()
 
 
 if __name__ == "__main__":
