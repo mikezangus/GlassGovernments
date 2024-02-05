@@ -71,6 +71,24 @@ def load_df(year: str, file_type: str, headers: list, cols: list) -> pd.DataFram
 def process_df(df: pd.DataFrame, year: str) -> pd.DataFrame:
     df = df[df["CAND_ELECTION_YR"] == year]
     df = df[df["CAND_STATUS"] == "C"]
+    df = df.drop(columns = ["CAND_STATUS"])
+    return df
+
+
+def rename_cols(df: pd.DataFrame) -> pd.DataFrame:
+    df.rename(
+        columns = {
+            "CAND_NAME": "NAME",
+            "CAND_PTY_AFFILIATION": "PARTY",
+            "CAND_ELECTION_YR": "ELECTION_YEAR",
+            "CAND_OFFICE_ST": "STATE",
+            "CAND_OFFICE": "OFFICE",
+            "CAND_OFFICE_DISTRICT": "DISTRICT",
+            "CAND_ICI": "ICI",
+            "CAND_PCC": "CMTE_ID"
+        },
+        inplace= True
+    )
     return df
 
 
@@ -81,6 +99,7 @@ def save_df(df: pd.DataFrame, year: str) -> None:
         os.makedirs(dst_path, exist_ok = True)
     save_path = os.path.join(dst_path, "candidate_master.csv")
     df.to_csv(path_or_buf = save_path, index = False)
+    print(f"File saved to path:\n{save_path}")
     return
 
 
@@ -91,6 +110,7 @@ def main():
     cols = set_cols(headers)
     df = load_df(year, file_type, headers, cols)
     df = process_df(df, year)
+    df = rename_cols(df)
     save_df(df, year)
 
 
