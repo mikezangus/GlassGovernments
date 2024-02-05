@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import sys
 from pathlib import Path
-from pymongo import MongoClient
+from pymongo import MongoClient, UpdateOne
 
 cleaning_dir = Path(__file__).resolve().parent
 data_dir = str(cleaning_dir.parent)
@@ -27,11 +27,6 @@ def decide_year() -> str:
             print(f"\n{year} isn't an available year, try again")
 
 
-def get_input_file_path(year: str) -> str:
-    path = os.path.join(get_cleaned_dir(), year, "candidate_master.csv")
-    return path
-
-
 def connect_to_mongo():
     path = get_config_file_path()
     with open(path, "r") as config_file:
@@ -42,6 +37,11 @@ def connect_to_mongo():
     db = client[config["mongoDatabase"]]
     print("Successfully connected to MongoDB")
     return db
+
+
+def get_input_file_path(year: str) -> str:
+    path = os.path.join(get_cleaned_dir(), year, "candidate_master.csv")
+    return path
 
 
 def load_df(path: str) -> pd.DataFrame:
@@ -55,16 +55,25 @@ def load_df(path: str) -> pd.DataFrame:
 
 def upload_df(year: str, db, df: pd.DataFrame) -> None:
     collection_name = f"{year}_candidate_master"
+    print(f"Starting to upload {len(df):,} records to collection {collection_name}")
     collection = db[collection_name]
     records = df.to_dict("records")
-    collection.insert_many(records)
-    print(f"Finished uploading {len(records)} records to collection {collection_name}")
+    operations = []
+    for record in records:
+        operations.append(UpdateOne(
+            { "CAND_ID": record["CAND_ID"] },
+            { "$setOnInsert": record },
+            upsert = True
+        ))
+    if operations:
+        result = collection.bulk_write(operations)
+    print(f"Finished uploading {result.upserted_count:,} new records to collection {collection_name}")
 
 
 def main():
     year = decide_year()
-    input_file_path = get_input_file_path(year)
     db = connect_to_mongo()
+    input_file_path = get_input_file_path(year)
     df = load_df(input_file_path)
     upload_df(year, db, df)
 
