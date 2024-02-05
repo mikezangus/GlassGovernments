@@ -1,48 +1,18 @@
-import json
 import os
 import sys
 from pathlib import Path
 from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
 from pyspark.sql.functions import col, to_date, date_format
 from pyspark.sql.types import FloatType
+from decide_year import decide_year
+from load_headers import load_headers
+from load_spark import load_spark
+from connect_to_mongo import connect_to_mongo
 
 current_dir = Path(__file__).resolve().parent
 data_dir = str(current_dir.parent)
 sys.path.append(data_dir)
-from directories import get_raw_dir, get_config_file_path, get_headers_dir, get_src_file_dir
-
-
-def decide_year() -> str:
-    raw_dir = get_raw_dir()
-    year_dirs = os.listdir(raw_dir)
-    year_options = [y for y in year_dirs if y.isdigit()]
-    sorted_year_options = sorted(
-        year_options,
-        key = lambda x: int(x)
-    )
-    formatted_year_options = ', '.join(sorted_year_options)
-    while True:
-        year = input(f"\nFor which year do you want to clean raw data?\nAvailable years: {formatted_year_options}\n> ")
-        if year in year_options:
-            return year
-        else:
-            print(f"\n{year} isn't an available year, try again")
-
-
-def connect_to_mongo():
-    path = get_config_file_path()
-    with open(path, "r") as config_file:
-        config = json.load(config_file)
-    uri = f"mongodb+srv://{config['mongoUsername']}:{config['mongoPassword']}@{config['mongoCluster']}.px0sapn.mongodb.net/{config['mongoDatabase']}?retryWrites=true&w=majority"
-    return uri
-
-
-def load_headers(file_type: str) -> list:
-    dir = get_headers_dir()
-    path = os.path.join(dir, f"{file_type}_header_file.csv")
-    with open(path, "r") as header_file:
-        headers = header_file.readline().strip().split(",")
-    return headers
+from directories import get_src_file_dir
 
 
 def set_cols(headers: list) -> list:
@@ -57,23 +27,6 @@ def set_cols(headers: list) -> list:
     ]
     relevant_cols_indices = [headers.index(c) for c in relevant_cols]
     return relevant_cols_indices
-
-
-def load_spark(uri: str) -> SparkDataFrame:
-    spark = SparkSession.builder \
-        .appName("Indiv contributions") \
-        .master("local[*]") \
-        .config("spark.executor.memory", "10g") \
-        .config("spark.driver.memory", "4g") \
-        .config("spark.default.parallelism", 10) \
-        .config("spark.sql.shuffle.partitions", 10) \
-        .config("spark.driver.extraJavaOptions", "-XX:ReservedCodeCacheSize=256M") \
-        .config("spark.executor.extraJavaOptions", "-XX:ReservedCodeCacheSize=256M") \
-        .config("spark.mongodb.input.uri", uri) \
-        .config("spark.mongodb.output.uri", uri) \
-        .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:3.0.1") \
-        .getOrCreate()
-    return spark
 
 
 def load_candidates_df(spark: SparkSession, uri: str, year: str):
