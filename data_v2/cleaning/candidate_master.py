@@ -1,37 +1,37 @@
 import os
-import pandas as pd
 from pathlib import Path
+from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
+from pyspark.sql.functions import col
 import sys
+from connect_to_mongo import connect_to_mongo
+from decide_year import decide_year
+from load_headers import load_headers
+from load_spark import load_spark
 
 current_dir = Path(__file__).resolve().parent
 data_dir = str(current_dir.parent)
 sys.path.append(data_dir)
-from directories import get_raw_dir, get_cleaned_dir, get_headers_dir, get_src_file_dir
+from directories import get_src_file_dir
 
 
-def decide_year() -> str:
-    raw_dir = get_raw_dir()
-    year_options = os.listdir(raw_dir)
-    year_options = [y for y in year_options if y.isdigit()]
-    sorted_year_options = sorted(
-        year_options,
-        key = lambda x: int(x)
-    )
-    formatted_year_options = ', '.join(sorted_year_options)
-    while True:
-        year = input(f"\nFor which year do you want to clean raw data?\nAvailable years: {formatted_year_options}\n> ")
-        if year in year_options:
-            return year
+def get_existing_entries(spark: SparkSession, year: str, uri: str) -> SparkDataFrame | None:
+    collection_name = f"{year}_candidate_master"
+    try:
+        df = spark.read \
+            .format("mongo") \
+            .option("uri", uri) \
+            .option("collection", collection_name) \
+            .load()
+        if df.limit(1).count() == 0:
+            print(f"Collection {collection_name} is empty")
+            return None
         else:
-            print(f"\n{year} isn't an available year, try again")
-
-
-def load_headers(file_type: str) -> list:
-    headers_dir = get_headers_dir()
-    header_file_path = os.path.join(headers_dir, f"{file_type}_header_file.csv")
-    with open(header_file_path, "r") as header_file:
-        headers = header_file.readline().strip().split(",")
-    return headers
+            df = df.select("CAND_ID")
+            print(f"Existing entires: {df.count():,}")
+            return df
+    except Exception as e:
+        print(f"Error loading collection {collection_name}. Error: {e}")
+        return None
 
 
 def set_cols(headers: list) -> list:
@@ -51,67 +51,66 @@ def set_cols(headers: list) -> list:
     return relevant_cols_indices
 
 
-def load_df(year: str, file_type: str, headers: list, cols: list) -> pd.DataFrame:
-    src_file_dir = get_src_file_dir(year, file_type)
-    src_file_path = os.path.join(src_file_dir, f"{file_type}.txt")
-    df = pd.read_csv(
-        filepath_or_buffer = src_file_path,
+def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols: list) -> SparkDataFrame:
+    src_dir = get_src_file_dir(year, file_type)
+    src_path = os.path.join(src_dir, f"{file_type}.txt")
+    df = spark.read.csv(
+        path = src_path,
         sep = "|",
-        header = None,
-        names = headers,
-        usecols = cols,
-        dtype = str,
-        verbose = True,
-        on_bad_lines = "warn",
-        low_memory = False
+        header = False,
+        inferSchema = False
+    ).toDF(*headers)
+    df = df.select(*[headers[index] for index in cols])
+    return df
+
+
+def filter_df(df: SparkDataFrame, year: str) -> SparkDataFrame:
+    df = df.filter(
+        (col("CAND_ELECTION_YR") == year) &
+        (col("CAND_STATUS") == "C")
     )
     return df
 
 
-def process_df(df: pd.DataFrame, year: str) -> pd.DataFrame:
-    df = df[df["CAND_ELECTION_YR"] == year]
-    df = df[df["CAND_STATUS"] == "C"]
-    df = df.drop(columns = ["CAND_STATUS"])
+def rename_cols(df: SparkDataFrame) -> SparkDataFrame:
+    df = df \
+        .withColumnRenamed("CAND_NAME", "NAME") \
+        .withColumnRenamed("CAND_PTY_AFFILIATION", "PARTY") \
+        .withColumnRenamed("CAND_ELECTION_YR", "ELECTION_YEAR") \
+        .withColumnRenamed("CAND_OFFICE_ST", "STATE") \
+        .withColumnRenamed("CAND_OFFICE", "OFFICE") \
+        .withColumnRenamed("CAND_OFFICE_DISTRICT", "DISTRICT") \
+        .withColumnRenamed("CAND_ICI", "ICI") \
+        .withColumnRenamed("CAND_PCC", "CMTE_ID")
     return df
 
 
-def rename_cols(df: pd.DataFrame) -> pd.DataFrame:
-    df.rename(
-        columns = {
-            "CAND_NAME": "NAME",
-            "CAND_PTY_AFFILIATION": "PARTY",
-            "CAND_ELECTION_YR": "ELECTION_YEAR",
-            "CAND_OFFICE_ST": "STATE",
-            "CAND_OFFICE": "OFFICE",
-            "CAND_OFFICE_DISTRICT": "DISTRICT",
-            "CAND_ICI": "ICI",
-            "CAND_PCC": "CMTE_ID"
-        },
-        inplace= True
-    )
-    return df
 
-
-def save_df(df: pd.DataFrame, year: str) -> None:
-    cleaned_dir = get_cleaned_dir()
-    dst_path = os.path.join(cleaned_dir, year)
-    if not os.path.exists(dst_path):
-        os.makedirs(dst_path, exist_ok = True)
-    save_path = os.path.join(dst_path, "candidate_master.csv")
-    df.to_csv(path_or_buf = save_path, index = False)
-    print(f"File saved to path:\n{save_path}")
+def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
+    collection_name = f"{year}_candidate_master"
+    print(f"\nStarted uploading {df.count():,} entries to collection {collection_name}")
+    df.write \
+        .format("mongo") \
+        .mode("append") \
+        .option("uri", uri) \
+        .option("collection", collection_name) \
+        .save()
+    print(f"Finished uploading {df.count():,} entries to collection {collection_name}")
     return
 
 
 def main():
     file_type = "cn"
     year = decide_year()
+    uri = connect_to_mongo()
     headers = load_headers(file_type)
     cols = set_cols(headers)
-    df = load_df(year, file_type, headers, cols)
-    df = process_df(df, year)
+    spark = load_spark(uri)
+    df = load_df(year, file_type, spark, headers, cols)
+    df = filter_df(df, year)
     df = rename_cols(df)
-    save_df(df, year)
+    upload_df(year, uri, df)
+    spark.stop()
 
 
 if __name__ == "__main__":
