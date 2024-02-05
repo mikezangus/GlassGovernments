@@ -26,7 +26,8 @@ def firefox_driver(download_dir: str):
     
     options = Options()
     options.binary_location = firefox_binary_path
-    # options.add_argument("--headless")
+
+    options.add_argument("--headless")
    
     options.set_preference("browser.cache.disk.enable", False)
     options.set_preference("browser.cache.memory.enable", False)
@@ -43,7 +44,7 @@ def firefox_driver(download_dir: str):
     options.set_preference("browser.download.panel.shown", False)
     options.set_preference("browser.download.useDownloadDir", True)
 
-    options.set_preference("layout.css.devPixelsPerPx", "2")
+    options.set_preference("layout.css.devPixelsPerPx", "1")
 
     driver = webdriver.Firefox(executable_path = geckodriver_path, firefox_options = options, log_path = geckodriver_log_path)
     
