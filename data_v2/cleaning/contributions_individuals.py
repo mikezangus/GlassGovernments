@@ -59,6 +59,23 @@ def set_cols(headers: list) -> list:
     return relevant_cols_indices
 
 
+def load_spark(uri: str) -> SparkDataFrame:
+    spark = SparkSession.builder \
+        .appName("Indiv contributions") \
+        .master("local[*]") \
+        .config("spark.executor.memory", "10g") \
+        .config("spark.driver.memory", "4g") \
+        .config("spark.default.parallelism", 10) \
+        .config("spark.sql.shuffle.partitions", 10) \
+        .config("spark.driver.extraJavaOptions", "-XX:ReservedCodeCacheSize=256M") \
+        .config("spark.executor.extraJavaOptions", "-XX:ReservedCodeCacheSize=256M") \
+        .config("spark.mongodb.input.uri", uri) \
+        .config("spark.mongodb.output.uri", uri) \
+        .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:3.0.1") \
+        .getOrCreate()
+    return spark
+
+
 def load_candidates_df(spark: SparkSession, uri: str, year: str):
     print("\nStarted loading Candidates DataFrame\n")
     collection_name = f"{year}_candidate_master"
@@ -148,12 +165,7 @@ def main():
     uri = connect_to_mongo()
     headers = load_headers(file_type)
     cols = set_cols(headers)
-    spark = SparkSession.builder \
-        .appName("Indiv contributions") \
-        .config("spark.mongodb.input.uri", uri) \
-        .config("spark.mongodb.output.uri", uri) \
-        .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:3.0.1") \
-        .getOrCreate()
+    spark = load_spark(uri)
     df_candidates = load_candidates_df(spark, uri, year)
     df_existing_entries = get_existing_entries(spark, year, uri)
     df = load_df(year, file_type, spark, headers, cols, df_candidates, df_existing_entries)
