@@ -1,19 +1,21 @@
+import json
 import os
-import pandas as pd
-from pathlib import Path
 import sys
-import time
+from pathlib import Path
+from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
+from pyspark.sql.functions import col, to_date, date_format
+from pyspark.sql.types import FloatType
 
 current_dir = Path(__file__).resolve().parent
 data_dir = str(current_dir.parent)
 sys.path.append(data_dir)
-from directories import get_raw_dir, get_cleaned_dir, get_headers_dir, get_src_file_dir
+from directories import get_raw_dir, get_config_file_path, get_headers_dir, get_src_file_dir
 
 
 def decide_year() -> str:
     raw_dir = get_raw_dir()
-    year_options = os.listdir(raw_dir)
-    year_options = [y for y in year_options if y.isdigit()]
+    year_dirs = os.listdir(raw_dir)
+    year_options = [y for y in year_dirs if y.isdigit()]
     sorted_year_options = sorted(
         year_options,
         key = lambda x: int(x)
@@ -27,10 +29,18 @@ def decide_year() -> str:
             print(f"\n{year} isn't an available year, try again")
 
 
+def connect_to_mongo():
+    path = get_config_file_path()
+    with open(path, "r") as config_file:
+        config = json.load(config_file)
+    uri = f"mongodb+srv://{config['mongoUsername']}:{config['mongoPassword']}@{config['mongoCluster']}.px0sapn.mongodb.net/{config['mongoDatabase']}?retryWrites=true&w=majority"
+    return uri
+
+
 def load_headers(file_type: str) -> list:
-    headers_dir = get_headers_dir()
-    header_file_path = os.path.join(headers_dir, f"{file_type}_header_file.csv")
-    with open(header_file_path, "r") as header_file:
+    dir = get_headers_dir()
+    path = os.path.join(dir, f"{file_type}_header_file.csv")
+    with open(path, "r") as header_file:
         headers = header_file.readline().strip().split(",")
     return headers
 
@@ -38,118 +48,117 @@ def load_headers(file_type: str) -> list:
 def set_cols(headers: list) -> list:
     relevant_cols = [
         "CMTE_ID",
-        "AMNDT_IND",
-        "RPT_TP",
-        "TRANSACTION_PGI",
-        "TRANSACTION_TP",
         "ENTITY_TP",
-        "CITY",
-        "STATE",
         "ZIP_CODE",
         "TRANSACTION_DT",
         "TRANSACTION_AMT",
         "OTHER_ID",
         "TRAN_ID",
-        "FILE_NUM",
     ]
     relevant_cols_indices = [headers.index(c) for c in relevant_cols]
     return relevant_cols_indices
 
 
-def load_committees(year: str, file_type: str) -> list | None:
+def load_candidates_df(spark: SparkSession, uri: str, year: str):
+    print("\nStarted loading Candidates DataFrame\n")
+    collection_name = f"{year}_candidate_master"
+    df = spark.read.format("mongo") \
+        .option("uri", uri) \
+        .option("collection", collection_name) \
+        .load()
+    df = df.select("CMTE_ID")
+    print("\nFinished loading Candidates DataFrame")
+    print(f"Candidate count: {df.count():,}\n")
+    return df
+
+
+def get_existing_entries(spark: SparkSession, year: str, uri: str) -> SparkDataFrame | None:
+    collection_name = f"{year}_individual_contributions"
     try:
-        start_time = time.time()
-        print(f"\nStarted loading Committees DataFrame at {time.strftime('%H:%M:%S', time.localtime(start_time))}")
-        src_file_dir = get_src_file_dir(year, file_type)
-        src_file_path = os.path.join(src_file_dir, f"itcont.txt")
-        df = pd.read_csv(
-            filepath_or_buffer = src_file_path,
-            sep = "|",
-            header = None,
-            usecols = [0],
-            verbose = True,
-            on_bad_lines = "warn",
-            low_memory = False
-        )
-        row_count = len(df)
-        committees = df.iloc[:, 0].unique()
-        committee_count = len(committees)
-        total_time = (time.time() - start_time) / 60
-        print("\nFinished loading Committees DataFrame:")
-        print(f"Duration: {total_time:,.2f} minutes")
-        print(f"Row count: {row_count:,}")
-        print(f"Committee count: {committee_count:,}")
-        print(f"Rate: {(row_count / total_time):,.2f} rows per minute\n")
-        return committees
+        df = spark.read \
+            .format("mongo") \
+            .option("uri", uri) \
+            .option("collection", collection_name) \
+            .load()
+        if df.limit(1).count() == 0:
+            print(f"Collection {collection_name} is empty")
+            return None
+        else:
+            df = df.select("TRAN_ID")
+            print(f"Existing entires: {df.count():,}")
+            return df
     except Exception as e:
-        print(f"\nFailed to load Committees DataFrame. Error: {e}")
+        print(f"Error loading collection {collection_name}. Error: {e}")
         return None
 
 
-def load_df(year: str, file_type: str, headers: list, cols: list) -> pd.DataFrame | None:
-    try:
-        print("Headers:", headers)
-        print("Columns:", cols)
-        start_time = time.time()
-        print(f"\nStarted to load DataFrame at {time.strftime('%H:%M:%S', time.localtime(start_time))}")
-        src_file_dir = get_src_file_dir(year, file_type)
-        src_file_path = os.path.join(src_file_dir, f"itcont.txt")
-        df = pd.read_csv(
-            filepath_or_buffer = src_file_path,
-            sep = "|",
-            header = None,
-            names = headers,
-            usecols = cols,
-            verbose = True,
-            on_bad_lines = "warn",
-            low_memory = False
+def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols: list, df_candidates: SparkDataFrame, existing_entries: SparkDataFrame = None) -> SparkDataFrame:
+    print("\nStarted loading Full DataFrame\n")
+    src_dir = get_src_file_dir(year, file_type)
+    src_path = os.path.join(src_dir, "itcont.txt")
+    df = spark.read.csv(
+        path = src_path,
+        sep = "|",
+        header = False,
+        inferSchema = False
+    )
+    for i, col_name in enumerate(headers):
+        df = df.withColumnRenamed(f"_c{i}", col_name)
+    df = df.select(*[headers[index] for index in cols])
+    df_filtered = df.join(df_candidates, "CMTE_ID")
+    if existing_entries:
+        df_filtered = df_filtered.join(
+            existing_entries,
+            df["TRAN_ID"] == existing_entries["TRAN_ID"],
+            "left_anti"
         )
-        total_time = (time.time() - start_time) / 60
-        row_count = len(df)
-        print("\nFinished loading Full DataFrame:")
-        print(f"Duration: {total_time:,.2f} minutes")
-        print(f"Row count: {row_count:,}")
-        print(f"Rate: {(row_count / total_time):,.2f} rows per minute\n")
-        return df
-    except Exception as e:
-        print(f"\nFailed to load Full DataFrame. Error: {e}")
-        return None
+    df_formatted = df_filtered \
+        .withColumn(
+            "TRANSACTION_AMT",
+            df_filtered["TRANSACTION_AMT"].cast(FloatType())
+        )\
+        .withColumn(
+            "TRANSACTION_DT",
+            to_date(df_filtered["TRANSACTION_DT"], "MMddyyyy")
+        ) \
+        .withColumn(
+            "TRANSACTION_DT",
+            date_format(col("TRANSACTION_DT"), "yyyy-MM-dd")
+        )
+    print("\nFinished loading Full DataFrame\n")
+    return df_formatted
 
 
-def save_df(df: pd.DataFrame, year: str, committee: str) -> str:
-    cleaned_dir = get_cleaned_dir()
-    dst_dir = os.path.join(cleaned_dir, year, "contributions_individuals")
-    if not os.path.exists(dst_dir):
-        os.makedirs(dst_dir, exist_ok = True)
-    dst_path = os.path.join(dst_dir, f"{committee}.csv")
-    df.to_csv(path_or_buf = dst_path, index = False)
-    return dst_path
-
-
-def process_df(df: pd.DataFrame, year: str, committees: list) -> None:
-    start_time = time.time()
-    print(f"\nStarted to process DataFrame at {time.strftime('%H:%M:%S', time.localtime(start_time))}")
-    committee_count = len(committees)
-    for i, committee in enumerate(committees):
-        df_committee = df[df.iloc[:, 0] == committee]
-        path = save_df(df_committee, year, committee)
-        print(f"\n[{(i + 1):,}/{committee_count:,}] Saved to path:\n{path}")
-    total_time = (time.time() - start_time) / 60
-    print("\nFinished processing committee files:")
-    print(f"Duration: {total_time:,.2f} minutes")
-    print(f"File count: {committee_count:,}")
-    print(f"Rate: {(committee_count / total_time):,.2f} files per minute\n")
+def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
+    collection_name = f"{year}_individual_contributions"
+    print(f"\nStarted uploading {df.count():,} entries to collection {collection_name}")
+    df.write \
+        .format("mongo") \
+        .mode("append") \
+        .option("uri", uri) \
+        .option("collection", collection_name) \
+        .save()
+    print(f"Finished uploading {df.count():,} entries to collection {collection_name}")
     return
 
 
 def main():
     file_type = "indiv"
     year = decide_year()
+    uri = connect_to_mongo()
     headers = load_headers(file_type)
     cols = set_cols(headers)
-    committees = load_committees(year, file_type)
-    df = load_df(year, file_type, headers, cols)
-    process_df(df, year, committees)
+    spark = SparkSession.builder \
+        .appName("Indiv contributions") \
+        .config("spark.mongodb.input.uri", uri) \
+        .config("spark.mongodb.output.uri", uri) \
+        .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:3.0.1") \
+        .getOrCreate()
+    df_candidates = load_candidates_df(spark, uri, year)
+    df_existing_entries = get_existing_entries(spark, year, uri)
+    df = load_df(year, file_type, spark, headers, cols, df_candidates, df_existing_entries)
+    upload_df(year, uri, df)
+    spark.stop()
 
 
 if __name__ == "__main__":
