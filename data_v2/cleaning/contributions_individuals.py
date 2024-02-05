@@ -62,7 +62,7 @@ def get_existing_entries(spark: SparkSession, year: str, uri: str) -> SparkDataF
         return None
 
 
-def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols: list, df_candidates: SparkDataFrame, existing_entries: SparkDataFrame = None) -> SparkDataFrame:
+def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols: list) -> SparkDataFrame:
     print("\nStarted loading Full DataFrame\n")
     src_dir = get_src_file_dir(year, file_type)
     src_path = os.path.join(src_dir, "itcont.txt")
@@ -75,28 +75,36 @@ def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols:
     for i, col_name in enumerate(headers):
         df = df.withColumnRenamed(f"_c{i}", col_name)
     df = df.select(*[headers[index] for index in cols])
-    df_filtered = df.join(df_candidates, "CMTE_ID")
-    if existing_entries:
-        df_filtered = df_filtered.join(
-            existing_entries,
-            df["TRAN_ID"] == existing_entries["TRAN_ID"],
+    return df
+
+
+def filter_df(df: SparkDataFrame, df_candidates: SparkDataFrame, df_existing_entries: SparkDataFrame) -> SparkDataFrame:
+    df = df.join(df_candidates, "CMTE_ID")
+    if df_existing_entries:
+        df = df.join(
+            df_existing_entries,
+            df["TRAN_ID"] == df_existing_entries["TRAN_ID"],
             "left_anti"
         )
-    df_formatted = df_filtered \
+    return df
+
+
+def format_df(df: SparkDataFrame) -> SparkDataFrame:
+    df = df \
         .withColumn(
             "TRANSACTION_AMT",
-            df_filtered["TRANSACTION_AMT"].cast(FloatType())
+            df["TRANSACTION_AMT"].cast(FloatType())
         )\
         .withColumn(
             "TRANSACTION_DT",
-            to_date(df_filtered["TRANSACTION_DT"], "MMddyyyy")
+            to_date(df["TRANSACTION_DT"], "MMddyyyy")
         ) \
         .withColumn(
             "TRANSACTION_DT",
             date_format(col("TRANSACTION_DT"), "yyyy-MM-dd")
         )
     print("\nFinished loading Full DataFrame\n")
-    return df_formatted
+    return df
 
 
 def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
@@ -121,7 +129,9 @@ def main():
     spark = load_spark(uri)
     df_candidates = load_candidates_df(spark, uri, year)
     df_existing_entries = get_existing_entries(spark, year, uri)
-    df = load_df(year, file_type, spark, headers, cols, df_candidates, df_existing_entries)
+    df = load_df(year, file_type, spark, headers, cols)
+    df = filter_df(df, df_candidates, df_existing_entries)
+    df = format_df(df)
     upload_df(year, uri, df)
     spark.stop()
 
