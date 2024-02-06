@@ -1,13 +1,12 @@
 import os
-from pathlib import Path
-from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
-from pyspark.sql.functions import col
 import sys
-
-from data_v2.cleaning.modules.connect_to_mongo import connect_to_mongo
+from modules.get_mongo_uri import get_mongo_uri
 from modules.decide_year import decide_year
 from modules.load_headers import load_headers
 from modules.load_spark import load_spark
+from pathlib import Path
+from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
+from pyspark.sql.functions import col
 
 current_dir = Path(__file__).resolve().parent
 data_dir = str(current_dir.parent)
@@ -67,7 +66,7 @@ def rename_cols(df: SparkDataFrame) -> SparkDataFrame:
 
 
 def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
-    collection_name = f"{year}_candidate_master"
+    collection_name = f"{year}_candidates"
     print(f"\nStarted uploading {df.count():,} entries to collection {collection_name}")
     df.write \
         .format("mongo") \
@@ -82,7 +81,7 @@ def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
 def main():
     file_type = "cn"
     year = decide_year()
-    uri = connect_to_mongo()
+    uri = get_mongo_uri()
     headers = load_headers(file_type)
     cols = set_cols(headers)
     spark = load_spark(uri)
