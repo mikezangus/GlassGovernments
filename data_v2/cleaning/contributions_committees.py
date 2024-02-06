@@ -1,115 +1,121 @@
-from datetime import datetime
 import os
-import pandas as pd
-from pathlib import Path
 import sys
+from pathlib import Path
+from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql.functions import col, to_date, date_format
+from pyspark.sql.types import FloatType
+
+from modules.decide_year import decide_year
+from modules.load_filter_df import load_filter_df
+from modules.load_headers import load_headers
+from modules.load_spark import load_spark
+from modules.get_mongo_uri import get_mongo_uri
 
 current_dir = Path(__file__).resolve().parent
 data_dir = str(current_dir.parent)
 sys.path.append(data_dir)
-from directories import get_raw_dir, get_cleaned_dir, get_headers_dir, get_src_file_dir
-
-
-def decide_year() -> str:
-    raw_dir = get_raw_dir()
-    year_options = os.listdir(raw_dir)
-    year_options = [y for y in year_options if y.isdigit()]
-    sorted_year_options = sorted(
-        year_options,
-        key = lambda x: int(x)
-    )
-    formatted_year_options = ', '.join(sorted_year_options)
-    while True:
-        year = input(f"\nFor which year do you want to clean raw data?\nAvailable years: {formatted_year_options}\n> ")
-        if year in year_options:
-            return year
-        else:
-            print(f"\n{year} isn't an available year, try again")
-
-
-def load_headers(file_type: str) -> list:
-    headers_dir = get_headers_dir()
-    header_file_path = os.path.join(headers_dir, f"{file_type}_header_file.csv")
-    with open(header_file_path, "r") as header_file:
-        headers = header_file.readline().strip().split(",")
-    return headers
+from directories import get_src_file_dir
 
 
 def set_cols(headers: list) -> list:
     relevant_cols = [
         "CMTE_ID",
-        "RPT_TP",
-        "TRANSACTION_PGI",
-        "TRANSACTION_TP",
         "ENTITY_TP",
         "NAME",
-        "CITY",
-        "STATE",
         "ZIP_CODE",
         "TRANSACTION_DT",
         "TRANSACTION_AMT",
         "OTHER_ID",
         "CAND_ID",
-        "TRAN_ID",
-        "FILE_NUM",
-        "SUB_ID"
+        "TRAN_ID"
     ]
     relevant_cols_indices = [headers.index(c) for c in relevant_cols]
     return relevant_cols_indices
 
 
-def load_df(year: str, file_type: str, headers: list, cols: list) -> pd.DataFrame:
-    src_file_dir = get_src_file_dir(year, file_type)
-    src_file_path = os.path.join(src_file_dir, f"it{file_type}.txt")
-    df = pd.read_csv(
-        filepath_or_buffer = src_file_path,
+def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols: list) -> DataFrame:
+    print("\nStarted loading Full DataFrame\n")
+    src_dir = get_src_file_dir(year, file_type)
+    src_path = os.path.join(src_dir, f"it{file_type}.txt")
+    df = spark.read.csv(
+        path = src_path,
         sep = "|",
-        header = None,
-        names = headers,
-        usecols = cols,
-        dtype = str,
-        verbose = True,
-        on_bad_lines = "warn",
-        low_memory = False
+        header = False,
+        inferSchema = False
     )
+    for i, col_name in enumerate(headers):
+        df = df.withColumnRenamed(f"_c{i}", col_name)
+    df = df.select(*[headers[index] for index in cols])
+    print(f"\nFinished loading Full DataFrame")
+    print(f"Total entries: {df.count():,}")
     return df
 
 
-def process_df(df: pd.DataFrame) -> pd.DataFrame:
-
-    def convert_date(date: str) -> str:
-        try:
-            if len(date) == 8:
-                return datetime.strptime(date, "%m%d%Y").strftime("%Y-%m-%d")
-            elif len(date) == 7:
-                return datetime.strptime(date, "%m%d%Y").strftime("%Y-%m-%d")
-            else:
-                return date
-        except:
-            return ""
-
-    df["TRANSACTION_DT"] = df["TRANSACTION_DT"].apply(convert_date)
+def filter_df(df: DataFrame, df_candidates: DataFrame, df_existing_entries: DataFrame) -> DataFrame:
+    print(f"\nStarted filtering Full DataFrame\n")
+    df_count_full = df.count()
+    df = df.join(
+        df_candidates,
+        "CAND_ID",
+        "inner"
+    )
+    if df_existing_entries is not None:
+        df = df.join(
+            df_existing_entries,
+            df["TRAN_ID"] == df_existing_entries["TRAN_ID"],
+            "left_anti"
+        )
+    df_count_filtered = df.count()
+    print(f"\nFinished filtering out {(df_count_full - df_count_filtered):,} entries")
     return df
 
 
-def save_df(df: pd.DataFrame, year: str) -> None:
-    cleaned_dir = get_cleaned_dir()
-    dst_path = os.path.join(cleaned_dir, year)
-    if not os.path.exists(dst_path):
-        os.makedirs(dst_path, exist_ok = True)
-    save_path = os.path.join(dst_path, "contributions_committees.csv")
-    df.to_csv(path_or_buf = save_path, index = False)
+def format_df(df: DataFrame) -> DataFrame:
+    print(f"\nStarted formatting Full DataFrame")
+    df = df \
+        .withColumn(
+            "TRANSACTION_AMT",
+            df["TRANSACTION_AMT"].cast(FloatType())
+        ) \
+        .withColumn(
+            "TRANSACTION_DT",
+            to_date(df["TRANSACTION_DT"], "MMddyyyy")
+        ) \
+        .withColumn(
+            "TRANSACTION_DT",
+            date_format(col("TRANSACTION_DT"), "yyyy-MM-dd")
+        )
+    print("\nFinished formatting Full DataFrame\n")
+    return df
+
+
+def upload_df(year: str, uri: str, df: DataFrame) -> None:
+    collection_name = f"{year}_committee_contributions"
+    print(f"\nStarted uploading {df.count():,} entries to collection {collection_name}")
+    df.write \
+        .format("mongo") \
+        .mode("append") \
+        .option("uri", uri) \
+        .option("collection", collection_name) \
+        .save()
+    print(f"Finished uploading {df.count():,} entries to collection {collection_name}")
     return
 
 
 def main():
     file_type = "pas2"
     year = decide_year()
+    uri = get_mongo_uri()
     headers = load_headers(file_type)
     cols = set_cols(headers)
-    df = load_df(year, file_type, headers, cols)
-    df = process_df(df)
-    save_df(df, year)
+    spark = load_spark(uri)
+    df_main = load_df(year, file_type, spark, headers, cols)
+    df_candidates = load_filter_df(year, "candidates", spark, uri, "CAND_ID", "Candidates")
+    df_existing_entries = load_filter_df(year, "committee_contributions", spark, uri, "TRAN_ID", "Existing Entries")
+    df_main = filter_df(df_main, df_candidates, df_existing_entries)
+    df_main = format_df(df_main)
+    upload_df(year, uri, df_main)
+    spark.stop()
 
 
 if __name__ == "__main__":
