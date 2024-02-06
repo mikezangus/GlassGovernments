@@ -3,6 +3,7 @@ from pathlib import Path
 from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
 from pyspark.sql.functions import col
 import sys
+
 from connect_to_mongo import connect_to_mongo
 from decide_year import decide_year
 from load_headers import load_headers
@@ -12,26 +13,6 @@ current_dir = Path(__file__).resolve().parent
 data_dir = str(current_dir.parent)
 sys.path.append(data_dir)
 from directories import get_src_file_dir
-
-
-def get_existing_entries(spark: SparkSession, year: str, uri: str) -> SparkDataFrame | None:
-    collection_name = f"{year}_candidate_master"
-    try:
-        df = spark.read \
-            .format("mongo") \
-            .option("uri", uri) \
-            .option("collection", collection_name) \
-            .load()
-        if df.limit(1).count() == 0:
-            print(f"Collection {collection_name} is empty")
-            return None
-        else:
-            df = df.select("CAND_ID")
-            print(f"Existing entires: {df.count():,}")
-            return df
-    except Exception as e:
-        print(f"Error loading collection {collection_name}. Error: {e}")
-        return None
 
 
 def set_cols(headers: list) -> list:
@@ -85,13 +66,12 @@ def rename_cols(df: SparkDataFrame) -> SparkDataFrame:
     return df
 
 
-
 def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
     collection_name = f"{year}_candidate_master"
     print(f"\nStarted uploading {df.count():,} entries to collection {collection_name}")
     df.write \
         .format("mongo") \
-        .mode("append") \
+        .mode("overwrite") \
         .option("uri", uri) \
         .option("collection", collection_name) \
         .save()

@@ -4,7 +4,9 @@ from pathlib import Path
 from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
 from pyspark.sql.functions import col, to_date, date_format
 from pyspark.sql.types import FloatType
+
 from decide_year import decide_year
+from load_filter_df import load_filter_df
 from load_headers import load_headers
 from load_spark import load_spark
 from connect_to_mongo import connect_to_mongo
@@ -29,39 +31,6 @@ def set_cols(headers: list) -> list:
     return relevant_cols_indices
 
 
-def load_candidates_df(spark: SparkSession, uri: str, year: str):
-    print("\nStarted loading Candidates DataFrame\n")
-    collection_name = f"{year}_candidate_master"
-    df = spark.read.format("mongo") \
-        .option("uri", uri) \
-        .option("collection", collection_name) \
-        .load()
-    df = df.select("CMTE_ID")
-    print("\nFinished loading Candidates DataFrame")
-    print(f"Candidate count: {df.count():,}\n")
-    return df
-
-
-def get_existing_entries(spark: SparkSession, year: str, uri: str) -> SparkDataFrame | None:
-    collection_name = f"{year}_individual_contributions"
-    try:
-        df = spark.read \
-            .format("mongo") \
-            .option("uri", uri) \
-            .option("collection", collection_name) \
-            .load()
-        if df.limit(1).count() == 0:
-            print(f"Collection {collection_name} is empty")
-            return None
-        else:
-            df = df.select("TRAN_ID")
-            print(f"Existing entires: {df.count():,}")
-            return df
-    except Exception as e:
-        print(f"Error loading collection {collection_name}. Error: {e}")
-        return None
-
-
 def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols: list) -> SparkDataFrame:
     print("\nStarted loading Full DataFrame\n")
     src_dir = get_src_file_dir(year, file_type)
@@ -75,26 +44,37 @@ def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols:
     for i, col_name in enumerate(headers):
         df = df.withColumnRenamed(f"_c{i}", col_name)
     df = df.select(*[headers[index] for index in cols])
+    print(f"\nFinished loading Full DataFrame")
+    print(f"Total entries: {df.count():,}")
     return df
 
 
 def filter_df(df: SparkDataFrame, df_candidates: SparkDataFrame, df_existing_entries: SparkDataFrame) -> SparkDataFrame:
-    df = df.join(df_candidates, "CMTE_ID")
-    if df_existing_entries:
-        df = df.join(
+    print(f"\nStarted filtering Full DataFrame\n")
+    df_count_full = df.count()
+    df_filtered = df.join(
+        df_candidates,
+        "CMTE_ID",
+        "inner"
+    )
+    if df_existing_entries is not None:
+        df_filtered = df_filtered.join(
             df_existing_entries,
-            df["TRAN_ID"] == df_existing_entries["TRAN_ID"],
+            df_filtered["TRAN_ID"] == df_existing_entries["TRAN_ID"],
             "left_anti"
         )
-    return df
+    df_count_filtered = df_filtered.count()
+    print(f"\nFinished filtering out {(df_count_full - df_count_filtered):,} entries")
+    return df_filtered
 
 
 def format_df(df: SparkDataFrame) -> SparkDataFrame:
+    print(f"\nStarted formatting Full DataFrame")
     df = df \
         .withColumn(
             "TRANSACTION_AMT",
             df["TRANSACTION_AMT"].cast(FloatType())
-        )\
+        ) \
         .withColumn(
             "TRANSACTION_DT",
             to_date(df["TRANSACTION_DT"], "MMddyyyy")
@@ -103,7 +83,7 @@ def format_df(df: SparkDataFrame) -> SparkDataFrame:
             "TRANSACTION_DT",
             date_format(col("TRANSACTION_DT"), "yyyy-MM-dd")
         )
-    print("\nFinished loading Full DataFrame\n")
+    print("\nFinished formatting Full DataFrame\n")
     return df
 
 
@@ -127,9 +107,9 @@ def main():
     headers = load_headers(file_type)
     cols = set_cols(headers)
     spark = load_spark(uri)
-    df_candidates = load_candidates_df(spark, uri, year)
-    df_existing_entries = get_existing_entries(spark, year, uri)
     df = load_df(year, file_type, spark, headers, cols)
+    df_candidates = load_filter_df(year, "candidate_master", spark, uri, "CMTE_ID")
+    df_existing_entries = load_filter_df(year, "individual_contributions", spark, uri, "TRAN_ID")
     df = filter_df(df, df_candidates, df_existing_entries)
     df = format_df(df)
     upload_df(year, uri, df)
