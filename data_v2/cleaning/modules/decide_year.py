@@ -2,8 +2,9 @@ import os
 import sys
 from pathlib import Path
 
-current_dir = Path(__file__).resolve().parent
-data_dir = str(current_dir.parent)
+modules_dir = Path(__file__).resolve().parent
+cleaning_dir = Path(modules_dir.parent)
+data_dir = str(cleaning_dir.parent)
 sys.path.append(data_dir)
 from directories import get_raw_dir
 
