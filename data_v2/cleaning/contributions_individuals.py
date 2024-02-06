@@ -9,7 +9,7 @@ from modules.decide_year import decide_year
 from modules.load_filter_df import load_filter_df
 from modules.load_headers import load_headers
 from modules.load_spark import load_spark
-from data_v2.cleaning.modules.connect_to_mongo import connect_to_mongo
+from modules.get_mongo_uri import get_mongo_uri
 
 current_dir = Path(__file__).resolve().parent
 data_dir = str(current_dir.parent)
@@ -103,12 +103,12 @@ def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
 def main():
     file_type = "indiv"
     year = decide_year()
-    uri = connect_to_mongo()
+    uri = get_mongo_uri()
     headers = load_headers(file_type)
     cols = set_cols(headers)
     spark = load_spark(uri)
     df = load_df(year, file_type, spark, headers, cols)
-    df_candidates = load_filter_df(year, "candidate_master", spark, uri, "CMTE_ID")
+    df_candidates = load_filter_df(year, "candidates", spark, uri, "CMTE_ID")
     df_existing_entries = load_filter_df(year, "individual_contributions", spark, uri, "TRAN_ID")
     df = filter_df(df, df_candidates, df_existing_entries)
     df = format_df(df)
