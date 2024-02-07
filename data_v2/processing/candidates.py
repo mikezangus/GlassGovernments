@@ -1,17 +1,11 @@
-import os
-import sys
-from modules.get_mongo_uri import get_mongo_uri
+from pyspark.sql import DataFrame
+from pyspark.sql.functions import col
 from modules.decide_year import decide_year
+from modules.get_mongo_uri import get_mongo_uri
+from modules.load_df import load_df
 from modules.load_headers import load_headers
 from modules.load_spark import load_spark
-from pathlib import Path
-from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
-from pyspark.sql.functions import col
-
-current_dir = Path(__file__).resolve().parent
-data_dir = str(current_dir.parent)
-sys.path.append(data_dir)
-from directories import get_src_file_dir
+from modules.upload_df import upload_df
 
 
 def set_cols(headers: list) -> list:
@@ -31,20 +25,7 @@ def set_cols(headers: list) -> list:
     return relevant_cols_indices
 
 
-def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols: list) -> SparkDataFrame:
-    src_dir = get_src_file_dir(year, file_type)
-    src_path = os.path.join(src_dir, f"{file_type}.txt")
-    df = spark.read.csv(
-        path = src_path,
-        sep = "|",
-        header = False,
-        inferSchema = False
-    ).toDF(*headers)
-    df = df.select(*[headers[index] for index in cols])
-    return df
-
-
-def filter_df(df: SparkDataFrame, year: str) -> SparkDataFrame:
+def filter_df(df: DataFrame, year: str) -> DataFrame:
     df = df.filter(
         (col("CAND_ELECTION_YR") == year) &
         (col("CAND_STATUS") == "C")
@@ -52,7 +33,7 @@ def filter_df(df: SparkDataFrame, year: str) -> SparkDataFrame:
     return df
 
 
-def rename_cols(df: SparkDataFrame) -> SparkDataFrame:
+def rename_cols(df: DataFrame) -> DataFrame:
     df = df \
         .withColumnRenamed("CAND_NAME", "NAME") \
         .withColumnRenamed("CAND_PTY_AFFILIATION", "PARTY") \
@@ -65,19 +46,6 @@ def rename_cols(df: SparkDataFrame) -> SparkDataFrame:
     return df
 
 
-def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
-    collection_name = f"{year}_candidates"
-    print(f"\nStarted uploading {df.count():,} entries to collection {collection_name}")
-    df.write \
-        .format("mongo") \
-        .mode("overwrite") \
-        .option("uri", uri) \
-        .option("collection", collection_name) \
-        .save()
-    print(f"Finished uploading {df.count():,} entries to collection {collection_name}")
-    return
-
-
 def main():
     file_type = "cn"
     year = decide_year()
@@ -85,10 +53,10 @@ def main():
     headers = load_headers(file_type)
     cols = set_cols(headers)
     spark = load_spark(uri)
-    df = load_df(year, file_type, spark, headers, cols)
+    df = load_df(year, file_type, f"{file_type}.txt", spark, headers, cols)
     df = filter_df(df, year)
     df = rename_cols(df)
-    upload_df(year, uri, df)
+    upload_df(year, "candidates", uri, df, "overwrite")
     spark.stop()
 
 

@@ -1,20 +1,13 @@
-import os
-import sys
-from pathlib import Path
-from pyspark.sql import SparkSession, DataFrame as SparkDataFrame
+from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, to_date, date_format
 from pyspark.sql.types import FloatType
-
 from modules.decide_year import decide_year
+from modules.get_mongo_uri import get_mongo_uri
+from modules.load_df import load_df
 from modules.load_filter_df import load_filter_df
 from modules.load_headers import load_headers
 from modules.load_spark import load_spark
-from modules.get_mongo_uri import get_mongo_uri
-
-current_dir = Path(__file__).resolve().parent
-data_dir = str(current_dir.parent)
-sys.path.append(data_dir)
-from directories import get_src_file_dir
+from modules.upload_df import upload_df
 
 
 def set_cols(headers: list) -> list:
@@ -31,44 +24,26 @@ def set_cols(headers: list) -> list:
     return relevant_cols_indices
 
 
-def load_df(year: str, file_type: str, spark: SparkSession, headers: list, cols: list) -> SparkDataFrame:
-    print("\nStarted loading Full DataFrame\n")
-    src_dir = get_src_file_dir(year, file_type)
-    src_path = os.path.join(src_dir, "itcont.txt")
-    df = spark.read.csv(
-        path = src_path,
-        sep = "|",
-        header = False,
-        inferSchema = False
-    )
-    for i, col_name in enumerate(headers):
-        df = df.withColumnRenamed(f"_c{i}", col_name)
-    df = df.select(*[headers[index] for index in cols])
-    print(f"\nFinished loading Full DataFrame")
-    print(f"Total entries: {df.count():,}")
-    return df
-
-
-def filter_df(df: SparkDataFrame, df_candidates: SparkDataFrame, df_existing_entries: SparkDataFrame) -> SparkDataFrame:
+def filter_df(df: DataFrame, df_candidates: DataFrame, df_existing_entries: DataFrame) -> DataFrame:
     print(f"\nStarted filtering Full DataFrame\n")
     df_count_full = df.count()
-    df_filtered = df.join(
+    df = df.join(
         df_candidates,
         "CMTE_ID",
         "inner"
     )
     if df_existing_entries is not None:
-        df_filtered = df_filtered.join(
+        df = df.join(
             df_existing_entries,
-            df_filtered["TRAN_ID"] == df_existing_entries["TRAN_ID"],
+            df["TRAN_ID"] == df_existing_entries["TRAN_ID"],
             "left_anti"
         )
-    df_count_filtered = df_filtered.count()
+    df_count_filtered = df.count()
     print(f"\nFinished filtering out {(df_count_full - df_count_filtered):,} entries")
-    return df_filtered
+    return df
 
 
-def format_df(df: SparkDataFrame) -> SparkDataFrame:
+def format_df(df: DataFrame) -> DataFrame:
     print(f"\nStarted formatting Full DataFrame")
     df = df \
         .withColumn(
@@ -87,19 +62,6 @@ def format_df(df: SparkDataFrame) -> SparkDataFrame:
     return df
 
 
-def upload_df(year: str, uri: str, df: SparkDataFrame) -> None:
-    collection_name = f"{year}_individual_contributions"
-    print(f"\nStarted uploading {df.count():,} entries to collection {collection_name}")
-    df.write \
-        .format("mongo") \
-        .mode("append") \
-        .option("uri", uri) \
-        .option("collection", collection_name) \
-        .save()
-    print(f"Finished uploading {df.count():,} entries to collection {collection_name}")
-    return
-
-
 def main():
     file_type = "indiv"
     year = decide_year()
@@ -107,12 +69,12 @@ def main():
     headers = load_headers(file_type)
     cols = set_cols(headers)
     spark = load_spark(uri)
-    df = load_df(year, file_type, spark, headers, cols)
-    df_candidates = load_filter_df(year, "candidates", spark, uri, "CMTE_ID")
-    df_existing_entries = load_filter_df(year, "individual_contributions", spark, uri, "TRAN_ID")
+    df = load_df(year, file_type, "itcont.txt", spark, headers, cols)
+    df_candidates = load_filter_df(year, "candidates", spark, uri, "CMTE_ID", "Candidates")
+    df_existing_entries = load_filter_df(year, "contributions_individuals", spark, uri, "TRAN_ID", "Existing Entries")
     df = filter_df(df, df_candidates, df_existing_entries)
     df = format_df(df)
-    upload_df(year, uri, df)
+    upload_df(year, "contributions_individuals", uri, df, "append")
     spark.stop()
 
 
