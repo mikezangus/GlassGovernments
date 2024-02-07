@@ -2,8 +2,9 @@ import os
 import sys
 from pathlib import Path
 
-current_dir = Path(__file__).resolve().parent
-data_dir = str(current_dir.parent)
+modules_dir = Path(__file__).resolve().parent
+processing_dir = Path(modules_dir.parent)
+data_dir = str(processing_dir.parent)
 sys.path.append(data_dir)
 from directories import get_headers_dir
 
