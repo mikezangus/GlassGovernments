@@ -11,7 +11,7 @@ from directories import get_src_file_dir
 
 
 def load_df(year: str, file_type: str, file_name: str, spark: SparkSession, headers: list, cols: list) -> DataFrame:
-    print("\nStarted loading DataFrame")
+    print("\nStarted loading Main DataFrame")
     src_dir = get_src_file_dir(year, file_type)
     src_path = os.path.join(src_dir, file_name)
     df = spark.read.csv(
@@ -23,6 +23,6 @@ def load_df(year: str, file_type: str, file_name: str, spark: SparkSession, head
     for i, col_name in enumerate(headers):
         df = df.withColumnRenamed(f"_c{i}", col_name)
     df = df.select(*[headers[index] for index in cols])
-    print(f"Finished loading DataFrame")
+    print(f"Finished loading Main DataFrame")
     print(f"Total items: {df.count():,}")
     return df

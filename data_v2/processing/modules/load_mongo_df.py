@@ -3,7 +3,7 @@ from pyspark.sql import SparkSession, DataFrame
 
 def load_mongo_df(year: str, collection_name: str, spark: SparkSession, uri: str, subject: str, field_1: str, field_2: str = None) -> DataFrame:
     collection = f"{year}_{collection_name}"
-    print(f"\Started loading {subject} DataFrame from collection {collection}")
+    print(f"\nStarted loading {subject} DataFrame from collection {collection}")
     df = spark.read \
         .format("mongo") \
         .option("uri", uri) \

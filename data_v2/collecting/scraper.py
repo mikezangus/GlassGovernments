@@ -57,7 +57,6 @@ def toggle_candidate_master_pane(driver) -> None:
         EC.presence_of_element_located(pane_locator)
     )
     pane_status = pane_element.get_attribute("aria-hidden")
-    print("PANE STATUS:", pane_status)
     if pane_status.lower() == "true":
         pane_button_locator = (
             By.CSS_SELECTOR,
@@ -66,10 +65,7 @@ def toggle_candidate_master_pane(driver) -> None:
         pane_button_element = WebDriverWait(driver, 30).until(
             EC.element_to_be_clickable(pane_button_locator)
         )
-        print("OPENING PANE")
         pane_button_element.click()
-    else:
-        print("PANE ALREADY OPENED")
     return
 
 

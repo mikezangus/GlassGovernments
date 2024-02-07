@@ -37,7 +37,7 @@ def enrich_df(df_main: DataFrame, df_candidates: DataFrame) -> DataFrame:
 
 
 def format_df(df: DataFrame) -> DataFrame:
-    print("\nStarted formatting DataFrame")
+    print("\nStarted formatting Main DataFrame")
     df = df \
         .withColumn(
             "TRANSACTION_AMT",
@@ -51,7 +51,7 @@ def format_df(df: DataFrame) -> DataFrame:
             "TRANSACTION_DT",
             date_format(col("TRANSACTION_DT"), "yyyy-MM-dd")
         )
-    print("Finished formatting DataFrame")
+    print("Finished formatting Main DataFrame")
     return df
 
 
