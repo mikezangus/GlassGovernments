@@ -48,3 +48,9 @@ def get_config_file_path() -> str:
     dir = get_project_dir()
     path = os.path.join(dir, "config.json")
     return path
+
+
+def get_usa_states_all_file_path() -> str:
+    dir = get_project_dir()
+    path = os.path.join(dir, "geography", "usa", "states", "usa_states_all.json")
+    return path

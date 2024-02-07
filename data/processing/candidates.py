@@ -5,6 +5,7 @@ from modules.get_mongo_uri import get_mongo_uri
 from modules.load_df import load_df
 from modules.load_headers import load_headers
 from modules.load_spark import load_spark
+from modules.load_usa_state_codes import load_usa_state_codes
 from modules.upload_df import upload_df
 
 
@@ -26,9 +27,11 @@ def set_cols(headers: list) -> list:
 
 
 def filter_df(df: DataFrame, year: str) -> DataFrame:
+    usa_state_codes = load_usa_state_codes()
     df = df.filter(
         (col("CAND_ELECTION_YR") == year) &
-        (col("CAND_STATUS") == "C")
+        (col("CAND_STATUS") == "C") &
+        (col("CAND_OFFICE_ST").isin(usa_state_codes))
     )
     return df
 
