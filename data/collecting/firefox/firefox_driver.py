@@ -1,23 +1,17 @@
 import os
-import sys
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
 from .firefox_app_downloader import download_firefox_app
 from .geckodriver_downloader import download_geckodriver
 
-firefox_dir = os.path.dirname(os.path.abspath(__file__))
-collecting_dir = os.path.dirname(firefox_dir)
-data_dir = os.path.dirname(collecting_dir)
-sys.path.append(data_dir)
-from data_directories import load_downloads_container_dir
 
 
-def firefox_driver():
-    
+def firefox_driver(download_dir: str):
+
+    firefox_dir = os.path.dirname(os.path.abspath(__file__))
     firefox_binary_path = os.path.join(firefox_dir, "Firefox Developer Edition.app", "Contents", "MacOS", "firefox")
     geckodriver_path = os.path.join(firefox_dir, "geckodriver")
-    downloads_container_dir = load_downloads_container_dir()
     
     if not os.path.isfile(firefox_binary_path):
         if not download_firefox_app():
@@ -32,6 +26,7 @@ def firefox_driver():
     
     options = Options()
     options.binary_location = firefox_binary_path
+
     options.add_argument("--headless")
    
     options.set_preference("browser.cache.disk.enable", False)
@@ -41,7 +36,7 @@ def firefox_driver():
     options.set_preference("network.http.use-cache", False)
 
     options.set_preference("browser.download.alwaysOpenPanel", False)
-    options.set_preference("browser.download.dir", downloads_container_dir)
+    options.set_preference("browser.download.dir", download_dir)
     options.set_preference("browser.download.folderList", 2)
     options.set_preference("browser.download.manager.showAlertOnComplete", False)
     options.set_preference("browser.download.manager.showWhenStarting", False)
