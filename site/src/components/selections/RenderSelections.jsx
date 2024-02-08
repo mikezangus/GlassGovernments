@@ -1,6 +1,6 @@
 import React from "react";
 import ShowYears from "./years/ShowYears.jsx";
-import ShowOffices from "./chambers/ShowOffices.jsx";
+import ShowOffices from "./offices/ShowOffices.jsx";
 import ShowStates from "./states/ShowStates.jsx";
 import ShowDistricts from "./districts/ShowDistricts.jsx";
 import ShowCandidates from "./candidates/ShowCandidates.jsx";
@@ -18,6 +18,7 @@ export default function RenderSelections(
     }
 ) {
 
+    const isPresidential = selectedOffice === "P";
     const districtCount = useCountDistricts(selectedYear, selectedOffice, selectedState, handleDistrictSelection);
 
     return (
@@ -31,12 +32,18 @@ export default function RenderSelections(
             {selectedYear && (
                 <ShowOffices
                     year={selectedYear}
-                    onOfficeSelect={handleOfficeSelection}
+                    onOfficeSelect={(office) => {
+                        handleOfficeSelection(office);
+                        if (office === "P") {
+                            handleStateSelection("US");
+                            handleDistrictSelection("00");
+                        }
+                    }}
                 />
             )}
 
 
-            {selectedYear && selectedOffice != "P" && (
+            {selectedYear && !isPresidential && (
                 <ShowStates
                     year={selectedYear}
                     office={selectedOffice}
@@ -52,7 +59,7 @@ export default function RenderSelections(
                 />
             )}
 
-            {selectedYear && selectedOffice && selectedState && selectedDistrict && (
+            {selectedYear && selectedOffice && (selectedState || isPresidential ) && (selectedDistrict || isPresidential) && (
                 <ShowCandidates
                     year={selectedYear}
                     office={selectedOffice}
