@@ -1,9 +1,15 @@
 import React from "react";
-import capitalizeWords from "../../utilities/capitalizeWords";
 import "../../../css/switch.css";
 
 
 export default function RenderOffices({ offices, defaultOffice, handleOfficeClick }) {
+
+    const officeNames = {
+        H: "House",
+        P: "Presidency",
+        S: "Senate"
+    };
+    
     return (
         <div className="switch">
             {offices.map((office) => (
@@ -12,7 +18,7 @@ export default function RenderOffices({ offices, defaultOffice, handleOfficeClic
                     className={`button ${defaultOffice === office ? "active" : ""}`}
                     onClick={() => handleOfficeClick(office)}
                 >
-                    {capitalizeWords(office)}
+                    {officeNames[office] || office}
                 </button>
             ))}
         </div>

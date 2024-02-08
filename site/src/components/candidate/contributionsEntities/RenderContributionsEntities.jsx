@@ -2,7 +2,7 @@ import React from "react";
 import formatCurrency from "../../utilities/formatCurrency";
 import calculatePercentage from "../../utilities/calculatePercentage";
 import "../../../css/candidate.css";
-import capitalizeWords from "../../utilities/capitalizeWords";
+import capitalizeWord from "../../utilities/capitalizeWord";
 
 
 export default function RenderContributionsEntities({ totalContributionAmount, entities }) {
@@ -11,7 +11,7 @@ export default function RenderContributionsEntities({ totalContributionAmount, e
             {entities.map((contribution, index) => (
                 <div className="contributions">
                     <div className="entities" key={index}>
-                        {capitalizeWords(contribution._id)}: {formatCurrency(contribution.entityContributionAmount)} | {calculatePercentage(contribution.entityContributionAmount, totalContributionAmount)}%
+                        {contribution._id}: {formatCurrency(contribution.entityContributionAmount)} | {calculatePercentage(contribution.entityContributionAmount, totalContributionAmount)}% of total
                     </div>
                 </div>
             ))}

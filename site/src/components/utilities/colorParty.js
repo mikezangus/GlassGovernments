@@ -1,10 +1,10 @@
 export default function colorParty(party) {
     switch (party) {
-        case "DEMOCRAT": return "darkblue";
-        case "GREEN": return "darkgreen";
-        case "INDEPENDENT": return "purple";
-        case "LIBERTARIAN": return "gold";
-        case "REPUBLICAN": return "darkred";
+        case "Democrat": return "darkblue";
+        case "Green": return "darkgreen";
+        case "Independent": return "purple";
+        case "Libertarian": return "gold";
+        case "Republican": return "darkred";
         default: return "darkgrey";
     };
 };
