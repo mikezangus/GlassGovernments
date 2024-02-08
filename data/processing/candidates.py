@@ -1,5 +1,5 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, when
 from modules.decide_year import decide_year
 from modules.get_mongo_uri import get_mongo_uri
 from modules.load_df import load_df
@@ -54,6 +54,15 @@ def rename_cols(df: DataFrame) -> DataFrame:
     return df
 
 
+def update_district(df: DataFrame) -> DataFrame:
+    df = df \
+        .withColumn("DISTRICT",
+                    when(col("OFFICE") != "H",
+                         col("OFFICE")) \
+                    .otherwise(col("DISTRICT")))
+    return df
+
+
 def main():
     file_type = "cn"
     year = decide_year()
@@ -65,6 +74,7 @@ def main():
     df = filter_df(df, year)
     df = drop_col(df)
     df = rename_cols(df)
+    df = update_district(df)
     upload_df(year, "candidates", uri, df, "overwrite")
     spark.stop()
 
