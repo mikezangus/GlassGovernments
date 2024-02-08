@@ -3,13 +3,13 @@ import useFetchCandidates from "./useFetchCandidates";
 import RenderCandidates from "./RenderCandidates";
 
 
-export default function ShowCandidates({ year, chamber, state, district, onCandidateSelect }) {
+export default function ShowCandidates({ year, office, state, district, onCandidateSelect }) {
 
     const [candidates, setCandidates] = useState([]);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
-    useFetchCandidates(year, chamber, state, district, setCandidates);
+    useFetchCandidates(year, office, state, district, setCandidates);
 
     const toggleDropdown = () => setIsOpen(!isOpen);
     const handleCandidateClick = (candidate) => {

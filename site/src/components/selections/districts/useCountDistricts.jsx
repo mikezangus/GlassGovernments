@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 
 
-export default function useCountDistricts(chamber, state, handleDistrictSelection) {
+export default function useCountDistricts(year, office, state, handleDistrictSelection) {
     const name = "Count Districts Hook";
     const [districtCount, setDistrictCount] = useState(0);
     const countDistricts = async () => {
         try {
-            const params = new URLSearchParams({ chamber, state });
+            const params = new URLSearchParams({ year, office, state });
             const url = `http://localhost:4000/api/districts?${params.toString()}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
@@ -19,7 +19,7 @@ export default function useCountDistricts(chamber, state, handleDistrictSelectio
         };
     };
     useEffect(() => {
-        if (chamber && state) countDistricts();
-    }, [chamber, state]);
+        if (year && office && state) countDistricts();
+    }, [year, office, state]);
     return districtCount;
 };

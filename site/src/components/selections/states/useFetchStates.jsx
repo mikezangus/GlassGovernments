@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
 
-export default function useFetchStates(year, chamber, setStates) {
+export default function useFetchStates(year, office, setStates) {
     const name = "Fetch States Hook";
     const fetchStates = async () => {
         try {
-            const params = new URLSearchParams({ chamber });
+            const params = new URLSearchParams({ year, office });
             const url = `http://localhost:4000/api/states?${params.toString()}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
@@ -16,6 +16,6 @@ export default function useFetchStates(year, chamber, setStates) {
         };
     };
     useEffect(() => {
-        if (year, chamber) fetchStates();
-    }, [year, chamber]);
+        if (year, office) fetchStates();
+    }, [year, office]);
 };

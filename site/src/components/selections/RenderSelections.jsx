@@ -1,6 +1,6 @@
 import React from "react";
 import ShowYears from "./years/ShowYears.jsx";
-import ShowChambers from "./chambers/ShowChambers.jsx";
+import ShowOffices from "./chambers/ShowOffices.jsx";
 import ShowStates from "./states/ShowStates.jsx";
 import ShowDistricts from "./districts/ShowDistricts.jsx";
 import ShowCandidates from "./candidates/ShowCandidates.jsx";
@@ -11,14 +11,14 @@ import "../../css/selections.css";
 export default function RenderSelections(
     {
         handleYearSelection, selectedYear,
-        handleChamberSelection, selectedChamber,
+        handleOfficeSelection, selectedOffice,
         handleStateSelection, selectedState,
         handleDistrictSelection, selectedDistrict,
         handleCandidateSelection
     }
 ) {
 
-    const districtCount = useCountDistricts(selectedChamber, selectedState, handleDistrictSelection);
+    const districtCount = useCountDistricts(selectedYear, selectedOffice, selectedState, handleDistrictSelection);
 
     return (
 
@@ -29,34 +29,33 @@ export default function RenderSelections(
             />
 
             {selectedYear && (
-                <ShowChambers
+                <ShowOffices
                     year={selectedYear}
-                    onChamberSelect={handleChamberSelection}
+                    onOfficeSelect={handleOfficeSelection}
                 />
             )}
 
 
-            {selectedYear && selectedChamber && (
+            {selectedYear && selectedOffice != "P" && (
                 <ShowStates
                     year={selectedYear}
-                    chamber={selectedChamber}
+                    office={selectedOffice}
                     onStateSelect={handleStateSelection}
                 />
             )}
-
-            {selectedYear && selectedChamber === "HOUSE" && selectedState && districtCount > 1 && (
+            {selectedYear && selectedOffice === "H" && selectedState && districtCount > 1 && (
                 <ShowDistricts
                     year={selectedYear}
-                    chamber={selectedChamber}
+                    office={selectedOffice}
                     state={selectedState}
                     onDistrictSelect={handleDistrictSelection}
                 />
             )}
 
-            {selectedYear && selectedChamber && selectedState && selectedDistrict && (
+            {selectedYear && selectedOffice && selectedState && selectedDistrict && (
                 <ShowCandidates
                     year={selectedYear}
-                    chamber={selectedChamber}
+                    office={selectedOffice}
                     state={selectedState}
                     district={selectedDistrict}
                     onCandidateSelect={handleCandidateSelection}
