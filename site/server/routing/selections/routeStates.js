@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const fetchStates = require("../fetching/fetchStates");
+const fetchStates = require("../../fetching/selections/fetchStates");
 
 
 module.exports = router.get("/", async(req, res) => {
@@ -10,7 +10,7 @@ module.exports = router.get("/", async(req, res) => {
         if (!year || !office) {
             return res
                 .status(400)
-                .send(name, "| Prior selections required");
+                .send(name, " | Prior selections required");
         }
         const states = await fetchStates({ year, office });
         console.log("States: ", states);

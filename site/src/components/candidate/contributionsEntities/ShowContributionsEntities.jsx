@@ -3,12 +3,13 @@ import useFetchEntities from "./useFetchContributionsEntities";
 import RenderContributionsEntities from "./RenderContributionsEntities";
 
 
-export default function ShowEntities({ chamber, state, district, candidate }) {
+export default function ShowEntities({ year, candidate }) {
+    const { totalContributionAmount, candID, name, party } = candidate;
     const [entities, setEntities] = useState([]);
-    useFetchEntities(chamber, state, district, candidate, setEntities);
+    useFetchEntities(year, candID, setEntities);
     return (
         <RenderContributionsEntities
-            candidate={candidate}
+            totalContributionAmount={totalContributionAmount}
             entities={entities}
         />
     );

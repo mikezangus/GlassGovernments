@@ -1,4 +1,4 @@
-const { getDB } = require("../mongoClient");
+const { getDB } = require("../../mongoClient");
 
 
 module.exports = async function fetchCandidates({ year, office, state, district }) {
@@ -32,18 +32,20 @@ module.exports = async function fetchCandidates({ year, office, state, district 
         };
         const projection = {
             _id: 0,
+            candID: "$_id.candID",
             name: "$_id.name",
             party: "$_id.party",
             totalContributionAmount: 1
         };
-        const candidates = await collection.aggregate([
+        const pipeline = [
             { $match: match },
             { $lookup: lookup },
             { $unwind: unwind },
             { $group: group },
             { $project: projection }
-        ]).toArray();
-        return candidates;
+        ];
+        const data = await collection.aggregate(pipeline).toArray();
+        return data;
     } catch (err) {
         console.error("Fetch Candidates | Error: ", err);
         throw err;

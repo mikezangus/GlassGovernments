@@ -2,17 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const { connectToMongo } = require("./mongoClient");
 const createIndexes = require("./createIndexes");
-const fetchYears = require("./fetching/fetchYears");
+const fetchYears = require("./fetching/selections/fetchYears");
 
-const yearsRoute = require("./routing/routeYears");
-const officesRoute = require("./routing/routeOffices");
-const statesRoute = require("./routing/routeStates");
-const districtsRoute = require("./routing/routeDistricts");
-const candidatesRoute = require("./routing/routeCandidates");
-const candidateBioRoute = require("./routing/candidate/bio");
-const candidateContributionsTotalRoute = require("./routing/candidate/contributionsTotal");
-const candidateContributionsEntitiesRoute = require("./routing/candidate/contributionsEntities");
-const candidateCoordinatesRoute = require("./routing/candidate/coordinates");
+const yearsRoute = require("./routing/selections/routeYears");
+const officesRoute = require("./routing/selections/routeOffices");
+const statesRoute = require("./routing/selections/routeStates");
+const districtsRoute = require("./routing/selections/routeDistricts");
+const candidatesRoute = require("./routing/selections/routeCandidates");
+const candidateContributionsEntitiesRoute = require("./routing/candidate/routeContributionsEntities");
+// const candidateCoordinatesRoute = require("./routing/candidate/coordinates");
 
 
 const app = express();
@@ -25,10 +23,8 @@ function loadRoutes() {
     app.use("/api/states", statesRoute);
     app.use("/api/districts", districtsRoute);
     app.use("/api/candidates", candidatesRoute);
-    app.use("/api/candidate/bio", candidateBioRoute);
-    app.use("/api/candidate/contributions/total", candidateContributionsTotalRoute);
     app.use("/api/candidate/contributions/entities", candidateContributionsEntitiesRoute);
-    app.use("/api/candidate/coordinates", candidateCoordinatesRoute);
+    // app.use("/api/candidate/coordinates", candidateCoordinatesRoute);
 };
 
 

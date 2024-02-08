@@ -5,8 +5,7 @@ import "../../../css/candidate.css";
 import capitalizeWords from "../../utilities/capitalizeWords";
 
 
-export default function RenderContributionsEntities({ candidate, entities }) {
-    const { totalContributionAmount } = candidate;
+export default function RenderContributionsEntities({ totalContributionAmount, entities }) {
     return (
         <>
             {entities.map((contribution, index) => (

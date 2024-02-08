@@ -1,17 +1,17 @@
-const { getDB } = require("../mongoClient");
+const { getDB } = require("../../mongoClient");
 
 
 module.exports = async function fetchDistricts({ year, office, state }) {
     try {
         const db = getDB();
         const collection = db.collection(`${year}_candidates`);
-        const districts = await collection.distinct(
+        const data = await collection.distinct(
             "DISTRICT", {
                 OFFICE: office,
                 STATE: state
             }
         );
-        return districts
+        return data
     } catch (err) {
         console.error("Fetch Districts | Error: ", err);
         throw err

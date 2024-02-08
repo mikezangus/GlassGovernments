@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const fetchYears = require("../fetching/fetchYears");
+const fetchYears = require("../../fetching/selections/fetchYears");
 
 
 module.exports = router.get("/", async (req, res) => {

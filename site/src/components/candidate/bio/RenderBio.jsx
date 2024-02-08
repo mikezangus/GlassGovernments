@@ -7,13 +7,13 @@ import formatParty from "../../utilities/formatParty";
 
 
 export default function RenderBio({ state, district, candidate }) {
-    let { _id: { firstName, lastName, party} } = candidate;
+    let { totalContributionAmount, name, candID, party } = candidate;
     party = formatParty(party)
     const partyColor = candidate ? colorParty(party) : "gray";
     return (
         <div className="bio">
             <div className="name">
-                {firstName} {lastName}
+                {name}
             </div>
             <div className="party-constituency">
                 <span style={{ color: partyColor }}>

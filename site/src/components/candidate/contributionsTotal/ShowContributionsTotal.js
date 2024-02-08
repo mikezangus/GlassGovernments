@@ -1,12 +1,11 @@
-import useFetchContributionsTotal from "./useFetchContributionsTotal";
 import RenderContributionsTotal from "./RenderContributionsTotal";
 
 
-export default function ShowContributionsTotal({ chamber, state, district, candidate }) {
-    useFetchContributionsTotal(chamber, state, district, candidate);
+export default function ShowContributionsTotal({ candidate }) {
+    const { totalContributionAmount, x, y, z } = candidate;
     return (
         <RenderContributionsTotal
-            candidate={candidate}
+            totalContributionAmount={totalContributionAmount}
         />
     );
 };

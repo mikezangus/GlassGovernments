@@ -8,17 +8,17 @@ import "./css/index.css"
 export default function App() {
 
     const [selectedYear, setSelectedYear] = useState(null);
-    const [selectedChamber, setSelectedChamber] = useState(null);
+    const [selectedOffice, setSelectedOffice] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedCandidate, setSelectedCandidate] = useState(null);
 
     const handleYearSelection = (year) => {
         setSelectedYear(year);
-        setSelectedChamber(null);
+        setSelectedOffice(null);
     }
-    const handleChamberSelection = (chamber) => {
-        setSelectedChamber(chamber);
+    const handleOfficeSelection = (chamber) => {
+        setSelectedOffice(chamber);
         setSelectedState(null);
     };
     const handleStateSelection = (state) => {
@@ -44,8 +44,8 @@ export default function App() {
                 <RenderSelections
                     handleYearSelection={handleYearSelection}
                     selectedYear={selectedYear}
-                    handleChamberSelection={handleChamberSelection}
-                    selectedChamber={selectedChamber}
+                    handleOfficeSelection={handleOfficeSelection}
+                    selectedOffice={selectedOffice}
                     handleStateSelection={handleStateSelection}
                     selectedState={selectedState}
                     handleDistrictSelection={handleDistrictSelection}
@@ -53,10 +53,10 @@ export default function App() {
                     handleCandidateSelection={handleCandidateSelection}
                 />
 
-                {selectedYear && selectedChamber && selectedState && selectedDistrict && selectedCandidate && (
+                {selectedYear && selectedOffice && selectedState && selectedDistrict && selectedCandidate && (
                     <RenderCandidate
                         year={selectedYear}
-                        chamber={selectedChamber}
+                        office={selectedOffice}
                         state={selectedState}
                         district={selectedDistrict}
                         candidate={selectedCandidate}

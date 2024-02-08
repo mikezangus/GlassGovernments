@@ -1,20 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const fetchOffices = require("../fetching/fetchOffices");
+const fetchDistricts = require("../../fetching/selections/fetchDistricts");
 
 
 module.exports = router.get("/", async (req, res) => {
-    const name = "Office Route";
+    const name = "Districts Route";
     try {
-        const { year } = req.query;
-        if (!year) {
+        const { year, office, state } = req.query;
+        if (!year || !office || !state) {
             return res
                 .status(400)
                 .send(name, " | Prior selections required");
         }
-        const offices = await fetchOffices({ year });
-        console.log("Offices: ", offices);
-        res.json(offices);
+        const districts = await fetchDistricts({ year, office, state});
+        console.log("Districts: ", districts);
+        res.json(districts);
     } catch (err) {
         console.error(name, " | Error: ", err);
         res.status(500).send("Internal server error");

@@ -3,8 +3,7 @@ import formatCurrency from "../../utilities/formatCurrency";
 import "../../../css/candidate.css";
 
 
-export default function RenderContributionsTotal({ candidate }) {
-    const { totalContributionAmount } = candidate;
+export default function RenderContributionsTotal({ totalContributionAmount }) {
     return (
         <div className="contributions">
             <div className="total">

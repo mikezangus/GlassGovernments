@@ -1,4 +1,4 @@
-const { getDB } = require("../mongoClient");
+const { getDB } = require("../../mongoClient");
 
 
 module.exports = async function fetchYears() {
@@ -18,11 +18,11 @@ module.exports = async function fetchYears() {
                 yearDoc => uniqueYears.add(yearDoc._id)
             );
         }
-        const years = Array
+        const data = Array
             .from(uniqueYears)
             .filter(year => year != null)
             .map(String);
-        return years
+        return data
     } catch (err) {
         console.error("Fetch Years | Error: ", err);
         throw err;

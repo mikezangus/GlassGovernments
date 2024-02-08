@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const fetchCandidates = require("../fetching/fetchCandidates");
+const fetchCandidates = require("../../fetching/selections/fetchCandidates");
 
 
 module.exports = router.get("/", async (req, res) => {

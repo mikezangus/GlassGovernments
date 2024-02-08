@@ -12,24 +12,24 @@ export default function RenderCandidates({ candidates, selectedCandidate, isOpen
             >
                 {
                     selectedCandidate
-                        ? `Candidate: ${selectedCandidate._id.firstName} ${selectedCandidate._id.lastName}`
+                        ? `Candidate: ${selectedCandidate.name}`
                         : "Select a candidate ▽"
                 }
             </button>
             {isOpen && (
                 <div className="menu">
                     {candidates.map((candidate) => {
-                        const { _id: { firstName, lastName, party }, totalContributionAmount } = candidate;
+                        const { totalContributionAmount, candID, name, party } = candidate;
                         const partyFormatted = party
                             ? `(${party.charAt(0)})`
                             : "";
                         return (
                             <button
                                 className="item"
-                                key={`${firstName}-${lastName}-${party}`}
+                                key={`${candID}`}
                                 onClick={() => handleCandidateClick(candidate)}
                             >
-                                {firstName} {lastName} {partyFormatted} - ${formatContributionAmount(totalContributionAmount)}
+                                {name} {partyFormatted} - ${formatContributionAmount(totalContributionAmount)}
                             </button>
                         )
                     })}

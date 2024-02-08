@@ -1,20 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const fetchDistricts = require("../fetching/fetchDistricts");
+const fetchContributionsEntities = require("../../fetching/candidate/fetchContributionsEntities")
 
 
 module.exports = router.get("/", async (req, res) => {
-    const name = "Districts Route";
+    const name = "Contributions Entities route";
     try {
-        const { year, office, state } = req.query;
-        if (!year || !office || !state) {
+        const { year, candID } = req.query;
+        if (!year || !candID) {
             return res
                 .status(400)
                 .send(name, " | Prior selections required");
         }
-        const districts = await fetchDistricts({ year, office, state});
-        console.log("Districts: ", districts);
-        res.json(districts);
+        const data = await fetchContributionsEntities({ year, candID });
+        console.log("Entities: ", data)
+        res.json(data);
     } catch (err) {
         console.error(name, " | Error: ", err);
         res.status(500).send("Internal server error");
