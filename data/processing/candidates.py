@@ -36,6 +36,11 @@ def filter_df(df: DataFrame, year: str) -> DataFrame:
     return df
 
 
+def drop_col(df: DataFrame) -> DataFrame:
+    df = df.drop("CAND_STATUS")
+    return df
+
+
 def rename_cols(df: DataFrame) -> DataFrame:
     df = df \
         .withColumnRenamed("CAND_NAME", "NAME") \
@@ -58,6 +63,7 @@ def main():
     spark = load_spark(uri)
     df = load_df(year, file_type, f"{file_type}.txt", spark, headers, cols)
     df = filter_df(df, year)
+    df = drop_col(df)
     df = rename_cols(df)
     upload_df(year, "candidates", uri, df, "overwrite")
     spark.stop()
