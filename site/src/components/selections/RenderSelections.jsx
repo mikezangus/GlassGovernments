@@ -56,6 +56,7 @@ export default function RenderSelections(
                     year={selectedYear}
                     office={selectedOffice}
                     state={selectedState}
+                    selectedDistrict={selectedDistrict}
                     onDistrictSelect={handleDistrictSelection}
                 />
             )}
