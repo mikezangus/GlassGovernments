@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession, DataFrame
 
 
-def load_mongo_df(year: str, collection_name: str, spark: SparkSession, uri: str, subject: str, field_1: str, field_2: str = None) -> DataFrame:
+def load_mongo_df(year: str, collection_name: str, spark: SparkSession, uri: str, subject: str, field_1: str, field_2: str = None) -> DataFrame | None:
     collection = f"{year}_{collection_name}"
     print(f"\nStarted loading {subject} DataFrame from collection {collection}")
     df = spark.read \
@@ -17,4 +17,4 @@ def load_mongo_df(year: str, collection_name: str, spark: SparkSession, uri: str
         print(f"Finished loading {subject} DataFrame\nItem count: {df.count():,}")
         return df
     print(f"{collection} is empty or doesn't exist")
-    return None
+    return
