@@ -12,6 +12,6 @@ from directories import get_states_all_file_path
 def load_usa_state_codes() -> list:
     path = get_states_all_file_path()
     with open(path, "r") as f:
-        usa_state_codes = json.load(f)
-    usa_state_codes = list(usa_state_codes.values())
-    return usa_state_codes
+        codes_json = json.load(f)
+    codes = list(codes_json.values())
+    return codes
