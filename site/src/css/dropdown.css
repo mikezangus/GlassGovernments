@@ -1,8 +1,12 @@
 .dropdown {
+    display: inline-block;
     position: relative;
-    overflow: hidden;
-    width: 345px;
     margin-bottom: 25px;
+}
+
+.dropdown .container {
+    width: 345px;
+    overflow: hidden;
     box-shadow: 5px 5px 10px 0 var(--color-black);
     color: var(--color-black);
     background-color: transparent;

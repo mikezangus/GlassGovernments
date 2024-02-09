@@ -12,15 +12,17 @@ export default function RenderOffices({ offices, defaultOffice, handleOfficeClic
     
     return (
         <div className="switch">
-            {offices.map((office) => (
-                <button
-                    key={office}
-                    className={`button ${defaultOffice === office ? "active" : ""}`}
-                    onClick={() => handleOfficeClick(office)}
-                >
-                    {officeNames[office] || office}
-                </button>
-            ))}
+            <div className="buttons-container">
+                {offices.map((office) => (
+                        <button
+                            key={office}
+                            className={`button ${defaultOffice === office ? "active" : ""}`}
+                            onClick={() => handleOfficeClick(office)}
+                        >
+                            {officeNames[office] || office}
+                        </button>
+                    ))}
+            </div>
         </div>
     );
 };

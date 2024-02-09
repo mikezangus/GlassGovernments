@@ -47,6 +47,7 @@ export default function RenderSelections(
                 <ShowStates
                     year={selectedYear}
                     office={selectedOffice}
+                    selectedState={selectedState}
                     onStateSelect={handleStateSelection}
                 />
             )}

@@ -1,16 +1,16 @@
-:root {
-    --radius:40px;
+.switch {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 25px;
 }
 
-
-.switch {
+.switch .buttons-container {
     display: inline-flex;
     position: relative;
-    overflow: hidden;
-    border-radius: var(--radius);
     background-color: var(--color-offwhite);
     box-shadow: 5px 5px 10px 0 var(--color-black);
-    margin-bottom: 25px;
+    overflow: hidden;
+    border-radius: var(--radius);
 }
 
 .switch .button {

@@ -6,29 +6,31 @@ import "../../../css/dropdown.css";
 export default function RenderStates({ states, selectedState, isOpen, toggleDropdown, handleStateClick }) {
     return (
         <div className="dropdown">
-            <button
-                className={`button ${isOpen ? "active" : ""}`}
-                onClick={toggleDropdown}
-            >
-                {
-                    selectedState
-                        ? `State: ${showStateName(selectedState)}`
-                        : "Select a state ▽"
-                }
-            </button>
-            {isOpen && (
-                <div className="menu">
-                    {states.map((state) => (
-                        <button
-                            className="item"
-                            key={state}
-                            onClick={() => handleStateClick(state)}
-                        >
-                            {showStateName(state)}
-                        </button>
-                    ))}
-                </div>
-            )}
+            <div className="container">
+                <button
+                        className={`button ${isOpen ? "active" : ""}`}
+                        onClick={toggleDropdown}
+                    >
+                        {
+                            selectedState
+                                ? `State: ${showStateName(selectedState)}`
+                                : "Select a state ▽"
+                        }
+                    </button>
+                    {isOpen && (
+                        <div className="menu">
+                            {states.map((state) => (
+                                <button
+                                    className="item"
+                                    key={state}
+                                    onClick={() => handleStateClick(state)}
+                                >
+                                    {showStateName(state)}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+            </div>
         </div>
     );
 };
