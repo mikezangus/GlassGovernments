@@ -10,5 +10,5 @@ def filter_out_ineligible_candidates(main_df: DataFrame, candidates_df: DataFram
         how = "inner"
     )
     df_end_count = df.count()
-    print(f"Finished filtering out {(df_start_count - df_end_count):,} ineligible candidates")
+    print(f"Finished filtering out {(df_start_count - df_end_count):,} ineligible candidates' items")
     return df

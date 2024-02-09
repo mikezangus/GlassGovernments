@@ -5,7 +5,7 @@ from modules.decide_year import decide_year
 from modules.filter_out_ineligible_candidates import filter_out_ineligible_candidates
 from modules.filter_out_existing_items import filter_out_existing_items
 from modules.get_mongo_uri import get_mongo_uri
-from modules.load_coordinates import load_coordinates
+from modules.load_coordinates import main as load_coordinates
 from modules.load_df import load_df
 from modules.load_headers import load_headers
 from modules.load_mongo_df import load_mongo_df

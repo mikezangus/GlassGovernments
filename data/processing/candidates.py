@@ -59,8 +59,8 @@ def update_district(df: DataFrame) -> DataFrame:
     df = df \
         .withColumn("DISTRICT",
                     when(col("OFFICE") != "H",
-                         col("OFFICE")) \
-                        .otherwise(col("DISTRICT")))
+                         col("OFFICE")
+                    ).otherwise(col("DISTRICT")))
     return df
 
 

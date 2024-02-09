@@ -49,7 +49,7 @@ def drop_cols(df: DataFrame) -> DataFrame:
     return df
 
 
-def load_coordinates(spark: SparkSession, main_df: DataFrame) -> DataFrame:
+def main(spark: SparkSession, main_df: DataFrame) -> DataFrame:
     try:
         location_df = load_locations_df(spark)
         df = convert_zip_codes_to_coordinates(main_df, location_df)
@@ -57,4 +57,3 @@ def load_coordinates(spark: SparkSession, main_df: DataFrame) -> DataFrame:
         return df
     except Exception:
         return main_df
-    
