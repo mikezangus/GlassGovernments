@@ -1,11 +1,11 @@
 from pyspark.sql import DataFrame
 
 
-def filter_eligible_candidates(df_main: DataFrame, df_candidates: DataFrame, join_col: str) -> DataFrame:
+def filter_out_ineligible_candidates(main_df: DataFrame, candidates_df: DataFrame, join_col: str) -> DataFrame:
     print("\nStarted filtering out ineligible candidates")
-    df_start_count = df_main.count()
-    df = df_main.join(
-        other = df_candidates,
+    df_start_count = main_df.count()
+    df = main_df.join(
+        other = candidates_df,
         on = join_col,
         how = "inner"
     )
