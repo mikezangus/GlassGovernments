@@ -38,11 +38,6 @@ def get_src_file_dir(year: str, file_type: str) -> str:
     return dir
 
 
-def get_locations_file_path() -> str:
-    path = os.path.join(get_data_files_dir(), "locations.csv")
-    return path
-
-
 def get_config_file_path() -> str:
     path = os.path.join(get_project_dir(), "config.json")
     return path

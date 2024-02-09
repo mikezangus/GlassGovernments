@@ -2,17 +2,17 @@ import os
 import sys
 from pathlib import Path
 from pyspark.sql import SparkSession, DataFrame
-from pyspark.sql.functions import col, lit, struct, to_json, expr
+from pyspark.sql.functions import col, lit, struct, to_json
 
 modules_dir = Path(__file__).resolve().parent
 processing_dir = Path(modules_dir.parent)
 data_dir = str(processing_dir.parent)
 sys.path.append(data_dir)
-from directories import get_locations_file_path
+from directories import get_data_files_dir
 
 
 def load_locations_df(spark: SparkSession) -> DataFrame:
-    path = os.path.join(get_locations_file_path(), "locations.csv")
+    path = os.path.join(get_data_files_dir(), "locations.csv")
     df = spark.read.csv(
         path = path,
         header = True,
