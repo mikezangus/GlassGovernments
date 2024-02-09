@@ -5,7 +5,7 @@ from modules.get_mongo_uri import get_mongo_uri
 from modules.load_df import load_df
 from modules.load_headers import load_headers
 from modules.load_spark import load_spark
-from modules.load_usa_state_codes import load_usa_state_codes
+from modules.load_state_codes import load_usa_state_codes
 from modules.upload_df import upload_df
 
 
@@ -31,6 +31,7 @@ def filter_df(df: DataFrame, year: str) -> DataFrame:
     df = df.filter(
         (col("CAND_ELECTION_YR") == year) &
         (col("CAND_STATUS") == "C") &
+        (col("CAND_OFFICE") != "P") &
         (col("CAND_OFFICE_ST").isin(usa_state_codes))
     )
     return df
@@ -59,7 +60,7 @@ def update_district(df: DataFrame) -> DataFrame:
         .withColumn("DISTRICT",
                     when(col("OFFICE") != "H",
                          col("OFFICE")) \
-                    .otherwise(col("DISTRICT")))
+                        .otherwise(col("DISTRICT")))
     return df
 
 

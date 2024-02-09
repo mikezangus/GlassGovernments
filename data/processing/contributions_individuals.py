@@ -2,14 +2,15 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, to_date, date_format
 from pyspark.sql.types import FloatType
 from modules.decide_year import decide_year
-from modules.filter_eligible_candidates import filter_eligible_candidates
-from modules.filter_new_items import filter_new_items
+from modules.filter_out_ineligible_candidates import filter_out_ineligible_candidates
+from modules.filter_out_existing_items import filter_out_existing_items
 from modules.get_mongo_uri import get_mongo_uri
+from modules.load_coordinates import load_coordinates
 from modules.load_df import load_df
 from modules.load_headers import load_headers
 from modules.load_mongo_df import load_mongo_df
 from modules.load_spark import load_spark
-from modules.rename_contribution_cols import rename_cols
+from modules.rename_cols import rename_cols
 from modules.upload_df import upload_df
 
 
@@ -27,9 +28,9 @@ def set_cols(headers: list) -> list:
     return relevant_cols_indices
 
 
-def enrich_df(df_main: DataFrame, df_candidates: DataFrame) -> DataFrame:
-    df = df_main.join(
-        df_candidates.select("CMTE_ID", "CAND_ID"),
+def enrich_df(main_df: DataFrame, candidates_df: DataFrame) -> DataFrame:
+    df = main_df.join(
+        other = candidates_df.select("CMTE_ID", "CAND_ID"),
         on = "CMTE_ID",
         how = "left"
     )
@@ -59,18 +60,19 @@ def main():
     file_type = "indiv"
     year = decide_year()
     uri = get_mongo_uri()
+    spark = load_spark(uri)
+    candidates_df = load_mongo_df(year, "candidates", spark, uri, "Candidates", "CMTE_ID", "CAND_ID")
+    existing_items_df = load_mongo_df(year, "contributions", spark, uri, "Existing Items", "TRAN_ID")
     headers = load_headers(file_type)
     cols = set_cols(headers)
-    spark = load_spark(uri)
-    df_candidates = load_mongo_df(year, "candidates", spark, uri, "Candidates", "CMTE_ID", "CAND_ID")
-    df_existing_entries = load_mongo_df(year, "contributions", spark, uri, "Existing Items", "TRAN_ID")
-    df_main = load_df(year, file_type, "itcont.txt", spark, headers, cols)
-    df_main = filter_eligible_candidates(df_main, df_candidates, "CMTE_ID")
-    df_main = filter_new_items(df_main, df_existing_entries)
-    df_main = enrich_df(df_main, df_candidates)
-    df_main = format_df(df_main)
-    df_main = rename_cols(df_main)
-    upload_df(year, "contributions", uri, df_main, "append")
+    main_df = load_df(year, file_type, "itcont.txt", spark, headers, cols)
+    main_df = filter_out_ineligible_candidates(main_df, candidates_df, "CMTE_ID")
+    main_df = filter_out_existing_items(main_df, existing_items_df)
+    main_df = enrich_df(main_df, candidates_df)
+    main_df = format_df(main_df)
+    main_df = rename_cols(main_df)
+    main_df = load_coordinates(spark, main_df)
+    upload_df(year, "contributions", uri, main_df, "append")
     spark.stop()
 
 

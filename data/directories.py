@@ -13,44 +13,41 @@ def get_project_dir() -> str:
     return project_dir
 
 
-def get_data_files_dir():
+def get_data_files_dir() -> str:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     dir = os.path.join(current_dir, "data_files")
     verify_dir_exists(dir)
     return dir
 
 
-def get_raw_dir():
+def get_raw_dir() -> str:
     dir = os.path.join(get_data_files_dir(), "raw")
     verify_dir_exists(dir)
     return dir
 
 
-def get_cleaned_dir():
-    dir = os.path.join(get_data_files_dir(), "cleaned")
-    verify_dir_exists(dir)
-    return dir
-
-
-def get_headers_dir():
+def get_headers_dir() -> str:
     dir = os.path.join(get_data_files_dir(), "headers")
     verify_dir_exists(dir)
     return dir
 
 
-def get_src_file_dir(year: str, file_type: str):
+def get_src_file_dir(year: str, file_type: str) -> str:
     dir = os.path.join(get_raw_dir(), year, file_type)
     verify_dir_exists(dir)
     return dir
 
 
-def get_config_file_path() -> str:
-    dir = get_project_dir()
-    path = os.path.join(dir, "config.json")
+def get_locations_file_path() -> str:
+    path = os.path.join(get_data_files_dir(), "locations.csv")
     return path
 
 
-def get_usa_states_all_file_path() -> str:
-    dir = get_project_dir()
-    path = os.path.join(dir, "geography", "usa", "states", "usa_states_all.json")
+def get_config_file_path() -> str:
+    path = os.path.join(get_project_dir(), "config.json")
+    return path
+
+
+def get_states_all_file_path() -> str:
+    path = os.path.join(get_project_dir(), "geography", "usa", "states", "usa_states_all.json")
     return path

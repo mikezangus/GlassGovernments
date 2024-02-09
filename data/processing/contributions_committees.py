@@ -1,15 +1,16 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, to_date, date_format
+from pyspark.sql.functions import col, to_date, date_format, expr
 from pyspark.sql.types import FloatType
 from modules.decide_year import decide_year
-from modules.filter_eligible_candidates import filter_eligible_candidates
-from modules.filter_new_items import filter_new_items
+from modules.filter_out_ineligible_candidates import filter_out_ineligible_candidates
+from modules.filter_out_existing_items import filter_out_existing_items
 from modules.get_mongo_uri import get_mongo_uri
+from modules.load_coordinates import load_coordinates
 from modules.load_df import load_df
 from modules.load_headers import load_headers
 from modules.load_mongo_df import load_mongo_df
 from modules.load_spark import load_spark
-from modules.rename_contribution_cols import rename_cols
+from modules.rename_cols import rename_cols
 from modules.upload_df import upload_df
 
 
@@ -42,6 +43,10 @@ def format_df(df: DataFrame) -> DataFrame:
         .withColumn(
             "TRANSACTION_DT",
             date_format(col("TRANSACTION_DT"), "yyyy-MM-dd")
+        ) \
+        .withColumn(
+            "ZIP_CODE",
+            expr("substring(ZIP_CODE, 1, 5)")
         )
     print("Finished formatting Main DataFrame")
     return df
@@ -51,17 +56,18 @@ def main():
     file_type = "pas2"
     year = decide_year()
     uri = get_mongo_uri()
+    spark = load_spark(uri)
+    candidates_df = load_mongo_df(year, "candidates", spark, uri, "Candidates", "CAND_ID")
+    existing_items_df = load_mongo_df(year, "contributions", spark, uri, "Existing Items", "TRAN_ID")
     headers = load_headers(file_type)
     cols = set_cols(headers)
-    spark = load_spark(uri)
-    df_main = load_df(year, file_type, f"it{file_type}.txt", spark, headers, cols)
-    df_candidates = load_mongo_df(year, "candidates", spark, uri, "Candidates", "CAND_ID")
-    df_existing_entries = load_mongo_df(year, "contributions", spark, uri, "Existing Items", "TRAN_ID")
-    df_main = filter_eligible_candidates(df_main, df_candidates, "CAND_ID")
-    df_main = filter_new_items(df_main, df_existing_entries)
-    df_main = format_df(df_main)
-    df_main = rename_cols(df_main)
-    upload_df(year, "contributions", uri, df_main, "append")
+    main_df = load_df(year, file_type, f"it{file_type}.txt", spark, headers, cols)
+    main_df = filter_out_ineligible_candidates(main_df, candidates_df, "CAND_ID")
+    main_df = filter_out_existing_items(main_df, existing_items_df)
+    main_df = format_df(main_df)
+    main_df = rename_cols(main_df)
+    main_df = load_coordinates(spark, main_df)
+    upload_df(year, "contributions", uri, main_df, "append")
     spark.stop()
 
 
