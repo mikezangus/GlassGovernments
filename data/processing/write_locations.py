@@ -50,15 +50,6 @@ def append_file(zip_code: str, lat: float, lon: float) -> None:
     return
 
 
-def log_non_usa_locations(zip_code: str, lat: float, lon: float) -> None:
-    path = os.path.join(get_data_files_dir(), "invalid_locations.txt")
-    time = datetime.now().strftime("%H:%M:%S")
-    with open(path, "a") as f:
-        text = f"{time} | {zip_code} ({lat}, {lon})\n"
-        f.write(text)
-    return
-
-
 def get_locations(zip_codes: list) -> None:
     session = requests.Session()
     zip_code_count = f"{len(zip_codes):,}"
