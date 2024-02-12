@@ -9,8 +9,8 @@ const officesRoute = require("./routing/selections/routeOffices");
 const statesRoute = require("./routing/selections/routeStates");
 const districtsRoute = require("./routing/selections/routeDistricts");
 const candidatesRoute = require("./routing/selections/routeCandidates");
-const candidateContributionsEntitiesRoute = require("./routing/candidate/routeContributionsEntities");
-// const candidateCoordinatesRoute = require("./routing/candidate/coordinates");
+const contributionsEntitiesRoute = require("./routing/candidate/routeContributionsEntities");
+const coordsRoute = require("./routing/candidate/routeCoords");
 
 
 const app = express();
@@ -23,8 +23,8 @@ function loadRoutes() {
     app.use("/api/states", statesRoute);
     app.use("/api/districts", districtsRoute);
     app.use("/api/candidates", candidatesRoute);
-    app.use("/api/candidate/contributions/entities", candidateContributionsEntitiesRoute);
-    // app.use("/api/candidate/coordinates", candidateCoordinatesRoute);
+    app.use("/api/candidate/contributions/entities", contributionsEntitiesRoute);
+    app.use("/api/candidate/coords", coordsRoute);
 };
 
 
@@ -39,7 +39,7 @@ async function startServer() {
         const years = await fetchYears();
         await createIndexes(years);
     } catch (err) {
-        console.error("Failed to start server")
+        console.error("Failed to start server");
     };
 };
 

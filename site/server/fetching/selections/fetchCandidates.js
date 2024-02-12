@@ -5,7 +5,7 @@ module.exports = async function fetchCandidates({ year, office, state, district 
     try {
         const db = getDB();
         const collection = db.collection(`${year}_candidates`);
-        const match = {
+        const query = {
             OFFICE: office,
             STATE: state,
             DISTRICT: district
@@ -38,7 +38,7 @@ module.exports = async function fetchCandidates({ year, office, state, district 
             totalContributionAmount: 1
         };
         const pipeline = [
-            { $match: match },
+            { $match: query },
             { $lookup: lookup },
             { $unwind: unwind },
             { $group: group },

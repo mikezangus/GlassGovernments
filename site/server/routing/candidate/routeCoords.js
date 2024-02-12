@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const fetchContributionsEntities = require("../../fetching/candidate/fetchContributionsEntities")
+const fetchCoords = require("../../fetching/candidate/fetchCoords")
 
 
 module.exports = router.get("/", async (req, res) => {
-    const name = "Contributions Entities route";
+    const name = "Coordinates route";
     try {
         const { year, candID } = req.query;
         if (!year || !candID) {
@@ -12,8 +12,8 @@ module.exports = router.get("/", async (req, res) => {
                 .status(400)
                 .send(name, " | Prior selections required");
         }
-        const data = await fetchContributionsEntities({ year, candID });
-        console.log("Entities: ", data)
+        const data = await fetchCoords({ year, candID });
+        console.log("Coordinates: ", data)
         res.json(data);
     } catch (err) {
         console.error(name, " | Error: ", err);
