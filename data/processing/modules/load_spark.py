@@ -9,8 +9,8 @@ def load_spark(uri: str) -> SparkDataFrame:
         .config("spark.driver.memory", "4g") \
         .config("spark.default.parallelism", 10) \
         .config("spark.sql.shuffle.partitions", 10) \
-        .config("spark.driver.extraJavaOptions", "-XX:ReservedCodeCacheSize=256M") \
-        .config("spark.executor.extraJavaOptions", "-XX:ReservedCodeCacheSize=256M") \
+        .config("spark.driver.extraJavaOptions", "-XX:ReservedCodeCacheSize=1G") \
+        .config("spark.executor.extraJavaOptions", "-XX:ReservedCodeCacheSize=1G") \
         .config("spark.mongodb.input.uri", uri) \
         .config("spark.mongodb.output.uri", uri) \
         .config("spark.jars.packages", "org.mongodb.spark:mongo-spark-connector_2.12:3.0.1") \

@@ -1,10 +1,9 @@
 import os
 import sys
-from pathlib import Path
 
-modules_dir = Path(__file__).resolve().parent
-processing_dir = Path(modules_dir.parent)
-data_dir = str(processing_dir.parent)
+modules_dir = os.path.dirname(__file__)
+processing_dir = os.path.dirname(modules_dir)
+data_dir = os.path.dirname(processing_dir)
 sys.path.append(data_dir)
 from directories import get_raw_dir
 

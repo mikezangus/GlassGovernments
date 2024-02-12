@@ -1,12 +1,9 @@
 import os
 import requests
 import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Tuple
 
-processing_dir = Path(__file__).resolve().parent
-data_dir = str(processing_dir.parent)
+processing_dir = os.path.dirname(__file__)
+data_dir = os.path.dirname(processing_dir)
 sys.path.append(data_dir)
 from directories import get_data_files_dir
 
@@ -16,7 +13,7 @@ def generate_all_zip_codes() -> list:
     return zip_codes
 
 
-def get_coordinates(session: requests.Session, zip_code: str) -> Tuple[float | None, float | None]:
+def get_coordinates(session: requests.Session, zip_code: str) -> tuple[float | None, float | None]:
     url = "https://nominatim.openstreetmap.org/search"
     params = {
         "postalcode": zip_code,
