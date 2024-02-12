@@ -4,9 +4,8 @@ import CreateHeatmap from "./CreateHeatmap";
 import "../../../css/candidate.css";
 
 
-export default function RenderMap({ candidate, coordinates }) {
+export default function RenderMap({ candID, coords }) {
 
-    const { _id: { firstName, lastName, party } } = candidate;
     const position = [39.8282, -98.5696];
     
     return (
@@ -14,7 +13,7 @@ export default function RenderMap({ candidate, coordinates }) {
         <div className="map">
 
             <MapContainer
-                key={`${firstName}-${lastName}-${party}`}
+                key={`${candID}`}
                 center={position}
                 zoom={4}
                 maxZoom ={10}
@@ -23,7 +22,7 @@ export default function RenderMap({ candidate, coordinates }) {
 
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-                <CreateHeatmap coordinates={coordinates}/>
+                <CreateHeatmap coords={coords}/>
 
             </MapContainer>
 

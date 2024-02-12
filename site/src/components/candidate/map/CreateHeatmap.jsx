@@ -4,18 +4,21 @@ import "leaflet.heat";
 import L from "leaflet";
 
 
-export default function CreateHeatmap({ coordinates }) {
+export default function CreateHeatmap({ coords }) {
+    console.log("COORDS FROM MAP:", coords)
     const map = useMap();
     useEffect(() => {
-        if (!map || !coordinates || coordinates.length === 0) return;
-        const points = coordinates.map(coord => [
-            coord.lat, coord.lng, coord.amount
-        ]);
+        if (!map || !coords || coords.length === 0) return;
+        const points = coords.map(({ coordinates }) => {
+            const lat = coordinates[1];
+            const lon = coordinates[0];
+            return [lat, lon]
+        });
         const heatmapLayer = L.heatLayer(points, {
             radius: 20, blur: 20, maxZoom: 17
         });
         heatmapLayer.addTo(map);
         return () => {map.removeLayer(heatmapLayer)};
-    }, [map, coordinates]);
+    }, [map, coords]);
     return null;
 };

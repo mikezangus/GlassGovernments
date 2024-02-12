@@ -7,7 +7,7 @@ import formatParty from "../../utilities/formatParty";
 
 
 export default function RenderBio({ state, district, candidate }) {
-    let { totalContributionAmount, name, candID, party } = candidate;
+    let { name, party } = candidate;
     party = formatParty(party)
     const partyColor = candidate ? colorParty(party) : "gray";
     return (

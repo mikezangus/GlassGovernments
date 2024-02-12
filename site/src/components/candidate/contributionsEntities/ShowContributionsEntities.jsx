@@ -4,7 +4,7 @@ import RenderContributionsEntities from "./RenderContributionsEntities";
 
 
 export default function ShowEntities({ year, candidate }) {
-    const { totalContributionAmount, candID, name, party } = candidate;
+    const { totalContributionAmount, candID } = candidate;
     const [entities, setEntities] = useState([]);
     useFetchEntities(year, candID, setEntities);
     return (

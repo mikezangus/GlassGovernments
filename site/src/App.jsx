@@ -35,7 +35,7 @@ export default function App() {
 
     return (
 
-        <body>
+        <div>
 
             <RenderHeader />
 
@@ -65,7 +65,7 @@ export default function App() {
 
             </main>
 
-        </body>
+        </div>
 
     );
 };
