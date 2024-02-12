@@ -6,7 +6,7 @@ import ShowMap from "./map/ShowMap";
 import "../../css/candidate.css"
 
 
-export default function RenderCandidate({ year, office, state, district, candidate }) {
+export default function RenderCandidate({ year, state, district, candidate }) {
 
     return (
 
@@ -29,12 +29,10 @@ export default function RenderCandidate({ year, office, state, district, candida
             />
 
         
-            {/* <ShowMap
-                office={office}
-                state={state}
-                district={district}
+            <ShowMap
+                year={year}
                 candidate={candidate}
-            /> */}
+            />
     
         </div>
     
