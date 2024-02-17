@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession, DataFrame
 
 
-def load_mongo_df(spark: SparkSession, uri: str, collection: str, subject: str, field_1: str, field_2: str = None) -> DataFrame | None:
+def load_df_from_mongo(spark: SparkSession, uri: str, collection: str, subject: str, field_1: str, field_2: str = None) -> DataFrame | None:
     print(f"\nStarted loading {subject} DataFrame from collection {collection}")
     df = spark.read \
         .format("mongo") \

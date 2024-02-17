@@ -18,6 +18,7 @@ def join_dfs(main_df: DataFrame, location_df: DataFrame) -> DataFrame:
     )
     return df
 
+
 def manage_cols(df: DataFrame) -> DataFrame:
     df = df \
         .withColumn(

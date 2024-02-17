@@ -8,7 +8,7 @@ from modules.get_mongo_uri import get_mongo_uri
 from modules.convert_to_coords import main as convert_to_coords
 from modules.load_df_from_file import load_df_from_file
 from modules.load_headers import load_headers
-from modules.load_mongo_df import load_mongo_df
+from modules.load_df_from_mongo import load_df_from_mongo
 from modules.load_spark import load_spark
 from modules.rename_cols import rename_cols
 from modules.upload_df import upload_df
@@ -59,11 +59,11 @@ def main():
     year = decide_year()
     uri = get_mongo_uri()
     spark = load_spark(uri)
-    candidates_df = load_mongo_df(spark, uri, f"{year}_candidates", "Candidates", "CAND_ID")
-    existing_items_df = load_mongo_df(spark, uri, f"{year}_contributions", "Existing Items", "TRAN_ID")
     headers = load_headers(file_type)
     cols = set_cols(headers)
     main_df = load_df_from_file(year, file_type, f"it{file_type}.txt", spark, headers, cols)
+    candidates_df = load_df_from_mongo(spark, uri, f"{year}_candidates", "Candidates", "CAND_ID")
+    existing_items_df = load_df_from_mongo(spark, uri, f"{year}_contributions", "Existing Items", "TRAN_ID")
     main_df = filter_out_ineligible_candidates(main_df, candidates_df, "CAND_ID")
     main_df = filter_out_existing_items(main_df, existing_items_df)
     main_df = format_df(main_df)
