@@ -2,7 +2,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 from modules.decide_year import decide_year
 from modules.get_mongo_uri import get_mongo_uri
-from modules.load_df import load_df
+from modules.load_df_from_file import load_df_from_file
 from modules.load_headers import load_headers
 from modules.load_spark import load_spark
 from modules.load_state_codes import load_usa_state_codes
@@ -71,7 +71,7 @@ def main():
     headers = load_headers(file_type)
     cols = set_cols(headers)
     spark = load_spark(uri)
-    df = load_df(year, file_type, f"{file_type}.txt", spark, headers, cols)
+    df = load_df_from_file(year, file_type, f"{file_type}.txt", spark, headers, cols)
     df = filter_df(df, year)
     df = drop_col(df)
     df = rename_cols(df)

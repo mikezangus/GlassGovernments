@@ -9,7 +9,7 @@ sys.path.append(data_dir)
 from directories import get_src_file_dir
 
 
-def load_df(year: str, file_type: str, file_name: str, spark: SparkSession, headers: list, cols: list) -> DataFrame:
+def load_df_from_file(year: str, file_type: str, file_name: str, spark: SparkSession, headers: list, cols: list) -> DataFrame:
     print("\nStarted loading Main DataFrame")
     src_dir = get_src_file_dir(year, file_type)
     src_path = os.path.join(src_dir, file_name)
