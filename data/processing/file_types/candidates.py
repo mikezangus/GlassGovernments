@@ -1,5 +1,11 @@
+import os
+import sys
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
+
+file_types_dir = os.path.dirname(os.path.abspath(__file__))
+processing_dir = os.path.dirname(file_types_dir)
+sys.path.append(processing_dir)
 from modules.decide_year import decide_year
 from modules.get_mongo_uri import get_mongo_uri
 from modules.load_df_from_file import load_df_from_file
@@ -34,10 +40,6 @@ def filter_df(df: DataFrame, year: str) -> DataFrame:
         (col("CAND_OFFICE") != "P") &
         (col("CAND_OFFICE_ST").isin(usa_state_codes))
     )
-    return df
-
-
-def drop_col(df: DataFrame) -> DataFrame:
     df = df.drop("CAND_STATUS")
     return df
 
@@ -55,30 +57,34 @@ def rename_cols(df: DataFrame) -> DataFrame:
     return df
 
 
-def update_district(df: DataFrame) -> DataFrame:
+def update_districts(df: DataFrame) -> DataFrame:
     df = df \
-        .withColumn("DISTRICT",
-                    when(col("OFFICE") != "H",
-                         col("OFFICE")
-                    ).otherwise(col("DISTRICT")))
+        .withColumn(
+            "DISTRICT",
+            when(
+                col("OFFICE") != "H",
+                col("OFFICE")
+            ).otherwise(col("DISTRICT")))
     return df
 
 
-def main():
+def process_candidates(year: str = None):
+    print(f"\n{'-' * 100}\n{'-' * 100}\nStarted processing Candidates")
     file_type = "cn"
-    year = decide_year()
+    if not year:
+        year = decide_year()
     uri = get_mongo_uri()
     headers = load_headers(file_type)
     cols = set_cols(headers)
     spark = load_spark(uri)
     df = load_df_from_file(year, file_type, f"{file_type}.txt", spark, headers, cols)
     df = filter_df(df, year)
-    df = drop_col(df)
     df = rename_cols(df)
-    df = update_district(df)
-    upload_df(year, "candidates", uri, df, "overwrite")
+    df = update_districts(df)
+    upload_df(f"{year}_candidates", uri, df, "overwrite")
     spark.stop()
+    print(f"\nFinished processing Candidates\n{'-' * 100}\n{'-' * 100}\n")
 
 
 if __name__ == "__main__":
-    main()
+    process_candidates(True)
