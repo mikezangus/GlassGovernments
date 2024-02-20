@@ -1,15 +1,15 @@
 import os
-from pathlib import Path
 
 
-def verify_dir_exists(dir: str):
+def verify_dir_exists(dir: str) -> None:
     if not os.path.exists(dir):
         os.makedirs(dir, exist_ok = True)
+    return
 
 
 def get_project_dir() -> str:
-    directories_dir = Path(__file__).resolve().parent
-    project_dir = directories_dir.parent
+    directories_dir = os.path.dirname(os.path.abspath(__file__))
+    project_dir = os.path.dirname(directories_dir)
     return project_dir
 
 
@@ -22,6 +22,18 @@ def get_data_files_dir() -> str:
 
 def get_raw_dir() -> str:
     dir = os.path.join(get_data_files_dir(), "raw")
+    verify_dir_exists(dir)
+    return dir
+
+
+def get_raw_year_dir(year: str) -> str:
+    dir = os.path.join(get_raw_dir(), year)
+    verify_dir_exists(dir)
+    return dir
+
+
+def get_download_dir(year: str) -> str:
+    dir = os.path.join(get_data_files_dir(), "downloads_containers", year)
     verify_dir_exists(dir)
     return dir
 
