@@ -12,5 +12,6 @@ def filter_out_existing_items(main_df: DataFrame, existing_items_df: DataFrame) 
         )
         df_end_count = df.count()
         print(f"Finished filtering out {(df_start_count - df_end_count):,} existing items")
+        print(f"Item count: {df.count():,}")
         return df
     return main_df

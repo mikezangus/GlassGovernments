@@ -10,9 +10,9 @@ from directories import get_src_file_dir
 
 
 def load_df_from_file(year: str, file_type: str, file_name: str, spark: SparkSession, headers: list, cols: list) -> DataFrame:
-    print("\nStarted loading Main DataFrame")
     src_dir = get_src_file_dir(year, file_type)
     src_path = os.path.join(src_dir, file_name)
+    print(f"\nStarted loading Main DataFrame from file:\n{src_path}")
     df = spark.read.csv(
         path = src_path,
         sep = "|",
@@ -23,5 +23,5 @@ def load_df_from_file(year: str, file_type: str, file_name: str, spark: SparkSes
         df = df.withColumnRenamed(f"_c{i}", col_name)
     df = df.select(*[headers[index] for index in cols])
     print(f"Finished loading Main DataFrame")
-    print(f"Total items: {df.count():,}")
+    print(f"Item count: {df.count():,}")
     return df
