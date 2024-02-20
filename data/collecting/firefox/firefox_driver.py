@@ -18,7 +18,7 @@ def verify_required_files(binary_path: str, app_dir: str, geckodriver_path: str)
     return True
 
 
-def set_options(binary_path: str, downloads_dir: str, headless: bool) -> Options:
+def set_options(binary_path: str, download_dir: str, headless: bool) -> Options:
 
     options = Options()
     options.binary_location = binary_path
@@ -30,7 +30,7 @@ def set_options(binary_path: str, downloads_dir: str, headless: bool) -> Options
     options.set_preference("network.http.use-cache", False)
 
     options.set_preference("browser.download.alwaysOpenPanel", False)
-    options.set_preference("browser.download.dir", downloads_dir)
+    options.set_preference("browser.download.dir", download_dir)
     options.set_preference("browser.download.folderList", 2)
     options.set_preference("browser.download.manager.showAlertOnComplete", False)
     options.set_preference("browser.download.manager.showWhenStarting", False)
@@ -56,13 +56,13 @@ def load_driver(geckodriver_path: str, options: Options, geckodriver_log_path: s
     return driver
 
 
-def main(downloads_dir: str, headless: bool) -> tuple[bool, webdriver.Firefox]:
+def main(download_dir: str, headless: bool) -> tuple[bool, webdriver.Firefox]:
     firefox_dir = os.path.dirname(os.path.abspath(__file__))
     binary_path = os.path.join(firefox_dir, "Firefox Developer Edition.app", "Contents", "MacOS", "firefox")
     geckodriver_path = os.path.join(firefox_dir, "geckodriver")
     geckodriver_log_path = os.path.join(firefox_dir, "geckodriver.log")
     if not verify_required_files(binary_path, firefox_dir, geckodriver_path):
         return False, None
-    options = set_options(binary_path, downloads_dir, headless)
+    options = set_options(binary_path, download_dir, headless)
     driver = load_driver(geckodriver_path, options, geckodriver_log_path)
     return True, driver
