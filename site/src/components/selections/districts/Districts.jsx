@@ -3,7 +3,7 @@ import useFetchDistricts from "./useFetchDistricts";
 import RenderDistricts from "./RenderDistricts";
 
 
-export default function ShowDistricts({ year, office, state, selectedDistrict, onDistrictSelect }) {
+export default function Districts({ year, office, state, selectedDistrict, onDistrictSelect }) {
 
     const [districts, setDistricts] = useState([]);
     const [isOpen, setIsOpen] = useState(false);

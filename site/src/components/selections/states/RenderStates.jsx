@@ -1,14 +1,20 @@
 import React from "react";
 import showStateName from "../../utilities/showStateName";
-import "../../../css/dropdown.css";
+import styles from "../../../styles/Dropdown.module.css";
 
 
 export default function RenderStates({ states, selectedState, isOpen, toggleDropdown, handleStateClick }) {
     return (
-        <div className="dropdown">
-            <div className="container">
+        <div className={styles.dropdown}>
+            <div className={styles.container}>
                 <button
-                        className={`button ${isOpen ? "active" : ""}`}
+                        className={
+                            `${styles.button}
+                            ${isOpen
+                                ? styles.active
+                                : ""
+                            }`
+                        }
                         onClick={toggleDropdown}
                     >
                         {
@@ -18,10 +24,10 @@ export default function RenderStates({ states, selectedState, isOpen, toggleDrop
                         }
                     </button>
                     {isOpen && (
-                        <div className="menu">
+                        <div className={styles.menu}>
                             {states.map((state) => (
                                 <button
-                                    className="item"
+                                    className={styles.item}
                                     key={state}
                                     onClick={() => handleStateClick(state)}
                                 >

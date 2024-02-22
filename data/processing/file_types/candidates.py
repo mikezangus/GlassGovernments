@@ -81,7 +81,7 @@ def process_candidates(year: str = None):
     df = filter_df(df, year)
     df = rename_cols(df)
     df = update_districts(df)
-    upload_df(f"{year}_candidates", uri, df, "overwrite")
+    upload_df(f"{year}_candidates", uri, df, "append")
     spark.stop()
     print(f"\nFinished processing Candidates\n{'-' * 100}\n{'-' * 100}\n")
 

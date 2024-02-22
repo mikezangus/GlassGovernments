@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../css/switch.css";
+import styles from "../../../styles/Switch.module.css";
 
 
 export default function RenderOffices({ offices, defaultOffice, handleOfficeClick }) {
@@ -11,12 +11,18 @@ export default function RenderOffices({ offices, defaultOffice, handleOfficeClic
     };
     
     return (
-        <div className="switch">
-            <div className="buttons-container">
+        <div className={styles.switch}>
+            <div className={styles.buttonsContainer}>
                 {offices.map((office) => (
                     <button
                         key={office}
-                        className={`button ${defaultOffice === office ? "active" : ""}`}
+                        className={
+                            `${styles.button}
+                            ${defaultOffice === office
+                                ? styles.active
+                                : ""
+                            }`
+                        }
                         onClick={() => handleOfficeClick(office)}
                     >
                         {officeNames[office] || office}

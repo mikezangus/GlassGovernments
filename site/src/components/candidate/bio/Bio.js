@@ -1,7 +1,7 @@
 import RenderBio from "./RenderBio";
 
 
-export default function ShowBio({ state, district, candidate }) {
+export default function Bio({ state, district, candidate }) {
     return (
         <RenderBio
             state={state}

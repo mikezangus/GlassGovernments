@@ -1,7 +1,3 @@
-:root {
-    --radius: 40px;
-}
-
 .selections {
     display: flex;
     flex-direction: column;

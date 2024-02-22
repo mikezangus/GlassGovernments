@@ -1,4 +1,4 @@
-const { getDB } = require("../../mongoClient");
+const { getDB } = require("../../../src/lib/mongoClient");
 
 
 module.exports = async function fetchCandidates({ year, office, state, district }) {

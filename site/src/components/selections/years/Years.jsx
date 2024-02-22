@@ -3,7 +3,7 @@ import useFetchYears from "./useFetchYears";
 import RenderYears from "./RenderYears";
 
 
-export default function ShowYears({ onYearSelect }) {
+export default function Years({ onYearSelect }) {
 
     const [years, setYears] = useState([]);
     const [defaultYear, setDefaultYear] = useState(null);

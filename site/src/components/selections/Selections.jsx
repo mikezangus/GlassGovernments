@@ -1,14 +1,14 @@
 import React from "react";
-import ShowYears from "./years/ShowYears.jsx";
-import ShowOffices from "./offices/ShowOffices.jsx";
-import ShowStates from "./states/ShowStates.jsx";
-import ShowDistricts from "./districts/ShowDistricts.jsx";
-import ShowCandidates from "./candidates/ShowCandidates.jsx";
+import Years from "./years/Years.jsx";
+import Offices from "./offices/Offices.jsx";
+import States from "./states/States.jsx";
+import Districts from "./districts/Districts.jsx";
+import Candidates from "./candidates/Candidates.jsx";
 import useCountDistricts from "./districts/useCountDistricts.jsx";
-import "../../css/selections.css";
+import styles from "../../styles/Selections.module.css";
 
 
-export default function RenderSelections(
+export default function Selections(
     {
         handleYearSelection, selectedYear,
         handleOfficeSelection, selectedOffice,
@@ -23,14 +23,14 @@ export default function RenderSelections(
 
     return (
 
-        <div className="selections">
+        <div className={styles.selections}>
 
-            <ShowYears
+            <Years
                 onYearSelect={handleYearSelection}
             />
 
             {selectedYear && (
-                <ShowOffices
+                <Offices
                     year={selectedYear}
                     onOfficeSelect={(office) => {
                         handleOfficeSelection(office);
@@ -44,7 +44,7 @@ export default function RenderSelections(
 
 
             {selectedYear && !isPresidential && (
-                <ShowStates
+                <States
                     year={selectedYear}
                     office={selectedOffice}
                     selectedState={selectedState}
@@ -52,7 +52,7 @@ export default function RenderSelections(
                 />
             )}
             {selectedYear && selectedOffice === "H" && selectedState && districtCount > 1 && (
-                <ShowDistricts
+                <Districts
                     year={selectedYear}
                     office={selectedOffice}
                     state={selectedState}
@@ -62,7 +62,7 @@ export default function RenderSelections(
             )}
 
             {selectedYear && selectedOffice && (selectedState || isPresidential ) && (selectedDistrict || isPresidential) && (
-                <ShowCandidates
+                <Candidates
                     year={selectedYear}
                     office={selectedOffice}
                     state={selectedState}

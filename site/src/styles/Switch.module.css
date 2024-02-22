@@ -2,9 +2,10 @@
     display: inline-block;
     position: relative;
     margin-bottom: 25px;
+    --radius: 40px;
 }
 
-.switch .buttons-container {
+.switch .buttonsContainer {
     display: inline-flex;
     position: relative;
     background-color: var(--color-offwhite);

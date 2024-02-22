@@ -1,15 +1,18 @@
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import useFetchCoords from "./useFetchCoords";
-import RenderMap from "./RenderMap";
 
 
-export default function ShowMap({ year, candidate }) {
+export default function Map({ year, candidate }) {
     const [coords, setCoords] = useState([]);
     const { candID } = candidate;
     useFetchCoords(year, candID, setCoords);
-    console.log("COORDS from component", coords)
+    const DynamicRenderMap = dynamic(
+        () => import("./RenderMap"),
+        { ssr: false }
+    );
     return (
-        <RenderMap
+        <DynamicRenderMap
             candID={candID}
             coords={coords}
         />

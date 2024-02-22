@@ -1,15 +1,21 @@
 import React from "react";
-import "../../../css/switch.css";
+import styles from "../../../styles/Switch.module.css";
 
 
 export default function RenderYears({ years, defaultYear, handleYearClick }) {
     return (
-        <div className="switch">
-            <div className="buttons-container">
+        <div className={styles.switch}>
+            <div className={styles.buttonsContainer}>
                 {years.map((year) => (
                     <button
                         key={year}
-                        className={`button ${defaultYear === year ? "active" : ""}`}
+                        className={
+                            `${styles.button}
+                            ${defaultYear === year
+                                ? `${styles.active}`
+                                : ""
+                            }`
+                        }
                         onClick={() => handleYearClick(year)}
                     >
                         {year}

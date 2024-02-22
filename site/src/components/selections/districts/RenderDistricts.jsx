@@ -1,13 +1,19 @@
 import React from "react";
-import "../../../css/dropdown.css";
+import styles from "../../../styles/Dropdown.module.css";
 
 
 export default function RenderDistricts({ districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick }) {
     return (
-        <div className="dropdown">
-            <div className="container">
+        <div className={styles.dropdown}>
+            <div className={styles.container}>
                 <button
-                    className={`button ${isOpen ? "active" : ""}`}
+                    className={
+                        `${styles.button}
+                        ${isOpen
+                            ? styles.active
+                            : ""
+                        }`
+                    }
                     onClick={toggleDropdown}
                 >
                     {
@@ -17,10 +23,10 @@ export default function RenderDistricts({ districts, selectedDistrict, isOpen, t
                     }
                 </button>
                 {isOpen && (
-                    <div className="menu">
+                    <div className={styles.menu}>
                         {districts.map((district) => (
                             <button
-                                className="item"
+                                className={styles.item}
                                 key={district}
                                 onClick={() => handleDistrictClick(district)}
                             >
@@ -30,7 +36,6 @@ export default function RenderDistricts({ districts, selectedDistrict, isOpen, t
                     </div>
                 )}
             </div>
-
         </div>
     );
 };

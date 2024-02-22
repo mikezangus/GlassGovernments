@@ -3,7 +3,7 @@ import useFetchOffices from "./useFetchOffices";
 import RenderOffices from "./RenderOffices";
 
 
-export default function ShowOffices({ year, onOfficeSelect }) {
+export default function Offices({ year, onOfficeSelect }) {
 
     const [offices, setOffices] = useState([]);
     const [defaultOffice, setDefaultOffice] = useState(null);

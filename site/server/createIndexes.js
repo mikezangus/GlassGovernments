@@ -1,4 +1,4 @@
-const { getDB } = require("./mongoClient");
+const { getDB } = require("../src/lib/mongoClient");
 
 
 async function createIndexes(years) {

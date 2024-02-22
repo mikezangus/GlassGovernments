@@ -1,16 +1,22 @@
 import React from "react";
-import "../../../css/dropdown.css";
 import capitalizeWord from "../../utilities/capitalizeWord";
 import formatContributionAmount from "../../utilities/formatContributionPreview";
+import styles from "../../../styles/Dropdown.module.css"
 
 
 export default function RenderCandidates({ candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick }) {
-    const minContributionAmount = 1000;
+    // const minContributionAmount = 1000;
     return (
-        <div className="dropdown">
-            <div className="container">
+        <div className={styles.dropdown}>
+            <div className={styles.container}>
                 <button
-                    className={`button ${isOpen ? "active" : ""}`}
+                    className={
+                        `${styles.button}
+                        ${isOpen
+                            ? styles.active
+                            : ""
+                        }`
+                    }
                     onClick={toggleDropdown}
                 >
                     {
@@ -20,9 +26,9 @@ export default function RenderCandidates({ candidates, selectedCandidate, isOpen
                     }
                 </button>
                 {isOpen && (
-                    <div className="menu">
+                    <div className={styles.menu}>
                         {candidates
-                            .filter(candidate => candidate.totalContributionAmount > minContributionAmount)
+                            // .filter(candidate => candidate.totalContributionAmount > minContributionAmount)
                             .map((candidate) => {
                                 const { totalContributionAmount, candID, name, party } = candidate;
                                 const partyFormatted = party
@@ -30,7 +36,7 @@ export default function RenderCandidates({ candidates, selectedCandidate, isOpen
                                     : "";
                                 return (
                                     <button
-                                        className="item"
+                                        className={styles.item}
                                         key={`${candID}`}
                                         onClick={() => handleCandidateClick(candidate)}
                                     >
@@ -42,7 +48,6 @@ export default function RenderCandidates({ candidates, selectedCandidate, isOpen
                     </div>
                 )}
             </div>
-
         </div>
     );
 };

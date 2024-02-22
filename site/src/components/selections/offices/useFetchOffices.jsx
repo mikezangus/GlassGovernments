@@ -23,5 +23,4 @@ export default function useFetchOffices(year, setOffices, setDefaultOffice, onOf
     useEffect(() => {
         if (year) fetchOffices();
     }, [year]);
-
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import CreateHeatmap from "./CreateHeatmap";
-import "../../../css/candidate.css";
+import styles from "../../../styles/Candidate.module.css";
 
 
 export default function RenderMap({ candID, coords }) {
@@ -10,7 +10,7 @@ export default function RenderMap({ candID, coords }) {
     
     return (
 
-        <div className="map">
+        <div className={styles.map}>
 
             <MapContainer
                 key={`${candID}`}

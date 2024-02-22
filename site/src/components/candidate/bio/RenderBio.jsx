@@ -1,9 +1,9 @@
 import React from "react";
 import colorParty from "../../utilities/colorParty";
-import "../../../css/candidate.css";
 import capitalizeWord from "../../utilities/capitalizeWord";
 import formatConstituency from "../../utilities/formatConstituency";
 import formatParty from "../../utilities/formatParty";
+import styles from "../../../styles/Candidate.module.css";
 
 
 export default function RenderBio({ state, district, candidate }) {
@@ -11,11 +11,11 @@ export default function RenderBio({ state, district, candidate }) {
     party = formatParty(party)
     const partyColor = candidate ? colorParty(party) : "gray";
     return (
-        <div className="bio">
-            <div className="name">
+        <div className={styles.bio}>
+            <div className={styles.name}>
                 {name}
             </div>
-            <div className="party-constituency">
+            <div className={styles.party-constituency}>
                 <span style={{ color: partyColor }}>
                     {capitalizeWord(party)}
                 </span>

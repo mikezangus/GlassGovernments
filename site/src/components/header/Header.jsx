@@ -1,16 +1,16 @@
 import React from "react";
-import "../../css/header.css";
+import styles from "../../styles/Header.module.css";
 
 
-export default function RenderHeader() {
+export default function Header() {
     return (
-        <div className="header">
-            <div className="title">
+        <div className={styles.header}>
+            <div className={styles.title}>
                 <a href="https://glassgovernments.com">
                     Glass Governments
                 </a>
             </div>
-            <div className="links">
+            <div className={styles.links}>
                 <a
                     href="https://glassgovernments.com/about"
                     target="_blank"

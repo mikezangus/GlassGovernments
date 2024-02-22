@@ -3,7 +3,7 @@ import useFetchCandidates from "./useFetchCandidates";
 import RenderCandidates from "./RenderCandidates";
 
 
-export default function ShowCandidates({ year, office, state, district, onCandidateSelect }) {
+export default function Candidates({ year, office, state, district, onCandidateSelect }) {
 
     const [candidates, setCandidates] = useState([]);
     const [selectedCandidate, setSelectedCandidate] = useState(null);

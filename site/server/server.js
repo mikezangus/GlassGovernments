@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { connectToMongo } = require("./mongoClient");
+const { connectToMongo } = require("../src/lib/mongoClient");
 const createIndexes = require("./createIndexes");
 const fetchYears = require("./fetching/selections/fetchYears");
 

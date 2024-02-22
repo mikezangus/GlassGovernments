@@ -3,7 +3,7 @@ import useFetchEntities from "./useFetchContributionsEntities";
 import RenderContributionsEntities from "./RenderContributionsEntities";
 
 
-export default function ShowEntities({ year, candidate }) {
+export default function ContributionsEntities({ year, candidate }) {
     const { totalContributionAmount, candID } = candidate;
     const [entities, setEntities] = useState([]);
     useFetchEntities(year, candID, setEntities);
