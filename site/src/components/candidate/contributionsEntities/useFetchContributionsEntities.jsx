@@ -8,7 +8,7 @@ export default function useFetchEntities(year, candID, setEntities) {
             const params = new URLSearchParams(
                 { year, candID }
             );
-            const url = `http://localhost:4000/api/candidate/contributions/entities?${params.toString()}`;
+            const url = `/api/candidate/contributionsEntities?${params.toString()}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
             const data = await response.json();

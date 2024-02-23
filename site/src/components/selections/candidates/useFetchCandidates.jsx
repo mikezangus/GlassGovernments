@@ -6,7 +6,7 @@ export default function useFetchCandidates(year, office, state, district, setCan
     const fetchCandidates = async () => {
         try {
             const params = new URLSearchParams( { year, office, state, district });
-            const url = `http://localhost:4000/api/candidates?${params.toString()}`;
+            const url = `/api/selections/candidates?${params.toString()}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
             let data = await response.json();

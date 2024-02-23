@@ -2,11 +2,13 @@ import { useEffect } from "react";
 
 
 export default function useFetchYears(setYears, setDefaultYear, onYearSelect) {
-    const name = "Fetch Years Hook";
+    const name = "Years Hook";
     const fetchYears = async () => {
         try {
-            const url = "http://localhost:4000/api/years";
+            const url = "/api/selections/years";
+            console.log("URL: ", url)
             const response = await fetch(url);
+            console.log("RESPONSE: ", response);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
             let data = await response.json();
             data = data.filter(item => item != null);

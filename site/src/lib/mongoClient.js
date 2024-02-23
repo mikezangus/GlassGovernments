@@ -1,29 +1,21 @@
-const { MongoClient } = require("mongodb");
-const path = require("path");
-const fs = require("fs");
-const configPath = path.join(__dirname, "..", "..", "config.json");
-const rawConfig = fs.readFileSync(configPath);
-const config = JSON.parse(rawConfig);
+import { MongoClient } from "mongodb";
 
 
-const uri = `mongodb+srv://${config.mongoUsername}:${config.mongoPassword}@${config.mongoCluster}.0xpxdrt.mongodb.net/?retryWrites=true&w=majority`;
-const client = new MongoClient(uri);
+const uri = process.env.URI;
+const dbName = process.env.DB;
+let cachedDB = null;
 
 
-const connectToMongo = async () => {
+export default async function getDB() {
+    if (cachedDB) return cachedDB;
     try {
+        const client = new MongoClient(uri);
         await client.connect();
-        console.log(`Connected to cluster at uri:\n${uri}`);
-    } catch (err) {
-        console.error("Failed to connect to cluster. Error: ", err);
-        process.exit(1);
-    };
+        cachedDB = client.db(dbName);
+        return cachedDB;
+    }
+    catch (err) {
+        console.error("Failed to connect to database", err);
+        throw new Error("Failed to connect to database");
+    }
 };
-
-
-const getDB = () => {
-    return client.db(config.mongoDatabase);
-};
-
-
-module.exports = { connectToMongo, getDB };

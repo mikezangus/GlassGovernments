@@ -6,7 +6,7 @@ export default function useFetchStates(year, office, setStates) {
     const fetchStates = async () => {
         try {
             const params = new URLSearchParams({ year, office });
-            const url = `http://localhost:4000/api/states?${params.toString()}`;
+            const url = `/api/selections/states?${params.toString()}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
             const data = await response.json();
