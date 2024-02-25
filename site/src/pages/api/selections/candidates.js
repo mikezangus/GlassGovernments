@@ -10,20 +10,20 @@ export default async function handler(req, res) {
                 .status(400)
                 .send(name, " | Prior selections required");
             const db = await getDB();
-            const collection = await db.collection(`${year}_candidates`);
+            const collection = await db.collection(`${year}_cands`);
             const query = {
                 OFFICE: office,
                 STATE: state,
                 DISTRICT: district
             };
             const lookup = {
-                from: `${year}_contributions`,
+                from: `${year}_conts`,
                 localField: "CAND_ID",
                 foreignField: "CAND_ID",
-                as: "contributions"
+                as: "conts"
             };
             const unwind = {
-                path: "$contributions",
+                path: "$conts",
                 preserveNullAndEmptyArrays: true
             };
             const group = {
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
                     candID: "$CAND_ID"
                 },
                 totalContributionAmount: {
-                    $sum: "$contributions.TRAN_AMT"
+                    $sum: "$conts.AMT"
                 }
             };
             const projection = {

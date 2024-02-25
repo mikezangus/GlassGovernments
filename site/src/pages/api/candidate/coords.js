@@ -10,19 +10,19 @@ export default async function handler(req, res) {
                 .status(400)
                 .send(name, " | Prior selections required");
             const db = await getDB();
-            const collection = db.collection(`${year}_contributions`);
+            const collection = db.collection(`${year}_conts`);
             const projection = {
                 _id: 0,
                 LOCATION: 1
             };
-            const contributions = await collection
+            const conts = await collection
                 .find(
                     { CAND_ID: candID },
                     { projection: projection}
                 )
                 .toArray();
-            const data = contributions
-                    .map(contribution => contribution.LOCATION)
+            const data = conts
+                    .map(cont => cont.LOCATION)
                     .filter(location => location != null);
             res.json(data);
         } catch (err) {

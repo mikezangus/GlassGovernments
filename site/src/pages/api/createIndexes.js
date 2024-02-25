@@ -8,7 +8,7 @@ async function createIndexes(db) {
         try {
             await Promise.all([
                 db
-                    .collection(`${year}_candidates`)
+                    .collection(`${year}_cands`)
                     .createIndex(
                         {
                             OFFICE: 1,
@@ -17,10 +17,10 @@ async function createIndexes(db) {
                         }
                     ),
                 db
-                    .collection(`${year}_candidates`)
+                    .collection(`${year}_cands`)
                     .createIndex({ CAND_ID: 1 }),
                 db
-                    .collection(`${year}_contributions`)
+                    .collection(`${year}_conts`)
                     .createIndex({ CAND_ID: 1 })
             ]);
         } catch (err) {

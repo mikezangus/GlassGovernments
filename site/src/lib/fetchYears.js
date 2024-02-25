@@ -6,7 +6,7 @@ export default async function fetchYears(db) {
             .listCollections()
             .toArray();
         const candidateCollections = collections.filter(
-            col => col.name.endsWith("candidates")
+            col => col.name.endsWith("cands")
         );
         for (let collection of candidateCollections) {
             let years = await db

@@ -2,7 +2,7 @@ import getDB from "../../../lib/mongoClient";
 
 
 export default async function handler(req, res) {
-    const name = "Contributions Entities API";
+    const name = "Entity Contributions API";
     if (req.method === "GET") {
         try {
             const { year, candID } = req.query;
@@ -10,11 +10,11 @@ export default async function handler(req, res) {
                 .status(400)
                 .send(name, " | Prior selections required");
             const db = await getDB();
-            const collection = db.collection(`${year}_contributions`);
+            const collection = db.collection(`${year}_conts`);
             const query = { CAND_ID: candID };
             const group = {
                 _id: "$ENTITY",
-                entityContributionAmount: { $sum: "$TRAN_AMT" }
+                entityContAmt: { $sum: "$AMT" }
             };
             const pipeline = [
                 { $match: query },

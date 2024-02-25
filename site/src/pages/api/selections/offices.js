@@ -10,7 +10,7 @@ export default async function handler(req, res) {
                 .status(400)
                 .send(name, " | Prior selections required");
             const db = await getDB();
-            const collection = await db.collection(`${year}_candidates`);
+            const collection = await db.collection(`${year}_cands`);
             const data = await collection.distinct("OFFICE");
             res.json(data);
         } catch (err) {
