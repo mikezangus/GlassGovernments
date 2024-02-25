@@ -4,7 +4,7 @@ import calculatePercentage from "../../utilities/calculatePercentage";
 import styles from "../../../styles/Candidate.module.css"
 
 
-export default function RenderContributionsEntities({ totalContributionAmount, entities }) {
+export default function RenderContributionsEntities({ totalContAmt, entities }) {
     return (
         <>
             {entities.map((contribution, index) => (
@@ -13,7 +13,7 @@ export default function RenderContributionsEntities({ totalContributionAmount, e
                         className={styles.entities}
                         key={index}
                     >
-                        {contribution._id}: {formatCurrency(contribution.entityContributionAmount)} | {calculatePercentage(contribution.entityContributionAmount, totalContributionAmount)}% of total
+                        {contribution._id}: {formatCurrency(contribution.entityContAmt)} | {calculatePercentage(contribution.entityContAmt, totalContAmt)}% of total
                     </div>
                 </div>
             ))}

@@ -46,8 +46,8 @@ def get_mongo() -> str:
     path = get_config_file_path()
     with open(path, "r") as config_file:
         config = json.load(config_file)
+    uri = config["mongoUri"]
     db_name = config["mongoDatabase"]
-    uri = f"mongodb+srv://{config['mongoUsername']}:{config['mongoPassword']}@{config['mongoCluster']}.0xpxdrt.mongodb.net/{db_name}?retryWrites=true&w=majority"
     return uri, db_name
 
 

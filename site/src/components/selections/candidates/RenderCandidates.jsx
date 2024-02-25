@@ -30,7 +30,7 @@ export default function RenderCandidates({ candidates, selectedCandidate, isOpen
                         {candidates
                             // .filter(candidate => candidate.totalContributionAmount > minContributionAmount)
                             .map((candidate) => {
-                                const { totalContributionAmount, candID, name, party } = candidate;
+                                const { totalContAmt, candID, name, party } = candidate;
                                 const partyFormatted = party
                                     ? `(${party.charAt(0)})`
                                     : "";
@@ -40,7 +40,7 @@ export default function RenderCandidates({ candidates, selectedCandidate, isOpen
                                         key={`${candID}`}
                                         onClick={() => handleCandidateClick(candidate)}
                                     >
-                                        {capitalizeWord(name)} {partyFormatted} - ${formatContributionAmount(totalContributionAmount)}
+                                        {capitalizeWord(name)} {partyFormatted} - ${formatContributionAmount(totalContAmt)}
                                     </button>
                                 )
                             })

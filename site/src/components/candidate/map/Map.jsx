@@ -1,5 +1,4 @@
 import { useState } from "react";
-// import RenderMap from "./RenderMap";
 import dynamic from "next/dynamic";
 import useFetchCoords from "./useFetchCoords";
 
@@ -17,9 +16,5 @@ export default function Map({ year, candidate }) {
             candID={candID}
             coords={coords}
         />
-        // <RenderMap
-        //     candID={candID}
-        //     coords={coords}
-        // />
     );
 };

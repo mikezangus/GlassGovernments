@@ -10,7 +10,10 @@ export default function useFetchCandidates(year, office, state, district, setCan
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
             let data = await response.json();
-            data = data.sort((a, b) => b.totalContributionAmount - a.totalContributionAmount);
+            data = data.sort(
+                (a, b) => b.totalContAmt - a.totalContAmt
+            );
+            console.log("DATA", data)
             setCandidates(data);
         } catch (error) {
             console.error(`${name} | Error: `, error);

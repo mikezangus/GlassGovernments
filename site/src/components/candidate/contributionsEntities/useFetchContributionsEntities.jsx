@@ -13,7 +13,7 @@ export default function useFetchEntities(year, candID, setEntities) {
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
             const data = await response.json();
             const sortedData = data.sort(
-                (a, b) => b.entityContributionAmount - a.entityContributionAmount
+                (a, b) => b.entityContAmt - a.entityContAmt
             );
             setEntities(sortedData);
         } catch (error) {

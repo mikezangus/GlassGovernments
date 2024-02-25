@@ -16,12 +16,15 @@ JoinType = Literal[
 
 def join_dfs(df1: DataFrame, df2: DataFrame, join_col: str, join_type: JoinType, action: str) -> DataFrame:
     print(f"\nStarted {action}")
-    print(f"Item count before join: {(df1.count()):,}")
+    start_count = df1.count()
+    print(f"Item count before join: {start_count:,}")
     df = df1.join(
         other = df2,
         on = join_col,
         how = join_type
     )
     print(f"Finished {action}")
-    print(f"Item count after join: {(df.count()):,}")
+    end_count = df.count()
+    print(f"Item count after join: {end_count:,}")
+    print(f"Filtered out {(start_count - end_count):,} items")
     return df

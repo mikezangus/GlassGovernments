@@ -2,10 +2,11 @@ import RenderContributionsTotal from "./RenderContributionsTotal";
 
 
 export default function ContributionsTotal({ candidate }) {
-    const { totalContributionAmount } = candidate;
+    const { totalContAmt } = candidate;
+    console.log(totalContAmt)
     return (
         <RenderContributionsTotal
-            totalContributionAmount={totalContributionAmount}
+            totalContAmt={totalContAmt}
         />
     );
 };

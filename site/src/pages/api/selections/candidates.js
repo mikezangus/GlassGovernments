@@ -32,7 +32,7 @@ export default async function handler(req, res) {
                     party: "$PARTY",
                     candID: "$CAND_ID"
                 },
-                totalContributionAmount: {
+                totalContAmt: {
                     $sum: "$conts.AMT"
                 }
             };
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
                 candID: "$_id.candID",
                 name: "$_id.name",
                 party: "$_id.party",
-                totalContributionAmount: 1
+                totalContAmt: 1
             };
             const pipeline = [
                 { $match: query },
