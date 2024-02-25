@@ -30,7 +30,10 @@ def manage_cols(df: DataFrame) -> DataFrame:
 
 
 def main(spark: SparkSession, main_df: DataFrame) -> DataFrame:
+    print("\nStarted converting ZIP codes to coordinates")
     location_df = load_locations_df(spark)
     df = join_dfs(main_df, location_df)
     df = manage_cols(df)
+    print("Finished converting ZIP codes to coordinates")
+    print(f"Item count: {(df.count()):,}")
     return df

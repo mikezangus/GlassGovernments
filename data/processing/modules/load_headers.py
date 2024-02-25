@@ -12,5 +12,8 @@ def load_headers(file_type: str) -> list:
     dir = get_headers_dir()
     path = os.path.join(dir, f"{file_type}_header_file.csv")
     with open(path, "r") as header_file:
-        headers = header_file.readline().strip().split(",")
+        headers = header_file \
+            .readline() \
+            .strip()\
+            .split(",")
     return headers

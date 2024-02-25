@@ -13,5 +13,5 @@ def get_mongo_uri() -> str:
     path = get_config_file_path()
     with open(path, "r") as config_file:
         config = json.load(config_file)
-    uri = f"mongodb+srv://{config['mongoUsername']}:{config['mongoPassword']}@{config['mongoCluster']}.{config['mongoID']}.mongodb.net/{config['mongoDatabase']}?retryWrites=true&w=majority"
+    uri = config["mongoUri"]
     return uri

@@ -22,6 +22,6 @@ def load_df_from_file(year: str, file_type: str, file_name: str, spark: SparkSes
     for i, col_name in enumerate(headers):
         df = df.withColumnRenamed(f"_c{i}", col_name)
     df = df.select(*[headers[index] for index in cols])
-    print(f"Finished loading Main DataFrame")
+    print("Finished loading Main DataFrame")
     print(f"Item count: {df.count():,}")
     return df
