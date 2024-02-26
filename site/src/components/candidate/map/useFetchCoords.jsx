@@ -12,7 +12,7 @@ export default function useFetchCoords(year, candID, setCoords) {
             const response = await fetch(url);
             if (!response.ok) throw new Error(`${name} | Network response was not ok`);
             const data = await response.json();
-            console.log("DATA:", data)
+            console.log("COORDS DATA:", data)
             setCoords(data);
         } catch (error) {
             console.error(`${name} | Error fetching data: ${error}`);

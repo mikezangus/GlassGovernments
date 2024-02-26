@@ -13,17 +13,24 @@ export default async function handler(req, res) {
             const collection = db.collection(`${year}_conts`);
             const projection = {
                 _id: 0,
-                LOCATION: 1
+                LOCATION: 1,
+                AMT: 1
             };
-            const conts = await collection
+            const docs = await collection
                 .find(
                     { CAND_ID: candID },
                     { projection: projection}
                 )
                 .toArray();
-            const data = conts
-                    .map(cont => cont.LOCATION)
-                    .filter(location => location != null);
+            const data = docs
+                    .map(doc => (
+                        {
+                            COORDS: doc.LOCATION,
+                            AMT: parseFloat(doc.AMT)
+                        }
+                    ))
+                    .filter(item => item != null);
+            console.log("COORDS DATA FROM API", data)
             res.json(data);
         } catch (err) {
             console.error(name, " | Error: ", err);

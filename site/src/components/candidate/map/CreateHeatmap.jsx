@@ -5,19 +5,29 @@ import L from "leaflet";
 
 
 export default function CreateHeatmap({ coords }) {
+    console.log("CORDS FROM MAP:", coords)
     const map = useMap();
-    useEffect(() => {
+    const createHeatmap = ({ coords }) => {
         if (!map || !coords || coords.length === 0) return;
-        const points = coords.map(({ coordinates }) => {
-            const lat = coordinates[1];
-            const lon = coordinates[0];
-            return [lat, lon]
-        });
+        const points = coords.map(({ COORDS, AMT }) => {
+            if (COORDS && COORDS.coordinates) {
+                const lat = COORDS.coordinates[1];
+                const lon = COORDS.coordinates[0];
+                return [lat, lon, AMT];
+            }
+            return null;
+        }).filter(
+            point => point !== null
+        );
         const heatmapLayer = L.heatLayer(points, {
-            radius: 20, blur: 1, maxZoom: 17
+            radius: 7, blur: 9
         });
         heatmapLayer.addTo(map);
         return () => { map.removeLayer(heatmapLayer) };
-    }, [map, coords]);
+    }
+    useEffect(() =>
+        createHeatmap({ coords }),
+        [map, coords]
+    );
     return null;
 };

@@ -23,10 +23,10 @@ export default function Candidate({ year, state, district, candidate }) {
             />
 
         
-            <ContributionsEntities
+            {/* <ContributionsEntities
                 year={year}
                 candidate={candidate}
-            />
+            /> */}
 
             <Map
                 year={year}
