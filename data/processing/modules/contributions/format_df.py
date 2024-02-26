@@ -30,4 +30,5 @@ def format_df(df: DataFrame) -> DataFrame:
         )
     print("Finished formatting Main DataFrame")
     print(f"Item count: {(df.count()):,}")
+    df.show()
     return df

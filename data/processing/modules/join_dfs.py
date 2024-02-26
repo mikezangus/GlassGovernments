@@ -27,4 +27,5 @@ def join_dfs(df1: DataFrame, df2: DataFrame, join_col: str, join_type: JoinType,
     end_count = df.count()
     print(f"Item count after join: {end_count:,}")
     print(f"Filtered out {(start_count - end_count):,} items")
+    df.show()
     return df

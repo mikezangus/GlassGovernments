@@ -4,7 +4,9 @@ from typing import Literal
 
 
 def upload_df(collection: str, uri: str, df: DataFrame, mode: Literal["append", "overwrite", "error", "ignore"]) -> None:
-    print(f"\nStarted uploading {df.count():,} items to collection {collection}")
+    count = df.count()
+    print(f"\nStarted uploading {count:,} items to collection {collection}")
+    df.show()
     try:
         df.write \
             .format("mongo") \
@@ -12,7 +14,7 @@ def upload_df(collection: str, uri: str, df: DataFrame, mode: Literal["append", 
             .option("uri", uri) \
             .option("collection", collection) \
             .save()
-        print(f"Finished uploading items to collection {collection}")
+        print(f"Finished uploading {count:,} items to collection {collection}")
         return
     except AnalysisException as e:
         print("ERROR:", e)

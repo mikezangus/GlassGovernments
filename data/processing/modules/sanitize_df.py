@@ -1,11 +1,13 @@
 from pyspark.sql import DataFrame
 from typing import Literal
-from .set_cols import set_cand_cols, set_cont_cols
+from .set_cols import set_cand_cols, set_cmte_cols, set_cont_cols
 
 
-def sanitize_df(df: DataFrame, mode: Literal["cand", "cont"]) -> DataFrame:
+def sanitize_df(df: DataFrame, mode: Literal["cand", "cmte", "cont"]) -> DataFrame:
     if mode == "cand":
         cols = set_cand_cols("output")
+    elif mode == "cmte":
+        cols = set_cmte_cols("output")
     elif mode == "cont":
         cols = set_cont_cols("output")
     missing_cols = [c for c in cols if c not in df.columns]

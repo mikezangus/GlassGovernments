@@ -12,8 +12,7 @@ def set_cand_cols(mode: Literal["input", "output"], headers: list = None) -> lis
             "CAND_OFFICE",
             "CAND_OFFICE_DISTRICT",
             "CAND_ICI",
-            "CAND_STATUS",
-            "CAND_PCC"
+            "CAND_STATUS"
         ]
         indexes = [headers.index(c) for c in cols]
         return indexes
@@ -26,29 +25,48 @@ def set_cand_cols(mode: Literal["input", "output"], headers: list = None) -> lis
             "STATE",
             "OFFICE",
             "DISTRICT",
-            "ICI",
-            "CMTE_ID"
+            "ICI"
         ]
+        return cols
+    
+
+def set_cmte_cols(mode: Literal["input", "output"], headers: list = None) -> list:
+    cols = ["CAND_ID", "CMTE_ID"]
+    if mode == "input":
+        indexes = [headers.index(c) for c in cols]
+        return indexes
+    elif mode == "output":
         return cols
 
 
-def set_cont_cols(mode: Literal["input", "output"], headers: list = None) -> list:
+def set_cont_cols(mode: Literal["input", "output"], type: Literal["indiv", "oth", "pas2"] = None, headers: list = None) -> list:
     if mode == "input":
-        cols = [
-            "CMTE_ID",
-            "ENTITY_TP",
-            "CITY",
-            "STATE",
-            "ZIP_CODE",
-            "TRANSACTION_AMT",
-            "TRANSACTION_DT",
-            "TRAN_ID"
-        ]
+        if type != "pas2":
+            cols = [
+                "CMTE_ID",
+                "ENTITY_TP",
+                "CITY",
+                "STATE",
+                "ZIP_CODE",
+                "TRANSACTION_AMT",
+                "TRANSACTION_DT",
+                "TRAN_ID"
+            ]
+        else:
+            cols = [
+                "CAND_ID",
+                "ENTITY_TP",
+                "CITY",
+                "STATE",
+                "ZIP_CODE",
+                "TRANSACTION_AMT",
+                "TRANSACTION_DT",
+                "TRAN_ID"
+            ]
         indexes = [headers.index(c) for c in cols]
         return indexes
     elif mode == "output":
         cols = [
-            "CMTE_ID",
             "CAND_ID",
             "DATE",
             "ENTITY",

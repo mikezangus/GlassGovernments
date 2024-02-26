@@ -10,7 +10,7 @@ def rename_cand_cols(df: DataFrame) -> DataFrame:
         .withColumnRenamed("CAND_OFFICE", "OFFICE") \
         .withColumnRenamed("CAND_OFFICE_DISTRICT", "DISTRICT") \
         .withColumnRenamed("CAND_ICI", "ICI") \
-        .withColumnRenamed("CAND_PCC", "CMTE_ID")
+        # .withColumnRenamed("CAND_PCC", "CMTE_ID")
     return df
 
 

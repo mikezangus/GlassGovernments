@@ -36,4 +36,5 @@ def main(spark: SparkSession, main_df: DataFrame) -> DataFrame:
     df = manage_cols(df)
     print("Finished converting ZIP codes to coordinates")
     print(f"Item count: {(df.count()):,}")
+    df.show()
     return df

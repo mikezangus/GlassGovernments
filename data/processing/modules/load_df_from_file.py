@@ -24,4 +24,5 @@ def load_df_from_file(year: str, file_type: str, file_name: str, spark: SparkSes
     df = df.select(*[headers[index] for index in cols])
     print("Finished loading Main DataFrame")
     print(f"Item count: {df.count():,}")
+    df.show()
     return df

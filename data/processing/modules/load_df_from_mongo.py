@@ -15,6 +15,7 @@ def load_df_from_mongo(spark: SparkSession, uri: str, collection: str, subject: 
             df = df.select(field_1)
         print(f"Finished loading {subject} DataFrame from Mongo")
         print(f"Item count: {(df.count()):,}")
+        df.show()
         return df
     print(f"{collection} is empty or doesn't exist")
     return
