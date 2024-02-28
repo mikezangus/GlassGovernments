@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Header from "../components/header/Header";
+import Header from "../components/Header";
 import "../styles/index.css";
 import "leaflet/dist/leaflet.css";
 

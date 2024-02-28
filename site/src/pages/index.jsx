@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Selections from "../components/selections/Selections";
-import Candidate from "../components/candidate/Candidate";
+import Selections from "../components/Selections";
+import Candidate from "../components/Candidate";
 
 
 export default function Home() {

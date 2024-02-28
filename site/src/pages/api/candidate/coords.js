@@ -30,7 +30,6 @@ export default async function handler(req, res) {
                         }
                     ))
                     .filter(item => item != null);
-            console.log("COORDS DATA FROM API", data)
             res.json(data);
         } catch (err) {
             console.error(name, " | Error: ", err);
