@@ -1,8 +1,9 @@
-import React from "react";
-import styles from "../../../styles/Dropdown.module.css";
+import { useState } from "react";
+import useFetchDistricts from "../../hooks/useFetchDistricts";
+import styles from "../../styles/Dropdown.module.css";
 
 
-export default function RenderDistricts({ districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick }) {
+function Renderer({ districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick }) {
     return (
         <div className={styles.dropdown}>
             <div className={styles.container}>
@@ -38,4 +39,30 @@ export default function RenderDistricts({ districts, selectedDistrict, isOpen, t
             </div>
         </div>
     );
+};
+
+
+export default function Districts({ year, office, state, selectedDistrict, onDistrictSelect }) {
+
+    const [districts, setDistricts] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
+
+    useFetchDistricts(year, office, state, setDistricts);
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+    const handleDistrictClick = (district) => {
+        onDistrictSelect(district);
+        setIsOpen(false);
+    };
+
+    return (
+        <Renderer
+            districts={districts}
+            selectedDistrict={selectedDistrict}
+            isOpen={isOpen}
+            toggleDropdown={toggleDropdown}
+            handleDistrictClick={handleDistrictClick}
+        />
+    );
+    
 };

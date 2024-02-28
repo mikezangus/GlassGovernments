@@ -1,6 +1,6 @@
 import React from "react";
-import formatCurrency from "../../utilities/formatCurrency";
-import calculatePercentage from "../../utilities/calculatePercentage";
+import formatCurrency from "../../../lib/formatCurrency";
+import calculatePercentage from "../../../lib/calculatePercentage";
 import styles from "../../../styles/Candidate.module.css"
 
 

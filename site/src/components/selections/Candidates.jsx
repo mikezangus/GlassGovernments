@@ -1,10 +1,11 @@
-import React from "react";
-import capitalizeWord from "../../utilities/capitalizeWord";
-import formatContributionAmount from "../../utilities/formatContributionPreview";
-import styles from "../../../styles/Dropdown.module.css"
+import { useState } from "react";
+import useFetchCandidates from "../../hooks/useFetchCandidates";
+import capitalizeWord from "../../lib/capitalizeWord";
+import formatContAmt from "../../lib/formatContAmt";
+import styles from "../../styles/Dropdown.module.css";
 
 
-export default function RenderCandidates({ candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick }) {
+function Renderer({ candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick }) {
     // const minContributionAmount = 1000;
     return (
         <div className={styles.dropdown}>
@@ -40,7 +41,7 @@ export default function RenderCandidates({ candidates, selectedCandidate, isOpen
                                         key={`${candID}`}
                                         onClick={() => handleCandidateClick(candidate)}
                                     >
-                                        {capitalizeWord(name)} {partyFormatted} - ${formatContributionAmount(totalContAmt)}
+                                        {capitalizeWord(name)} {partyFormatted} - ${formatContAmt(totalContAmt)}
                                     </button>
                                 )
                             })
@@ -50,4 +51,32 @@ export default function RenderCandidates({ candidates, selectedCandidate, isOpen
             </div>
         </div>
     );
+};
+
+
+export default function Candidates({ year, office, state, district, onCandidateSelect }) {
+
+    const [candidates, setCandidates] = useState([]);
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
+
+    useFetchCandidates(year, office, state, district, setCandidates);
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+    const handleCandidateClick = (candidate) => {
+        onCandidateSelect(candidate);
+        setSelectedCandidate(candidate);
+        setIsOpen(false);
+    };
+
+    return (
+        <Renderer
+            candidates={candidates}
+            selectedCandidate={selectedCandidate}
+            isOpen={isOpen}
+            toggleDropdown={toggleDropdown}
+            handleCandidateClick={handleCandidateClick}
+        />
+    );
+    
 };

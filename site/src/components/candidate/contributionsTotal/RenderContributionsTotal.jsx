@@ -1,5 +1,5 @@
 import React from "react";
-import formatCurrency from "../../utilities/formatCurrency";
+import formatCurrency from "../../../lib/formatCurrency";
 import styles from "../../../styles/Candidate.module.css";
 
 

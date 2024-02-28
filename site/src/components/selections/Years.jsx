@@ -1,8 +1,9 @@
-import React from "react";
-import styles from "../../../styles/Switch.module.css";
+import { useState } from "react";
+import useFetchYears from "../../hooks/useFetchYears";
+import styles from "../../styles/Switch.module.css";
 
 
-export default function RenderYears({ years, defaultYear, handleYearClick }) {
+function Renderer({ years, defaultYear, handleYearClick }) {
     return (
         <div className={styles.switch}>
             <div className={styles.buttonsContainer}>
@@ -22,7 +23,29 @@ export default function RenderYears({ years, defaultYear, handleYearClick }) {
                     </button>
                 ))}
             </div>
-
         </div>
     );
+};
+
+
+export default function Years({ onYearSelect }) {
+
+    const [years, setYears] = useState([]);
+    const [defaultYear, setDefaultYear] = useState(null);
+
+    useFetchYears(setYears, setDefaultYear, onYearSelect);
+
+    const handleYearClick = (year) => {
+        setDefaultYear(year);
+        onYearSelect(year);
+    };
+
+    return (
+        <Renderer
+            years={years}
+            defaultYear={defaultYear}
+            handleYearClick={handleYearClick}
+        />
+    );
+
 };

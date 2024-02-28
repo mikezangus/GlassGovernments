@@ -1,4 +1,4 @@
-export default function formatContributionAmount(amount) {
+export default function formatContAmt(amount) {
     return (
         amount >= 10000000 ? `${(amount / 1000000).toFixed(1)}M` : // $60,900,000 => $60.9M
         amount >= 1000000 ? `${(amount / 1000000).toFixed(2)}M` : // $6,090,000 => $6.09M

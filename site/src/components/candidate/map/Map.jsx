@@ -1,6 +1,6 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import useFetchCoords from "./useFetchCoords";
+import useFetchCoords from "../../../hooks/useFetchCoords";
 
 
 export default function Map({ year, candidate }) {

@@ -1,8 +1,8 @@
 import React from "react";
-import colorParty from "../../utilities/colorParty";
-import capitalizeWord from "../../utilities/capitalizeWord";
-import formatConstituency from "../../utilities/formatConstituency";
-import formatParty from "../../utilities/formatParty";
+import colorParty from "../../../lib/colorParty";
+import capitalizeWord from "../../../lib/capitalizeWord";
+import formatConstituency from "../../../lib/formatConstituency";
+import formatParty from "../../../lib/formatParty";
 import styles from "../../../styles/Candidate.module.css";
 
 

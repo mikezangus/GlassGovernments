@@ -1,11 +1,11 @@
 import React from "react";
-import Years from "./years/Years.jsx";
-import Offices from "./offices/Offices.jsx";
-import States from "./states/States.jsx";
-import Districts from "./districts/Districts.jsx";
-import Candidates from "./candidates/Candidates.jsx";
-import useCountDistricts from "./districts/useCountDistricts.jsx";
-import styles from "../../styles/Selections.module.css";
+import Years from "./selections/Years.jsx";
+import Offices from "./selections/Offices.jsx";
+import States from "./selections/States.jsx";
+import Districts from "./selections/Districts.jsx";
+import Candidates from "./selections/Candidates.jsx";
+import useCountDistricts from "../hooks/useCountDistricts.jsx";
+import styles from "../styles/Selections.module.css";
 
 
 export default function Selections(

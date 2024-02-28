@@ -1,8 +1,9 @@
-import React from "react";
-import styles from "../../../styles/Switch.module.css";
+import { useState } from "react";
+import useFetchOffices from "../../hooks/useFetchOffices";
+import styles from "../../styles/Switch.module.css";
 
 
-export default function RenderOffices({ offices, defaultOffice, handleOfficeClick }) {
+function Renderer({ offices, defaultOffice, handleOfficeClick }) {
 
     const officeNames = {
         H: "House",
@@ -31,4 +32,28 @@ export default function RenderOffices({ offices, defaultOffice, handleOfficeClic
             </div>
         </div>
     );
+    
+};
+
+
+export default function Offices({ year, onOfficeSelect }) {
+
+    const [offices, setOffices] = useState([]);
+    const [defaultOffice, setDefaultOffice] = useState(null);
+
+    useFetchOffices(year, setOffices, setDefaultOffice, onOfficeSelect);
+
+    const handleOfficeClick = (office) => {
+        setDefaultOffice(office);
+        onOfficeSelect(office);
+    };
+
+    return (
+        <Renderer
+            offices={offices}
+            defaultOffice={defaultOffice}
+            handleOfficeClick={handleOfficeClick}
+        />
+    );
+
 };
