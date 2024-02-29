@@ -22,6 +22,6 @@ export default function useFetchCandidates(year, office, state, district, setCan
                 };
             };
             fetchCandidates();
-        };
+        }
     }, [year, office, state, district]);
 };

@@ -12,12 +12,7 @@ export default function App({ Component, pageProps }) {
             "/api/createIndexes",
             { method: "POST" }
         );
-        if (response.ok) {
-            console.log("indexes created");
-        } else {
-            console.log("failed to create indexes");
-        }
-    }
+    };
 
     useEffect(() => createIndexes(), []);
 

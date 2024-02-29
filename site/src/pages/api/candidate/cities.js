@@ -2,7 +2,6 @@ import getDB from "../../../lib/mongoClient";
 
 
 export default async function handler(req, res) {
-    console.log("HIT")
     const name = "Cities API";
     if (req.method === "GET") {
         try {
@@ -43,7 +42,6 @@ export default async function handler(req, res) {
                 .aggregate(pipeline)
                 .toArray();
             res.json(data);
-            console.log("CITIES", data)
         } catch (err) {
             console.error(name, " | Error: ", err);
             res
