@@ -6,6 +6,8 @@ file_types_dir = os.path.dirname(os.path.abspath(__file__))
 processing_dir = os.path.dirname(file_types_dir)
 sys.path.append(processing_dir)
 from modules.decide_year import decide_year
+from modules.filter_out_existing_items import filter_out_existing_items
+from modules.filter_out_zero_amts import filter_out_zero_amts
 from modules.get_mongo_uri import get_mongo_uri
 from modules.join_dfs import join_dfs
 from modules.load_df_from_file import load_df_from_file
@@ -30,14 +32,11 @@ def process_contributions(subject: str, file_type: Literal["indiv", "oth", "pas2
     uri = get_mongo_uri()
     spark = load_spark(uri)
     headers = load_headers(file_type)
-    cols = set_cont_cols("input", file_type, headers)
+    input_cols = set_cont_cols("input", file_type, headers)
 
-    main_df = load_df_from_file(year, file_type, file_name, spark, headers, cols)
+    main_df = load_df_from_file(year, file_type, file_name, spark, headers, input_cols)
 
-    existing_items_df = load_df_from_mongo(spark, uri, f"{year}_conts", "Existing Items", "TRAN_ID")
-
-    if existing_items_df is not None:
-        main_df = join_dfs(main_df, existing_items_df, "TRAN_ID", "left_anti", "filtering out existing items")
+    main_df = filter_out_zero_amts(main_df)
        
     if file_type == "pas2":
         cands_df = load_df_from_mongo(spark, uri, f"{year}_cands", "Candidates", "CAND_ID")
@@ -47,11 +46,21 @@ def process_contributions(subject: str, file_type: Literal["indiv", "oth", "pas2
         main_df = join_dfs(main_df, cmtes_df, "CMTE_ID", "inner", "filtering out ineligible candidates")
 
     if main_df.limit(1).count() == 0:
+        print("No items to upload, exiting")
         return
     main_df = rename_cont_cols(main_df)
     main_df = format_df(main_df)
     main_df = convert_to_coords(spark, main_df)
     main_df = sanitize_df(main_df, "cont")
+
+    existing_items_df = load_df_from_mongo(spark, uri, f"{year}_conts", "Existing Items")
+    if existing_items_df is not None:
+        output_cols = set_cont_cols("output", file_type)
+        main_df = filter_out_existing_items(main_df, existing_items_df, output_cols)
+    if main_df.limit(1).count() == 0:
+        print("No items to upload, exiting")
+        return
+    
     upload_df(f"{year}_conts", uri, main_df, "append")
 
     spark.stop()

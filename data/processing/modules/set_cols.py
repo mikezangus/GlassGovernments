@@ -21,7 +21,7 @@ def set_cand_cols(mode: Literal["input", "output"], headers: list = None) -> lis
             "CAND_ID",
             "NAME",
             "PARTY",
-            "ELECTION_YEAR",
+            "YEAR",
             "STATE",
             "OFFICE",
             "DISTRICT",
@@ -49,8 +49,7 @@ def set_cont_cols(mode: Literal["input", "output"], type: Literal["indiv", "oth"
                 "STATE",
                 "ZIP_CODE",
                 "TRANSACTION_AMT",
-                "TRANSACTION_DT",
-                "TRAN_ID"
+                "TRANSACTION_DT"
             ]
         else:
             cols = [
@@ -60,20 +59,18 @@ def set_cont_cols(mode: Literal["input", "output"], type: Literal["indiv", "oth"
                 "STATE",
                 "ZIP_CODE",
                 "TRANSACTION_AMT",
-                "TRANSACTION_DT",
-                "TRAN_ID"
+                "TRANSACTION_DT"
             ]
         indexes = [headers.index(c) for c in cols]
         return indexes
     elif mode == "output":
         cols = [
             "CAND_ID",
-            "DATE",
             "ENTITY",
             "CITY",
             "STATE",
             "LOCATION",
             "AMT",
-            "TRAN_ID"
+            "DATE",
         ]
         return cols

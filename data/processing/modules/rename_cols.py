@@ -5,12 +5,11 @@ def rename_cand_cols(df: DataFrame) -> DataFrame:
     df = df \
         .withColumnRenamed("CAND_NAME", "NAME") \
         .withColumnRenamed("CAND_PTY_AFFILIATION", "PARTY") \
-        .withColumnRenamed("CAND_ELECTION_YR", "ELECTION_YEAR") \
+        .withColumnRenamed("CAND_ELECTION_YR", "YEAR") \
         .withColumnRenamed("CAND_OFFICE_ST", "STATE") \
         .withColumnRenamed("CAND_OFFICE", "OFFICE") \
         .withColumnRenamed("CAND_OFFICE_DISTRICT", "DISTRICT") \
-        .withColumnRenamed("CAND_ICI", "ICI") \
-        # .withColumnRenamed("CAND_PCC", "CMTE_ID")
+        .withColumnRenamed("CAND_ICI", "ICI")
     return df
 
 
