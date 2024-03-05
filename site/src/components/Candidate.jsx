@@ -37,10 +37,10 @@ export default function Candidate({ year, state, district, candidate }) {
                     candidate={candidate}
                 />
 
-                {/* <Map
+                <Map
                     year={year}
                     candidate={candidate}
-                /> */}
+                />
 
             </div>
     

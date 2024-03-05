@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -34,6 +34,33 @@ ChartJS.register(
 
 function CreateGraph({ data }) {
 
+    const graphCanvasRef = useRef();
+    const totalWidth = data.labels.length * 69;
+
+    useEffect(() => {
+        const element = graphCanvasRef.current;
+        if (element) {
+
+            // console.log("ELEMENT: ", element)
+            // console.log("WIDTH BEFORE: ", element.style.width)
+
+            element.style.width = `${totalWidth}px`;
+
+            // console.log("WIDTH AFTER: ", element.style.width);
+
+            // console.log("SCROLL OUTSIDE TIMEOUT: ", element.scrollLeft);
+            // setTimeout(() => {
+            //     console.log("SCROLL INSIDE TIMEOUT: ", element.scrollLeft);
+            //     console.log("element.scrollWidth: ", element.scrollWidth);
+            //     console.log("element.clientWidth: ", element.clientWidth)
+            //     const maxScrollLeft = element.scrollWidth - element.clientWidth;
+            //     console.log("maxScrollLeft: ", maxScrollLeft);
+            //     element.scrollLeft = 1000;
+            //     console.log("SCROLL AFTER ASSIGNMENT: ", element.scrollLeft);
+            // }, 10000)
+        }
+    }, [data.labels.length, totalWidth]);
+
     const options = {
         scales: {
             x: {
@@ -55,7 +82,7 @@ function CreateGraph({ data }) {
                         );
                         const year = date.getFullYear();
                         return [month, year.toString()];
-                    }
+                    },
                 },
             },
             y: {
@@ -75,17 +102,19 @@ function CreateGraph({ data }) {
             }
         },
         maintainAspectRatio: false,
-        responsive: true
+        responsive: true,
+
     };
 
+
     return (
-        <div
-            className={styles.graphContainer}
-        >
-            <Line
-                data={data}
-                options={options}
-            />
+        <div className={styles.graphContainer}>
+            <div className={styles.graphCanvas} ref={graphCanvasRef}>
+                <Line
+                    data={data}
+                    options={options}
+                />
+            </div>
         </div>
     );
 
@@ -93,10 +122,8 @@ function CreateGraph({ data }) {
 
 
 function Renderer({ data }) {
-
     return (
         <div className={styles.container}>
-
             <CreateGraph data={data} />
         </div>
     );
@@ -113,9 +140,7 @@ export default function Graph({ year, state, candidate }) {
     });
     useFetchGraph(year, state, candID, setData);
 
-    console.log("Data via Graph function in Graph.jsx: ", data);
-
-    if (!data.datasets || data.datasets.length === 0) {
+    if (!data.datasets || data.labels.length === 0) {
         return null;
     }
 
