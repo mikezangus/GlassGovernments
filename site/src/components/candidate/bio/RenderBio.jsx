@@ -16,10 +16,12 @@ export default function RenderBio({ state, district, candidate }) {
                 {name}
             </div>
             <div className={styles.partyConstituency}>
-                <span style={{ color: partyColor }}>
+                <div style={{ color: partyColor }}>
                     {capitalizeWord(party)}
-                </span>
-                , {formatConstituency(state, district)}
+                </div>
+                <div>
+                {formatConstituency(state, district)}
+                </div>
             </div>
         </div>
     );

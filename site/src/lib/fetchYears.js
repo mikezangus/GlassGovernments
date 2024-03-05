@@ -12,8 +12,8 @@ export default async function fetchYears(db) {
             let years = await db
                 .collection(collection.name)
                 .aggregate([
-                    { $match: { ELECTION_YEAR: { $exists: true } } },
-                    { $group: { _id: "$ELECTION_YEAR" } }
+                    { $match: { YEAR: { $exists: true } } },
+                    { $group: { _id: "$YEAR" } }
                 ]).toArray();
             years.forEach(
                 yearDoc => uniqueYears.add(yearDoc._id)

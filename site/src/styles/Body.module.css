@@ -1,0 +1,13 @@
+.body {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    /* background-color: red; */
+}
+
+
+@media(max-width: 768px) {
+    .body {
+        flex-direction: column;
+    }
+}

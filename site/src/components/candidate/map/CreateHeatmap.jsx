@@ -5,7 +5,6 @@ import L from "leaflet";
 
 
 export default function CreateHeatmap({ coords }) {
-    console.log("CORDS FROM MAP:", coords)
     const map = useMap();
     const createHeatmap = ({ coords }) => {
         if (!map || !coords || coords.length === 0) return;

@@ -4,7 +4,7 @@ import styles from "../styles/Header.module.css";
 
 export default function Header() {
     return (
-        <div className={styles.header}>
+        <div className={styles.headerContainer}>
             <div className={styles.title}>
                 <a href="https://glassgovernments.com">
                     Glass Governments

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Selections from "../components/Selections";
 import Candidate from "../components/Candidate";
+import styles from "../styles/Body.module.css";
 
 
 export default function Home() {
@@ -33,31 +34,31 @@ export default function Home() {
 
     return (
 
-        <>
+        <div className={styles.body}>
 
-        <Selections
-            handleYearSelection={handleYearSelection}
-            selectedYear={selectedYear}
-            handleOfficeSelection={handleOfficeSelection}
-            selectedOffice={selectedOffice}
-            handleStateSelection={handleStateSelection}
-            selectedState={selectedState}
-            handleDistrictSelection={handleDistrictSelection}
-            selectedDistrict={selectedDistrict}
-            handleCandidateSelection={handleCandidateSelection}
-        />
-
-        {selectedYear && selectedOffice && selectedState && selectedDistrict && selectedCandidate && (
-            <Candidate
-                year={selectedYear}
-                office={selectedOffice}
-                state={selectedState}
-                district={selectedDistrict}
-                candidate={selectedCandidate}
+            <Selections
+                handleYearSelection={handleYearSelection}
+                selectedYear={selectedYear}
+                handleOfficeSelection={handleOfficeSelection}
+                selectedOffice={selectedOffice}
+                handleStateSelection={handleStateSelection}
+                selectedState={selectedState}
+                handleDistrictSelection={handleDistrictSelection}
+                selectedDistrict={selectedDistrict}
+                handleCandidateSelection={handleCandidateSelection}
             />
-        )}
 
-        </>
+            {selectedYear && selectedOffice && selectedState && selectedDistrict && selectedCandidate && (
+                <Candidate
+                    year={selectedYear}
+                    office={selectedOffice}
+                    state={selectedState}
+                    district={selectedDistrict}
+                    candidate={selectedCandidate}
+                />
+            )}
+
+        </div>
 
     );
 

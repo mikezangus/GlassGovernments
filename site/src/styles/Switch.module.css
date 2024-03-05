@@ -5,6 +5,12 @@
     --radius: 40px;
 }
 
+@media (max-width: 768px) {
+    .switch {
+        margin-bottom: 15px;
+    }
+}
+
 .switch .buttonsContainer {
     display: inline-flex;
     position: relative;

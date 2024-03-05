@@ -1,7 +1,17 @@
-.candidate {
+.candidateContainer {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    /* background-color: blue; */
+}
+
+
+.candidateInfo {
     box-sizing: border-box;
     color: var(--color-black);
-    width: 50%;
+    width: 100%;
     padding: 20px;
     border-radius: 20px;
     background-color: var(--color-white);
@@ -9,32 +19,32 @@
     height: fit-content;
 }
 
-.candidate .bio {
-    width: auto;
-}
-
-.candidate .bio .name {
+.candidateInfo .bio .name {
     font-size: var(--font-size-huge);
     font-weight: bolder;
 }
 
-.candidate .bio .partyConstituency {
+.candidateInfo .bio .partyConstituency {
     font-size: var(--font-size-medium);
     font-weight: bold;
 }
 
-.candidate .contributions .total {
+.candidateInfo .contributions .total {
     font-size: var(--font-size-medium);
     margin-top: 5px;
 }
 
-.candidate .contributions .entities {
+.candidateInfo .contributions .entities {
     width: 100%;
     font-size: var(--font-size-small);
     margin-left: 25px;
 }
 
-.candidate .map {
+.candidateInfo .map {
     margin-top: 25px;
     width: 100%;
+}
+
+.candidateInfo .constituencies {
+    font-size: var(--font-size-small);
 }

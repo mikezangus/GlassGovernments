@@ -3,6 +3,7 @@ import useFetchConstituencies from "../../hooks/useFetchConstituencies";
 import calculatePercentage from "../../lib/calculatePercentage";
 import formatCurrency from "../../lib/formatCurrency";
 import showStateName from "../../lib/showStateName";
+import styles from "../../styles/Candidate.module.css";
 
 
 function Renderer({ constituencies, state, totalContAmt }) {
@@ -10,22 +11,22 @@ function Renderer({ constituencies, state, totalContAmt }) {
     const handlestuff = (constituency, state) => {
         let txt
         if (constituency.LOCATION === "IN") {
-            txt = `From inside of ${showStateName(state)}`;
+            txt = `From inside ${showStateName(state)}`;
         }
         else if (constituency.LOCATION === "OUT") {
-            txt = `From outside of ${showStateName(state)}`;
+            txt = `From outside ${showStateName(state)}`;
         }
         return txt
     };
 
     return (
-        <>
+        <div className={styles.constituencies}>
             {constituencies.map((constituency, index) => (
                 <div key={index}>
                     {handlestuff(constituency, state)}: {formatCurrency(constituency.AMT)} ({calculatePercentage(constituency.AMT, totalContAmt)}% of total)
                 </div>
             ))}
-        </>
+        </div>
     );
 };
 

@@ -5,47 +5,66 @@ export default async function handler(req, res) {
     const name = "Graph API";
     if (req.method === "GET") {
         try {
-            const { year, candID } = req.query;
-            if (!year || !candID) {
+            const { year, state, candID } = req.query;
+            if (!year || !state || !candID) {
                 return res
                     .status(400)
                     .send(name, " | Prior selections required");
             }
             const db = await getDB();
             const collection = db.collection(`${year}_conts`);
-            const matchYear = {
-                $expr:
-                {
-                    $gte: [
-                        { $year: { $toDate: "$DATE" } },
-                        (parseInt(year) - 6)
-                    ]
+            const filterOutNegativeAmts = {
+                $expr : {
+                    $gt: ["$AMT", 0]
                 }
             };
-            const query =
-            {
+            const query = {
                 CAND_ID: candID,
-                ...matchYear
+                ...filterOutNegativeAmts
             };
-            const group =
-            {
+            const group = {
                 _id: {
                     YEAR: { $year: { $toDate: "$DATE" } },
                     MONTH: { $month: { $toDate: "$DATE" } }
                 },
-                AMT: { $sum: "$AMT" }
+                INSIDE_AMT: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$STATE", state] },
+                            "$AMT",
+                            0
+                        ]
+                    }
+                },
+                OUTSIDE_AMT: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$STATE", state] },
+                            0,
+                            "$AMT"
+                        ]
+                    }
+                }
             };
-            const sort = { "_id.YEAR": 1, "_id.MONTH": 1 };
-            const projection =
-            {
+            const filterOutNullDates = {
+                "_id.YEAR": { $ne: null },
+                "_id.MONTH": { $ne: null }
+            };
+            const sort = {
+                "_id.YEAR": 1,
+                "_id.MONTH": 1
+            };
+            const projection = {
                 _id: 0,
                 YEAR: "$_id.YEAR",
                 MONTH: "$_id.MONTH",
-                AMT: 1
+                INSIDE_AMT: 1,
+                OUTSIDE_AMT: 1
             };
             const pipeline = [
                 { $match: query },
                 { $group: group },
+                { $match: filterOutNullDates },
                 { $sort: sort },
                 { $project: projection }
             ];
@@ -53,7 +72,7 @@ export default async function handler(req, res) {
                 .aggregate(pipeline)
                 .toArray();
             res.json(data);
-            console.log("GRAPH: ", data)
+            console.log("GRAPH.JS API: ", data)
         } catch (err) {
             console.error(name, " | Error: ", err);
             res

@@ -3,3 +3,9 @@
     flex-direction: column;
     width: 30%;
 }
+
+@media (max-width: 768px) {
+    .selections {
+        width: 100%;
+    }
+}

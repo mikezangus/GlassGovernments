@@ -11,23 +11,21 @@ export default async function handler(req, res) {
                     .status(400)
                     .send(name, " | Prior selections required");
             }
-
+            const db = await getDB();
+            const collection = await db.collection(`${year}_conts`);
             const query = { CAND_ID: candID };
-            const addField =
-            {
+            const addField = {
                 fromCandState:
                     { $eq: ["$STATE", state] }
             };
-            const group =
-            {
+            const group = {
                 _id: "$fromCandState",
                 COUNT:
                     { $sum: 1 },
                 AMT:
                     { $sum: "$AMT" }
             };
-            const projection = 
-            {
+            const projection = {
                 _id: 0,
                 LOCATION: 
                     { $cond:
@@ -40,16 +38,19 @@ export default async function handler(req, res) {
                 COUNT: 1,
                 AMT: 1
             };
-            const pipeline = 
-            [
+            const pipeline = [
                 { $match: query },
                 { $addFields: addField },
                 { $group: group },
                 { $project: projection }
             ];
+            const pipeline2 = [
+                { $match: query }
+            ]
+            const data2 = await collection.aggregate(pipeline2).toArray();
 
-            const db = await getDB();
-            const collection = await db.collection(`${year}_conts`);
+            console.log("DATA: ", data2)
+
             const data = await collection
                 .aggregate(pipeline)
                 .toArray();

@@ -1,4 +1,4 @@
-.header {
+.headerContainer {
     box-sizing: border-box;
     display: flex;
     padding: 25px;
@@ -6,31 +6,43 @@
     align-items: center;
     width: 100%;
     color: var(--color-white);
-    /* background-color: red; */
 }
 
-.header .title {
+.title {
     font-weight: bold;
     font-size: var(--font-size-large);
 }
 
-.header .title a {
+.title a {
     color: var(--color-white);
     text-decoration: none;
 }
 
-.header .links {
+.links {
     display: flex;
     font-size: var(--font-size-extra-small)
 }
 
-.header .links a {
+.links a {
     margin-left: auto;
     margin-right: 20px;
     color: var(--color-white);
     text-decoration: none;
 }
 
-.header .links a:last-child {
+.links a:last-child {
     margin-right: 0;
+}
+
+@media (max-width: 768px) {
+    .headerContainer {
+        padding: 15px
+    }
+    .title {
+        width: 50%;
+    }
+    .links {
+        flex-direction: column;
+        
+    }
 }

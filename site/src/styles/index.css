@@ -28,3 +28,19 @@ main {
     padding-right: 50px;
     padding-top: 25px;
 }
+
+
+@media (max-width: 768px) {
+    :root {
+        --font-size-huge: 30px;
+        --font-size-large: 20px;
+        --font-size-medium: 18px;
+        --font-size-small: 16px;
+        --font-size-extra-small: 14px;
+    }
+    main {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 1px;
+    }
+}
