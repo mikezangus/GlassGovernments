@@ -5,7 +5,7 @@ import States from "./selections/States.jsx";
 import Districts from "./selections/Districts.jsx";
 import Candidates from "./selections/Candidates.jsx";
 import useCountDistricts from "../hooks/useCountDistricts.jsx";
-import styles from "../styles/Selections.module.css";
+import styles from "../styles/selections/Selections.module.css";
 
 
 export default function Selections(

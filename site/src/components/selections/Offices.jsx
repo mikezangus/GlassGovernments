@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useFetchOffices from "../../hooks/useFetchOffices";
-import styles from "../../styles/Switch.module.css";
+import styles from "../../styles/selections/Switch.module.css";
 
 
 function Renderer({ offices, defaultOffice, handleOfficeClick }) {

@@ -17,7 +17,6 @@ export default function useFetchConstituencies(year, state, candID, setConstitue
                     );
                 }
                 let data = await response.json();
-                console.log("DATA: ", data)
                 setConstituencies(data);
             } catch (err) {
                 console.error(name, " | Error: ", err);

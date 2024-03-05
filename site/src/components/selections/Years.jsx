@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useFetchYears from "../../hooks/useFetchYears";
-import styles from "../../styles/Switch.module.css";
+import styles from "../../styles/selections/Switch.module.css";
 
 
 function Renderer({ years, defaultYear, handleYearClick }) {

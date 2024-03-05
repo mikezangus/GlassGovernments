@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useFetchStates from "../../hooks/useFetchStates";
 import showStateName from "../../lib/showStateName";
-import styles from "../../styles/Dropdown.module.css";
+import styles from "../../styles/selections/Dropdown.module.css";
 
 
 function Renderer({ states, selectedState, isOpen, toggleDropdown, handleStateClick }) {

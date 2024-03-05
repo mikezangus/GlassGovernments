@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useFetchDistricts from "../../hooks/useFetchDistricts";
-import styles from "../../styles/Dropdown.module.css";
+import styles from "../../styles/selections/Dropdown.module.css";
 
 
 function Renderer({ districts, selectedDistrict, isOpen, toggleDropdown, handleDistrictClick }) {
