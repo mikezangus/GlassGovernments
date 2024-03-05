@@ -44,7 +44,7 @@ function CreateGraph({ data }) {
             // console.log("ELEMENT: ", element)
             // console.log("WIDTH BEFORE: ", element.style.width)
 
-            element.style.width = `${totalWidth}px`;
+            graphCanvasRef.current.style.width = `${totalWidth}px`;
 
             // console.log("WIDTH AFTER: ", element.style.width);
 
