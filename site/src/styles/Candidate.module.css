@@ -8,6 +8,12 @@
 }
 
 
+@media (max-width: 768px) {
+    .candidateContainer {
+        width: 100%
+    }
+}
+
 .candidateInfo {
     box-sizing: border-box;
     color: var(--color-black);
