@@ -72,7 +72,6 @@ export default async function handler(req, res) {
                 .aggregate(pipeline)
                 .toArray();
             res.json(data);
-            console.log("GRAPH.JS API: ", data)
         } catch (err) {
             console.error(name, " | Error: ", err);
             res

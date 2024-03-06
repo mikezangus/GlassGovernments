@@ -6,7 +6,6 @@ import styles from "../../styles/selections/Dropdown.module.css";
 
 
 function Renderer({ candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick }) {
-    // const minContributionAmount = 1000;
     return (
         <div className={styles.dropdown}>
             <div className={styles.container}>
@@ -29,19 +28,19 @@ function Renderer({ candidates, selectedCandidate, isOpen, toggleDropdown, handl
                 {isOpen && (
                     <div className={styles.menu}>
                         {candidates
-                            // .filter(candidate => candidate.totalContributionAmount > minContributionAmount)
+                            .filter(candidate => candidate.amt > 1000)
                             .map((candidate) => {
-                                const { totalContAmt, candID, name, party } = candidate;
+                                const { amt, candId, name, party } = candidate;
                                 const partyFormatted = party
                                     ? `(${party.charAt(0)})`
                                     : "";
                                 return (
                                     <button
                                         className={styles.item}
-                                        key={`${candID}`}
+                                        key={`${candId}`}
                                         onClick={() => handleCandidateClick(candidate)}
                                     >
-                                        {capitalizeWord(name)} {partyFormatted} - ${formatContAmt(totalContAmt)}
+                                        {capitalizeWord(name)} {partyFormatted} - ${formatContAmt(amt)}
                                     </button>
                                 )
                             })

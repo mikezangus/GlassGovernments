@@ -24,9 +24,12 @@ body {
 main {
     display: flex;
     justify-content: space-between;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 10%;
+    padding-right: 10%;
     padding-top: 25px;
+    /* background-color: green; */
+    flex-direction: row;
+    gap: 5%
 }
 
 
@@ -42,5 +45,7 @@ main {
         padding-left: 10px;
         padding-right: 10px;
         padding-top: 1px;
+        flex-direction: column;
+        gap: 0;
     }
 }

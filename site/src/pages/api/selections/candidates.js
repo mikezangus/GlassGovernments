@@ -28,20 +28,20 @@ export default async function handler(req, res) {
             };
             const group = {
                 _id: {
+                    candId: "$CAND_ID",
                     name: "$NAME",
-                    party: "$PARTY",
-                    candID: "$CAND_ID"
+                    party: "$PARTY"
                 },
-                totalContAmt: {
+                amt: {
                     $sum: "$conts.AMT"
                 }
             };
             const projection = {
                 _id: 0,
-                candID: "$_id.candID",
+                candId: "$_id.candId",
                 name: "$_id.name",
                 party: "$_id.party",
-                totalContAmt: 1
+                amt: 1
             };
             const pipeline = [
                 { $match: query },

@@ -14,8 +14,8 @@ import {
     TimeSeriesScale
 } from "chart.js";
 import "chartjs-adapter-moment";
-import useFetchGraph from "../../hooks/useFetchGraph";
-import styles from "../../styles/candidate/Graph.module.css";
+import useFetchGraph from "../../../hooks/useFetchGraph";
+import styles from "../../../styles/candidate/Chart.module.css";
 
 
 
@@ -33,7 +33,7 @@ ChartJS.register(
 );
 
 
-function CreateGraph({ data }) {
+function CreateChart({ data }) {
 
     const graphContainerRef = useRef();
     const totalWidth = data.labels.length * 69;
@@ -94,11 +94,11 @@ function CreateGraph({ data }) {
     return (
         <div className={styles.mainContainer}>
             <div
-                className={styles.graphContainer}
+                className={styles.chartContainer}
                 ref={graphContainerRef}
             >
                 <div
-                    className={styles.canvas}
+                    className={styles.chartCanvas}
                     style={{ width: `${totalWidth}px` }}
                 >
                     <Line
@@ -115,22 +115,22 @@ function CreateGraph({ data }) {
 
 
 
-export default function Graph({ year, state, candidate }) {
+export default function Chart({ year, state, candidate }) {
 
-    const { candID } = candidate;
+    const { candId } = candidate;
 
     const [data, setData] = useState({
         labels: [],
         datasets: []
     });
-    useFetchGraph(year, state, candID, setData);
+    useFetchGraph(year, state, candId, setData);
 
     if (!data.datasets || data.labels.length === 0) {
         return null;
     }
 
     return (
-        <CreateGraph data={data} />
+        <CreateChart data={data} />
     );
 
 };

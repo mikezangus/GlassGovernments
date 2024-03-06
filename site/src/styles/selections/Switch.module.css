@@ -3,19 +3,13 @@
     position: relative;
     margin-bottom: 25px;
     --radius: 40px;
-}
 
-@media (max-width: 768px) {
-    .switch {
-        margin-bottom: 15px;
-    }
 }
 
 .switch .buttonsContainer {
     display: inline-flex;
     position: relative;
     background-color: var(--color-offwhite);
-    box-shadow: 5px 5px 10px 0 var(--color-black);
     overflow: hidden;
     border-radius: var(--radius);
 }
@@ -41,4 +35,10 @@
     color: #000000;
     box-shadow: 1px 1px 10px 0 var(--color-darkgray);
     z-index: 1;
+}
+
+@media (max-width: 768px) {
+    .switch {
+        margin-bottom: 15px;
+    }
 }

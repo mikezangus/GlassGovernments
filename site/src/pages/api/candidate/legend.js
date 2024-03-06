@@ -2,18 +2,18 @@ import getDB from "../../../lib/mongoClient";
 
 
 export default async function handler(req, res) {
-    const name = "Constituency API";
+    const name = "Legend API";
     if (req.method === "GET") {
         try {
-            const { year, state, candID } = req.query;
-            if (!year || !state || !candID) {
+            const { year, state, candId } = req.query;
+            if (!year || !state || !candId) {
                 return res
                     .status(400)
                     .send(name, " | Prior selections required");
             }
             const db = await getDB();
             const collection = await db.collection(`${year}_conts`);
-            const query = { CAND_ID: candID };
+            const query = { CAND_ID: candId };
             const addField = {
                 fromCandState:
                     { $eq: ["$STATE", state] }
@@ -44,18 +44,10 @@ export default async function handler(req, res) {
                 { $group: group },
                 { $project: projection }
             ];
-            const pipeline2 = [
-                { $match: query }
-            ]
-            const data2 = await collection.aggregate(pipeline2).toArray();
-
-            console.log("DATA: ", data2)
-
             const data = await collection
                 .aggregate(pipeline)
                 .toArray();
             res.json(data);
-            console.log("CONSTITUENCIES: ", data);
         } catch (err) {
             console.error(name, " | Error: ", err);
             res

@@ -5,8 +5,8 @@ import useFetchCoords from "../../../hooks/useFetchCoords";
 
 export default function Map({ year, state, candidate }) {
     const [coords, setCoords] = useState([]);
-    const { candID } = candidate;
-    useFetchCoords(year, candID, setCoords);
+    const { candId } = candidate;
+    useFetchCoords(year, candId, setCoords);
     const DynamicRenderMap = dynamic(
         () => import("./RenderMap"),
         { ssr: false }
@@ -14,7 +14,7 @@ export default function Map({ year, state, candidate }) {
     return (
         <DynamicRenderMap
             state={state}
-            candID={candID}
+            candId={candId}
             coords={coords}
         />
     );

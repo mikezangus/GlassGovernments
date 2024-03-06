@@ -1,19 +1,19 @@
 import React from "react";
-import Bio from "./candidate/bio/Bio";
-import ContributionsTotal from "./candidate/contributionsTotal/ContributionsTotal";
+import Bio from "./candidate/Bio";
+import Legend from "./candidate/chart/Legend";
+import Chart from "./candidate/chart/Chart";
 import Map from "./candidate/map/Map";
-import Constituencies from "./candidate/Constituencies";
-import Graph from "./candidate/Graph";
-import styles from "../styles/Candidate.module.css";
+import Cities from "./candidate/Cities";
+import styles from "../styles/candidate/Candidate.module.css";
 
 
 export default function Candidate({ year, state, district, candidate }) {
 
     return (
 
-        <div className={styles.candidateContainer}>
+        <div className={styles.container}>
 
-            <div className={styles.candidateInfo}>
+            <div className={styles.box}>
     
                 <Bio
                     state={state}
@@ -21,17 +21,13 @@ export default function Candidate({ year, state, district, candidate }) {
                     candidate={candidate}
                 />
 
-                <ContributionsTotal
-                    candidate={candidate}
-                />
-
-                <Constituencies
+                <Legend
                     year={year}
                     state={state}
                     candidate={candidate}
                 />
 
-                <Graph
+                <Chart
                     year={year}
                     state={state}
                     candidate={candidate}
@@ -42,6 +38,12 @@ export default function Candidate({ year, state, district, candidate }) {
                     state={state}
                     candidate={candidate}
                 />
+
+                <Cities 
+                    year={year}
+                    candidate={candidate}
+                />
+
 
             </div>
     

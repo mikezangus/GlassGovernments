@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import useFetchConstituencies from "../../hooks/useFetchConstituencies";
-import calculatePercentage from "../../lib/calculatePercentage";
-import formatCurrency from "../../lib/formatCurrency";
-import showStateName from "../../lib/showStateName";
-import styles from "../../styles/Candidate.module.css";
+import useFetchLegend from "../../../hooks/useFetchLegend";
+import calculatePercentage from "../../../lib/calculatePercentage";
+import formatCurrency from "../../../lib/formatCurrency";
+import showStateName from "../../../lib/showStateName";
+import styles from "../../../styles/candidate/Chart.module.css";
 import {
     greenOpaque,
     greenTransparent,
     brownOpaque,
     brownTransparent
-} from "../../lib/colors";
+} from "../../../lib/colors";
 
 
-function Renderer({ constituencies, state, totalContAmt }) {
+function Renderer({ legend, state, amt }) {
 
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     useEffect(() => {
@@ -23,16 +23,16 @@ function Renderer({ constituencies, state, totalContAmt }) {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const sortedItems = constituencies.sort((a, b) => {
+    const sortedItems = legend.sort((a, b) => {
         return a.LOCATION === "IN"
             ? 1
             : -1
     });
     return (
-        <div className={styles.constituencies}>
+        <div className={styles.legendContainer}>
             {sortedItems.map((constituency, index) => (
                 <div
-                    className={styles.legend}
+                    className={styles.legendTitle}
                     key={index}
                     style={{
                         borderColor: `${
@@ -67,12 +67,12 @@ function Renderer({ constituencies, state, totalContAmt }) {
                                 }`
                         }
                     </div>
-                    <div className={styles.amounts}>
+                    <div className={styles.legendNums}>
                         <div>
                             {formatCurrency(constituency.AMT)}
                         </div>
                         <div>
-                            ({calculatePercentage(constituency.AMT, totalContAmt)}%)
+                            ({calculatePercentage(constituency.AMT, amt)}%)
                         </div>
                     </div>
                      
@@ -83,19 +83,18 @@ function Renderer({ constituencies, state, totalContAmt }) {
 };
 
 
-export default function Constituencies({ year, state, candidate }) {
+export default function Legend({ year, state, candidate }) {
 
-    const { candID, totalContAmt } = candidate;
+    const { candId, amt } = candidate; 
+    const [legend, setLegend] = useState([]);
 
-    const [constituencies, setConstituencies] = useState([]);
-
-    useFetchConstituencies(year, state, candID, setConstituencies);
+    useFetchLegend(year, state, candId, setLegend);
 
     return (
         <Renderer
-            constituencies={constituencies}
+            legend={legend}
             state={state}
-            totalContAmt={totalContAmt}
+            amt={amt}
         />
     );
 

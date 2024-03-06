@@ -1,10 +1,21 @@
-import React from "react";
+import React, {useEffect, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import CreateHeatmap from "./CreateHeatmap";
-import styles from "../../../styles/Candidate.module.css";
+import styles from "../../../styles/candidate/Map.module.css";
 
 
-export default function RenderMap({ state, candID, coords }) {
+export default function RenderMap({ state, candId, coords }) {
+
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => 
+            window.removeEventListener("resize", handleResize);
+    }, []);
+
     let position = []
     let zoom
     state === "AK" || state === "HI"
@@ -14,15 +25,17 @@ export default function RenderMap({ state, candID, coords }) {
         )
         : (
             position = [38, -98],
-            zoom = 4
+            isMobile 
+                ? zoom = 3
+                : zoom = 4
         );
-    
+        
     return (
 
         <div className={styles.map}>
 
             <MapContainer
-                key={`${candID}`}
+                key={`${candId}`}
                 center={position}
                 zoom={zoom}
                 maxZoom ={12}

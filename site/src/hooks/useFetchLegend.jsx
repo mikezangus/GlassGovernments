@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 
 
-export default function useFetchConstituencies(year, state, candID, setConstituencies) {
-    const name = "Fetch Constituencies Hook";
+export default function useFetchLegend(year, state, candId, setConstituencies) {
+    const name = "Fetch Legend Hook";
     useEffect(() => {
         const fetchConstituencies = async () => {
             try {
                 const params = new URLSearchParams(
-                    { year, state, candID }
+                    { year, state, candId }
                 );
-                const url = `/api/candidate/constituency?${params.toString()}`;
+                const url = `/api/candidate/legend?${params.toString()}`;
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(
@@ -22,6 +22,6 @@ export default function useFetchConstituencies(year, state, candID, setConstitue
                 console.error(name, " | Error: ", err);
             };
         };
-        fetchConstituencies(year, state, candID, setConstituencies);
-    }, [year, state, candID, setConstituencies]);
+        fetchConstituencies(year, state, candId, setConstituencies);
+    }, [year, state, candId, setConstituencies]);
 };

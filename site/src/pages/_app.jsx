@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
+import "leaflet/dist/leaflet.css";
 import Header from "../components/Header";
 import "../styles/index.css";
-import "leaflet/dist/leaflet.css";
-
 
 
 export default function App({ Component, pageProps }) {
@@ -13,7 +12,6 @@ export default function App({ Component, pageProps }) {
             { method: "POST" }
         );
     };
-
     useEffect(() => createIndexes(), []);
 
     return (
