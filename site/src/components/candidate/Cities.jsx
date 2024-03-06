@@ -1,31 +1,42 @@
 import React, { useState } from "react";
 import useFetchCities from "../../hooks/useFetchCities";
 import formatCurrency from "../../lib/formatCurrency";
+import capitalizeWord from "../../lib/capitalizeWord";
+import styles from "../../styles/candidate/Cities.module.css"
 
 
 function Renderer({ locations }) {
 
     return (
-        <>
-            <ul>
+        <div className={styles.citiesContainer}>
+            <div className={styles.citiesTitle}>
+                Top Cities
+            </div>
+  
+            <ol className={styles.citiesList}>
                 {locations.map((location, index) => (
-                    <li key={index}>
-                        {location.CITY} - {formatCurrency(location.AMT)} - {location.COUNT}
+                    <li
+                        className={styles.citiesListItem}
+                        key={index}
+                    >
+                        {capitalizeWord(location.CITY)}, {location.STATE}: {formatCurrency(location.AMT)}
                     </li>
                 ))}
-            </ul>
-        </>
+            </ol>
+        </div>
     );
 };
 
 
 export default function Cities({ year, candidate }) {
 
-    const { candID } = candidate;
+    const { candId } = candidate;
 
     const [locations, setLocations] = useState([]);
 
-    useFetchCities(year, candID, setLocations);
+    useFetchCities(year, candId, setLocations);
+
+    console.log("locations", locations)
 
     return (
         <Renderer locations={locations}/>

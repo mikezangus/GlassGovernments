@@ -23,7 +23,7 @@ export default function Selections(
 
     return (
 
-        <div className={styles.selections}>
+        <div className={styles.selectionsContainer}>
 
             <Years
                 onYearSelect={handleYearSelection}

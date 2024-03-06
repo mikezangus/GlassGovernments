@@ -5,30 +5,25 @@ export default async function handler(req, res) {
     const name = "Cities API";
     if (req.method === "GET") {
         try {
-            const { year, candID } = req.query;
-            if (!year || !candID) {
+            const { year, candId } = req.query;
+            if (!year || !candId) {
                 return res
                     .status(400)
                     .send(name, " | Prior selectons required");
             }
             const db = await getDB();
             const collection = await db.collection(`${year}_conts`);
-            const query = { CAND_ID: candID };
+            const query = { CAND_ID: candId };
             const group = {
                 _id:
                     { CITY: "$CITY", STATE: "$STATE" },
-                COUNT:
-                    { $sum: 1 },
                 AMT:
                     { $sum: "$AMT" }
             };
             const projection = {
                 _id: 0,
-                CITY:
-                    { $concat:
-                        [ "$_id.CITY", ", ", "$_id.STATE" ]
-                    },
-                COUNT: 1,
+                CITY: "$_id.CITY",
+                STATE: "$_id.STATE",
                 AMT: 1
             };
             const pipeline = [

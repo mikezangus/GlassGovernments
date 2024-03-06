@@ -11,7 +11,7 @@ export default function Candidate({ year, state, district, candidate }) {
 
     return (
 
-        <div className={styles.container}>
+        <div className={styles.candidateContainer}>
 
             <div className={styles.box}>
     
@@ -33,16 +33,18 @@ export default function Candidate({ year, state, district, candidate }) {
                     candidate={candidate}
                 />
 
+                <Cities 
+                    year={year}
+                    candidate={candidate}
+                />
+
                 <Map
                     year={year}
                     state={state}
                     candidate={candidate}
                 />
 
-                <Cities 
-                    year={year}
-                    candidate={candidate}
-                />
+
 
 
             </div>

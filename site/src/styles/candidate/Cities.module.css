@@ -1,0 +1,21 @@
+.citiesContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: -10px;
+}
+
+.citiesTitle {
+    font-size: var(--font-size-medium);
+    font-weight: bold;
+    margin-bottom: -10px;
+}
+
+.citiesList {
+    font-size: var(--font-size-extra-small);
+    margin-left: -15px;
+}
+
+.citiesListItem {
+    margin-bottom: 1px;
+}
