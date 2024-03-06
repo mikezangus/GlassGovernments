@@ -47,6 +47,7 @@
 }
 
 .candidateInfo .map {
+    height: 300px;
     margin-top: 25px;
     width: 100%;
 }
