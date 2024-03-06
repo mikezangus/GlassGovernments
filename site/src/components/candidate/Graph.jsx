@@ -13,9 +13,10 @@ import {
     TimeScale,
     TimeSeriesScale
 } from "chart.js";
-import useFetchGraph from "../../hooks/useFetchGraph";
 import "chartjs-adapter-moment";
-import styles from "../../styles/Graph.module.css";
+import useFetchGraph from "../../hooks/useFetchGraph";
+import styles from "../../styles/candidate/Graph.module.css";
+
 
 
 ChartJS.register(

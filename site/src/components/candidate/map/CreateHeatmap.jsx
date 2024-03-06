@@ -18,9 +18,10 @@ export default function CreateHeatmap({ coords }) {
         }).filter(
             point => point !== null
         );
-        const heatmapLayer = L.heatLayer(points, {
-            radius: 7, blur: 9
-        });
+        const heatmapLayer = L.heatLayer(
+            points,
+            { radius: 6, blur: 9 }
+        );
         heatmapLayer.addTo(map);
         return () => { map.removeLayer(heatmapLayer) };
     }

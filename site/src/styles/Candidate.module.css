@@ -25,33 +25,71 @@
     height: fit-content;
 }
 
-.candidateInfo .bio .name {
+.bio .name {
     font-size: var(--font-size-huge);
     font-weight: bolder;
 }
 
-.candidateInfo .bio .partyConstituency {
+.bio .partyConstituency {
     font-size: var(--font-size-medium);
     font-weight: bold;
 }
 
-.candidateInfo .contributions .total {
+.contributions .total {
     font-size: var(--font-size-medium);
     margin-top: 5px;
 }
 
-.candidateInfo .contributions .entities {
+.contributions .entities {
     width: 100%;
     font-size: var(--font-size-small);
     margin-left: 25px;
 }
 
-.candidateInfo .map {
+.map {
     height: 300px;
     margin-top: 25px;
     width: 100%;
 }
 
-.candidateInfo .constituencies {
-    font-size: var(--font-size-small);
+.constituencies {
+    font-size: var(--font-size-extra-small);
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    /* justify-content: center; */
+    gap: 5%;
+    font-weight: bold;
+    /* background-color: rgb(139, 86, 12); */
+}
+
+.legend {
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-width: 2px;
+    padding: 10px;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.amounts {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+@media (max-width: 768px) {
+    .constituencies {
+        justify-content: center;
+    }
+    .legend {
+        width: 41%;
+    }
+    .amounts {
+        flex-direction: column;
+        gap: 0px
+    }
 }
