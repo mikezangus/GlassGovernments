@@ -29,6 +29,7 @@ function Renderer({ candidates, selectedCandidate, isOpen, toggleDropdown, handl
                     <div className={styles.menu}>
                         {candidates
                             .filter(candidate => candidate.amt > 1000)
+                            .sort((a, b) => b.amt - a.amt)
                             .map((candidate) => {
                                 const { amt, candId, name, party } = candidate;
                                 const partyFormatted = party
