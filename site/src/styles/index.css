@@ -5,7 +5,7 @@
     --color-darkgray: #151515;
     --color-black: #000000;
     --transition-duration: 0.3s;
-    --font-size-huge: 60px;
+    --font-size-huge: 50px;
     --font-size-large: 26px;
     --font-size-medium: 23px;
     --font-size-small: 20px;
@@ -24,12 +24,13 @@ body {
 main {
     display: flex;
     justify-content: space-between;
-    padding-left: 10%;
-    padding-right: 10%;
-    padding-top: 25px;
-    /* background-color: green; */
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 25px;
     flex-direction: row;
-    gap: 5%
+    position: relative;
+    /* background-color: green; */
+
 }
 
 

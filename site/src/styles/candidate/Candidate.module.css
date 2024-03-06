@@ -1,6 +1,5 @@
-.container {
-    width: 65%;
-    /* background-color: blue; */
+.candidateContainer {
+    width: 60%
 }
 
 .box {
@@ -16,7 +15,7 @@
 }
 
 @media (max-width: 768px) {
-    .container {
+    .candidateContainer {
         width: 100%
     }
 }

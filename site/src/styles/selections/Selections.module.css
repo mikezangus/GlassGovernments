@@ -1,12 +1,12 @@
-.selections {
+.selectionsContainer {
     display: flex;
+    min-width: 35%;
     flex-direction: column;
-    width: 30%;
-    /* background-color: red; */
+    /* background-color: rgb(253, 0, 0); */
 }
 
 @media (max-width: 768px) {
-    .selections {
+    .selectionsContainer {
         width: 100%;
     }
 }
