@@ -4,9 +4,18 @@ import CreateHeatmap from "./CreateHeatmap";
 import styles from "../../../styles/Candidate.module.css";
 
 
-export default function RenderMap({ candID, coords }) {
-
-    const position = [39.8282, -98.5696];
+export default function RenderMap({ state, candID, coords }) {
+    let position = []
+    let zoom
+    state === "AK" || state === "HI"
+        ? (
+            position = [50, -115],
+            zoom = 2
+        )
+        : (
+            position = [38, -98],
+            zoom = 4
+        );
     
     return (
 
@@ -15,8 +24,8 @@ export default function RenderMap({ candID, coords }) {
             <MapContainer
                 key={`${candID}`}
                 center={position}
-                zoom={4}
-                maxZoom ={10}
+                zoom={zoom}
+                maxZoom ={12}
                 style={{ height: "100%", width: "100%" }}
             >
 

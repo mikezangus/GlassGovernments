@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import useFetchCoords from "../../../hooks/useFetchCoords";
 
 
-export default function Map({ year, candidate }) {
+export default function Map({ year, state, candidate }) {
     const [coords, setCoords] = useState([]);
     const { candID } = candidate;
     useFetchCoords(year, candID, setCoords);
@@ -13,6 +13,7 @@ export default function Map({ year, candidate }) {
     );
     return (
         <DynamicRenderMap
+            state={state}
             candID={candID}
             coords={coords}
         />

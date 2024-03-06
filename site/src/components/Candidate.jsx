@@ -39,6 +39,7 @@ export default function Candidate({ year, state, district, candidate }) {
 
                 <Map
                     year={year}
+                    state={state}
                     candidate={candidate}
                 />
 
