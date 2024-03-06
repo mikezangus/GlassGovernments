@@ -34,30 +34,14 @@ ChartJS.register(
 
 function CreateGraph({ data }) {
 
-    const graphCanvasRef = useRef();
+    const graphContainerRef = useRef();
     const totalWidth = data.labels.length * 69;
 
     useEffect(() => {
-        const element = graphCanvasRef.current;
+        const element = graphContainerRef.current;
         if (element) {
-
-            // console.log("ELEMENT: ", element)
-            // console.log("WIDTH BEFORE: ", element.style.width)
-
-            graphCanvasRef.current.style.width = `${totalWidth}px`;
-
-            // console.log("WIDTH AFTER: ", element.style.width);
-
-            // console.log("SCROLL OUTSIDE TIMEOUT: ", element.scrollLeft);
-            // setTimeout(() => {
-            //     console.log("SCROLL INSIDE TIMEOUT: ", element.scrollLeft);
-            //     console.log("element.scrollWidth: ", element.scrollWidth);
-            //     console.log("element.clientWidth: ", element.clientWidth)
-            //     const maxScrollLeft = element.scrollWidth - element.clientWidth;
-            //     console.log("maxScrollLeft: ", maxScrollLeft);
-            //     element.scrollLeft = 1000;
-            //     console.log("SCROLL AFTER ASSIGNMENT: ", element.scrollLeft);
-            // }, 10000)
+            element.style.width = `${totalWidth}px`;
+            element.scrollLeft = totalWidth;
         }
     }, [data.labels.length, totalWidth]);
 
@@ -106,28 +90,28 @@ function CreateGraph({ data }) {
 
     };
 
-
     return (
-        <div className={styles.graphContainer}>
-            <div className={styles.graphCanvas} ref={graphCanvasRef}>
-                <Line
-                    data={data}
-                    options={options}
-                />
+        <div className={styles.mainContainer}>
+            <div
+                className={styles.graphContainer}
+                ref={graphContainerRef}
+            >
+                <div
+                    className={styles.canvas}
+                    style={{ width: `${totalWidth}px` }}
+                >
+                    <Line
+                        data={data}
+                        options={options}
+                    />
+                </div>
             </div>
         </div>
+
     );
 
 };
 
-
-function Renderer({ data }) {
-    return (
-        <div className={styles.container}>
-            <CreateGraph data={data} />
-        </div>
-    );
-}
 
 
 export default function Graph({ year, state, candidate }) {
@@ -145,7 +129,7 @@ export default function Graph({ year, state, candidate }) {
     }
 
     return (
-        <Renderer data={data} />
+        <CreateGraph data={data} />
     );
 
 };

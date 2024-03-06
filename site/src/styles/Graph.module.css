@@ -1,8 +1,8 @@
-.container {
+.mainContainer {
     display: flex;
-    /* background-color: pink; */
     width: 100%;
     height: 300px;
+
 }
 
 
@@ -12,12 +12,10 @@
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-    /* background-color: aqua; */
+
 }
 
 
-.graphCanvas {
+.canvas {
     height: 100%;
-    margin-top: 5px;
-    padding-bottom: 5px;
 }
