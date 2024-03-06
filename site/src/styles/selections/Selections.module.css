@@ -1,6 +1,6 @@
 .selectionsContainer {
     display: flex;
-    min-width: 35%;
+    width: 35%;
     flex-direction: column;
     /* background-color: rgb(253, 0, 0); */
 }

@@ -6,6 +6,8 @@
 }
 
 .button {
+    white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
     outline: none;
     box-sizing: border-box;
@@ -24,6 +26,7 @@
 
 .button.active {
     border-radius: 22px 22px 0 0;
+    width: 100%;
 }
 
 .menu {
@@ -39,6 +42,8 @@
 
 .item {
     box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     display: flex;
     font-size: var(--font-size-extra-small);
     display: flex;
