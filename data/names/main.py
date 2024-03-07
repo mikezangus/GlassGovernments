@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import re
+import subprocess
 import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,8 +14,8 @@ from load_df_from_mongo import load_df_from_mongo
 from upload_df_to_mongo import upload_df_to_mongo
 from firefox.firefox_driver import main as load_firefox_driver
 
-current_idr = os.path.dirname(__file__)
-data_dir = os.path.dirname(current_idr)
+current_dir = os.path.dirname(__file__)
+data_dir = os.path.dirname(current_dir)
 sys.path.append(data_dir)
 from geography.usa.states.usa_state_loader import load_full_file
 
@@ -122,7 +123,7 @@ def process_df(df: pd.DataFrame) -> pd.DataFrame:
     df["NAME"] = None
     fails = []
     for index, row in df.iterrows():
-        progress_msg = f"{(index + 1):,}/{len(df):,}]"
+        progress_msg = f"[{(index + 1):,}/{len(df):,}]"
         try:
             driver_loaded, driver = load_firefox_driver(True)
             if not driver_loaded:
@@ -130,6 +131,7 @@ def process_df(df: pd.DataFrame) -> pd.DataFrame:
             state = convert_state_code_to_name(row["STATE"])
             office = convert_office_code_to_name(row["OFFICE"])
             query = f"{row['FEC_NAME']} {state} {office}"
+            print("")
             print(progress_msg, query)
             name = process_name(driver, query)
             if name is not None:
@@ -148,12 +150,15 @@ def process_df(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
+    caffeinate_path = os.path.join(current_dir, "caffeinate.sh")
+    subprocess.run([caffeinate_path, "start"])
     year = "2024"
     uri, db = get_mongo_info()
     input_df = load_df_from_mongo(uri, db, f"{year}_cands_raw")
     df = process_df(input_df)
     print(df.head())
     upload_df_to_mongo(uri, db, f"{year}_cands", df)
+    subprocess.run([caffeinate_path, "stop"])
     return
 
 
