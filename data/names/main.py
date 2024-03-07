@@ -1,27 +1,25 @@
+import os
 import pandas as pd
 import re
+import sys
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from typing import Literal
+
 from get_mongo_info import get_mongo_info
 from load_df_from_mongo import load_df_from_mongo
 from upload_df_to_mongo import upload_df_to_mongo
 from firefox.firefox_driver import main as load_firefox_driver
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-
-from typing import Literal
-import os
-import sys
 
 current_idr = os.path.dirname(__file__)
 data_dir = os.path.dirname(current_idr)
 sys.path.append(data_dir)
-
 from geography.usa.states.usa_state_loader import load_full_file
 
 
-def strip_string(input: str):
+def strip_string(input: str) -> str:
     output = re.sub(
         r'\s*\([^)]*\)',
         "",
@@ -30,23 +28,31 @@ def strip_string(input: str):
     return output
 
 
-def search(driver: webdriver.Firefox, query: str):
+def search(driver: webdriver.Firefox, query: str) -> None:
     url = f"https://duckduckgo.com/?q={query}"
     driver.get(url)
     return
 
 
+def click_more_results(driver: webdriver.Firefox) -> None:
+    try:
+        selector = "#more-results"
+        locator = (By.CSS_SELECTOR, selector)
+        element = WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located(locator)
+        )
+        element.click()
+        print("Clicked more results button")
+    except Exception as e:
+        print("Failed to click more results button. Error:", e)
+    return
+
+
 def open_site(driver: webdriver.Firefox) -> tuple[bool, str | None]:
-    for i in range(50):
+    for i in range(1000):
         try:
             if (i + 1) % 10 == 0:
-                results_selector = "#more-results"
-                results_locator = (By.CSS_SELECTOR, results_selector)
-                results_element = WebDriverWait(driver, 15).until(
-                    EC.presence_of_element_located(results_locator)
-                )
-                results_element.click()
-                print("Clicked more results")
+                click_more_results(driver)
             selector = f"#r1-{i} > div:nth-child(1)"
             locator = (By.CSS_SELECTOR, selector)
             element = WebDriverWait(driver, 5).until(
@@ -54,44 +60,47 @@ def open_site(driver: webdriver.Firefox) -> tuple[bool, str | None]:
             )
             url = element.text
             print(url)
-            if "wikipedia.org" in url:
-                element.click()
-                return True, "wiki"
-            elif "ballotpedia.org" in url:
+            if "https://ballotpedia.org" in url:
                 element.click()
                 return True, "ballot"
+            elif "https://en.wikipedia.org" in url:
+                element.click()
+                return True, "wiki"
         except:
             continue
     return False, None
 
 
-def find_name(driver: webdriver.Firefox, site: Literal["wiki", "ballot"]) -> str:
-    for attempt in range(15):
-        driver.refresh()
-        if attempt > 0:
-            print(f"Attempt to find name on {site} {attempt + 1}/15")
-        if site == "wiki":
-            selector = ".mw-page-title-main"
-        elif site == "ballot":
-            selector = "#firstHeading > span:nth-child(1)"
-        locator = (By.CSS_SELECTOR, selector)
-        element = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(locator)
-        )
-        name = strip_string(element.text)
-        return name
+def get_name(driver: webdriver.Firefox, site: Literal["ballot", "wiki"]) -> str | None:
+    for _ in range(15):
+        try:
+            driver.refresh()
+            if site == "ballot":
+                selector = "#firstHeading > span:nth-child(1)"
+            elif site == "wiki":
+                selector = ".mw-page-title-main"
+            locator = (By.CSS_SELECTOR, selector)
+            element = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(locator)
+            )
+            name = strip_string(element.text)
+            return name
+        except Exception as e:
+            print(f"Failed to get name from {site}. Error:", e)
+            continue
     return None
 
 
-def process(driver: webdriver.Firefox, query: str) -> str | None:
+def process_name(driver: webdriver.Firefox, query: str) -> str | None:
     search(driver, query)
     success, site = open_site(driver)
     if success:
-        name = find_name(driver, site)
-    return name
+        name = get_name(driver, site)
+        return name
+    return
 
 
-def get_state_name(state_code: str) -> str:
+def convert_state_code_to_name(state_code: str) -> str:
     states_dict = load_full_file()
     reverse_states_dict = {
         v: k for k, v in states_dict.items()
@@ -100,33 +109,41 @@ def get_state_name(state_code: str) -> str:
     return state_name
 
 
-def get_chamber(chamber_letter: str) -> str:
-    chambers_dict = {
+def convert_office_code_to_name(chamber_code: str) -> str:
+    offices__dict = {
         "H": "Congress",
         "S": "Senate"
     }
-    chamber = chambers_dict.get(chamber_letter, "")
-    return chamber
+    office = offices__dict.get(chamber_code, "")
+    return office
 
 
-def loop(df: pd.DataFrame) -> pd.DataFrame:
+def process_df(df: pd.DataFrame) -> pd.DataFrame:
     df["NAME"] = None
+    fails = []
     for index, row in df.iterrows():
-        success, driver = load_firefox_driver(True)
-        if not success:
-            return
-        state = get_state_name(row["STATE"])
-        chamber = get_chamber(row["OFFICE"])
-        query = f"{row['FEC_NAME']} {state} {chamber}"
-        print(f"\n[{(index + 1):,}/{len(df):,}] {row['FEC_NAME']}")
-        name = process(driver, query)
-        if name is not None:
-            print(f"[{(index + 1):,}/{len(df):,}] {row['FEC_NAME']} -> {name}")
-            df.at[index, "NAME"] = name
-        else:
-            print(f"[{(index + 1):,}/{len(df):,}] {row['FEC_NAME']} -> couldn't find")
-
-        driver.quit()
+        progress_msg = f"{(index + 1):,}/{len(df):,}]"
+        try:
+            driver_loaded, driver = load_firefox_driver(True)
+            if not driver_loaded:
+                return
+            state = convert_state_code_to_name(row["STATE"])
+            office = convert_office_code_to_name(row["OFFICE"])
+            query = f"{row['FEC_NAME']} {state} {office}"
+            print(progress_msg, query)
+            name = process_name(driver, query)
+            if name is not None:
+                print(progress_msg, f"{row['FEC_NAME']} -> {name}")
+                df.at[index, "NAME"] = name
+            else:
+                print(progress_msg, f"{row['FEC_NAME']} -> failed to find name")
+                df.at[index, "NAME"] = "None"
+                fails.append(query)
+            driver.quit()
+        except Exception as e:
+            print(progress_msg, "Error:", e)
+            continue
+    print("Fails:\n", fails)
     return df
 
 
@@ -134,11 +151,11 @@ def main():
     year = "2024"
     uri, db = get_mongo_info()
     input_df = load_df_from_mongo(uri, db, f"{year}_cands_raw")
-    print(input_df.head())
-    x_df = input_df.head(5)
-    df = loop(input_df)
+    df = process_df(input_df)
     print(df.head())
     upload_df_to_mongo(uri, db, f"{year}_cands", df)
     return
 
-main()
+
+if __name__ == "__main__":
+    main()
