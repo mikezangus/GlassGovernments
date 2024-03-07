@@ -21,7 +21,7 @@ function Renderer({ candidates, selectedCandidate, isOpen, toggleDropdown, handl
                 >
                     {
                         selectedCandidate
-                            ? `Candidate: ${capitalizeWord(selectedCandidate.name)}`
+                            ? `Candidate: ${selectedCandidate.name}`
                             : "Select a candidate ▽"
                     }
                 </button>
