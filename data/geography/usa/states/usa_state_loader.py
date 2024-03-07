@@ -2,6 +2,13 @@ import json
 import os
 
 
+def load_full_file():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(current_dir, "usa_states_all.json"), "r") as usa_states_all_file:
+        states_dict = json.load(usa_states_all_file)
+        return states_dict
+
+
 def load_states():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(current_dir, "usa_states_all.json"), "r") as usa_states_all_file:
