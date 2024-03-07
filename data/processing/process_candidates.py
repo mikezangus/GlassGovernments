@@ -38,7 +38,7 @@ def main(year: str = None):
     df = rename_cand_cols(df)
     df = update_districts(df)
     df = sanitize_df(df, "cand")
-    upload_df(f"{year}_cands", uri, df, "append")
+    upload_df(f"{year}_cands_raw", uri, df, "append")
 
     spark.stop()
     print(f"\nFinished processing Candidates\n{'-' * 100}\n{'-' * 100}\n")

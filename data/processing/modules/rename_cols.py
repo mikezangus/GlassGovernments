@@ -3,7 +3,7 @@ from pyspark.sql import DataFrame
 
 def rename_cand_cols(df: DataFrame) -> DataFrame:
     df = df \
-        .withColumnRenamed("CAND_NAME", "NAME") \
+        .withColumnRenamed("CAND_NAME", "FEC_NAME") \
         .withColumnRenamed("CAND_PTY_AFFILIATION", "PARTY") \
         .withColumnRenamed("CAND_ELECTION_YR", "YEAR") \
         .withColumnRenamed("CAND_OFFICE_ST", "STATE") \

@@ -19,7 +19,7 @@ def set_cand_cols(mode: Literal["input", "output"], headers: list = None) -> lis
     elif mode == "output":
         cols = [
             "CAND_ID",
-            "NAME",
+            "FEC_NAME",
             "PARTY",
             "YEAR",
             "STATE",
