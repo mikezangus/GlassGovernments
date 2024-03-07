@@ -1,6 +1,5 @@
 import { useState } from "react";
 import useFetchCandidates from "../../hooks/useFetchCandidates";
-import capitalizeWord from "../../lib/capitalizeWord";
 import formatContAmt from "../../lib/formatContAmt";
 import styles from "../../styles/selections/Dropdown.module.css";
 
@@ -41,7 +40,7 @@ function Renderer({ candidates, selectedCandidate, isOpen, toggleDropdown, handl
                                         key={`${candId}`}
                                         onClick={() => handleCandidateClick(candidate)}
                                     >
-                                        {capitalizeWord(name)} {partyFormatted} - ${formatContAmt(amt)}
+                                        {name} {partyFormatted} - ${formatContAmt(amt)}
                                     </button>
                                 )
                             })
