@@ -40,6 +40,8 @@
 
 .menu {
 
+    z-index: -1;
+
     max-height: 310px;
 
     box-sizing: border-box;
