@@ -34,7 +34,8 @@ main {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
+
     :root {
         --font-size-huge: 40px;
         --font-size-large: 20px;
@@ -43,9 +44,11 @@ main {
         --font-size-extra-small: 14px;
         --shadow: 0px 0px 15px var(--color-black);
     }
+
     main {
         flex-direction: column;
         margin-top: calc(5% + 75px);
         gap: 25px
     }
+
 }

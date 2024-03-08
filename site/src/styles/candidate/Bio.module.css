@@ -17,7 +17,7 @@
     font-size: var(--font-size-medium);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
     .partyConstituencyContainer {
         flex-direction: column;
     }

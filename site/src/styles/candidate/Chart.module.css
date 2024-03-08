@@ -17,6 +17,35 @@
     padding-bottom: 28px;
 }
 
+
+.digit7 {
+    height: 100%;
+    width: 100%;
+}
+
+.digit6 {
+    height: 100%;
+    width: 100%;
+}
+
+.digit5 {
+    height: 100%;
+    width: 100%;
+
+}
+
+.digit4 {
+    height: 100%;
+    width: 100%;
+
+}
+
+.digit3 {
+    height: 100%;
+    width: 100%;
+
+}
+
 .chartContainer {
     display: flex;
     margin-right: auto;
@@ -37,7 +66,7 @@
     height: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
 
     .mainContainer {
         height: 250px;
