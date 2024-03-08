@@ -72,6 +72,7 @@
     padding-right: var(--radius);
     padding-bottom: 15px;
     background-color: transparent;
+    color: var(--black);
     font-size: var(--font-size-extra-small);
     transition: background-color var(--transition-duration) ease;
 }
