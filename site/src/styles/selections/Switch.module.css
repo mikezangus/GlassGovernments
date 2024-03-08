@@ -1,44 +1,41 @@
-.switch {
-    display: inline-block;
-    position: relative;
-    margin-bottom: 25px;
+
+
+.switchContainer {
+    display: flex;
     --radius: 40px;
-
 }
 
-.switch .buttonsContainer {
-    display: inline-flex;
+.buttonsContainer {
+    display: flex;
     position: relative;
-    background-color: var(--color-offwhite);
-    overflow: hidden;
     border-radius: var(--radius);
+    background-color: var(--color-offwhite);
 }
 
-.switch .button {
-    width: 115px;
-    font-size: var(--font-size-small);
-    padding: 10px;
-    border: none;
-    background-color: transparent;
-    color: var(--color-gray);
+.button {
     cursor: pointer;
-    outline: none;
+    width: 115px;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px;
+    background-color: var(--color-offwhite);
+    color: var(--color-gray);
+    font-size: var(--font-size-small);
     transition:
         background-color var(--transition-duration),
         color var(--transition-duration),
         box-shadow var(--transition-duration);
-    border-radius: var(--radius);
 }
 
-.switch .button.active {
-    background-color: var(--color-white);
-    color: #000000;
-    box-shadow: 1px 1px 10px 0 var(--color-darkgray);
+.button.active {
     z-index: 1;
+    background-color: var(--color-white);
+    color: var(--color-black);
+    box-shadow: 1px 1px 10px 0 var(--color-black);
 }
 
 @media (max-width: 768px) {
-    .switch {
-        margin-bottom: 15px;
+    .button {
+        width: 100px;
     }
 }

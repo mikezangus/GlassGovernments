@@ -5,7 +5,7 @@ import styles from "../../styles/selections/Switch.module.css";
 
 function Renderer({ years, defaultYear, handleYearClick }) {
     return (
-        <div className={styles.switch}>
+        <div className={styles.switchContainer}>
             <div className={styles.buttonsContainer}>
                 {years.map((year) => (
                     <button

@@ -1,7 +1,6 @@
 .container {
     display: inline-block;
     position: relative;
-    margin-bottom: 25px;
     width: 100%;
 }
 
@@ -61,6 +60,5 @@
 @media (max-width: 768px) {
     .container {
         width: 100%;
-        margin-bottom: 15px;
     }
 }

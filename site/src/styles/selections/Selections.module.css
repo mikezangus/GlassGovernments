@@ -1,12 +1,18 @@
 .selectionsContainer {
+    margin-right: auto;
+    position: fixed;
     display: flex;
-    width: 35%;
     flex-direction: column;
-    /* background-color: rgb(253, 0, 0); */
+    width: 25%;
+    height: min-content;
+    gap: 25px
+    /* background-color: rgba(253, 0, 0, 0.5); */
 }
 
 @media (max-width: 768px) {
     .selectionsContainer {
+        position: relative;
         width: 100%;
+        gap: 15px;
     }
 }

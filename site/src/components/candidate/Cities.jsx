@@ -36,8 +36,6 @@ export default function Cities({ year, candidate }) {
 
     useFetchCities(year, candId, setLocations);
 
-    console.log("locations", locations)
-
     return (
         <Renderer locations={locations}/>
     );

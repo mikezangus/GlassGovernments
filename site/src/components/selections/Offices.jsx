@@ -12,7 +12,7 @@ function Renderer({ offices, defaultOffice, handleOfficeClick }) {
     };
     
     return (
-        <div className={styles.switch}>
+        <div className={styles.switchContainer}>
             <div className={styles.buttonsContainer}>
                 {offices.map((office) => (
                     <button

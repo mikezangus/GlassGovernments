@@ -1,21 +1,28 @@
 .candidateContainer {
-    width: 60%
+    margin-left: auto;
+    width: 65%;
 }
 
 .box {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    color: var(--color-black);
     width: 100%;
-    padding: 20px;
-    border-radius: 20px;
-    background-color: var(--color-white);
     height: fit-content;
+    border-radius: 20px;
+    padding: 25px;
+    background-color: var(--color-white);
+    color: var(--color-black);
 }
 
 @media (max-width: 768px) {
+
     .candidateContainer {
-        width: 100%
+        width: 100%;
     }
+
+    .box {
+        padding: 20px;
+    }
+
 }

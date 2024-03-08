@@ -1,7 +1,6 @@
 .map {
     height: 375px;
     width: 100%;
-    margin-bottom: 0px;
 }
 
 @media (max-width: 768px) {
