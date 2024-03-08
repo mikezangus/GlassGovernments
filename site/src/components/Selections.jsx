@@ -14,7 +14,7 @@ export default function Selections(
         handleOfficeSelection, selectedOffice,
         handleStateSelection, selectedState,
         handleDistrictSelection, selectedDistrict,
-        handleCandidateSelection
+        handleCandidateSelection, selectedCandidate
     }
 ) {
 
@@ -67,6 +67,7 @@ export default function Selections(
                     office={selectedOffice}
                     state={selectedState}
                     district={selectedDistrict}
+                    selectedCandidate={selectedCandidate}
                     onCandidateSelect={handleCandidateSelection}
                 />
             )}

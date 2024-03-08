@@ -45,6 +45,7 @@ export default function Home() {
             handleDistrictSelection={handleDistrictSelection}
             selectedDistrict={selectedDistrict}
             handleCandidateSelection={handleCandidateSelection}
+            selectedCandidate={selectedCandidate}
         />
 
         {selectedYear && selectedOffice && selectedState && selectedDistrict && selectedCandidate && (

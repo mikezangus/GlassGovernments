@@ -77,10 +77,9 @@ function Renderer({ candidates, selectedCandidate, isOpen, toggleDropdown, handl
 };
 
 
-export default function Candidates({ year, office, state, district, onCandidateSelect }) {
+export default function Candidates({ year, office, state, district, selectedCandidate, onCandidateSelect }) {
 
     const [candidates, setCandidates] = useState([]);
-    const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
     useFetchCandidates(year, office, state, district, setCandidates);
@@ -88,7 +87,6 @@ export default function Candidates({ year, office, state, district, onCandidateS
     const toggleDropdown = () => setIsOpen(!isOpen);
     const handleCandidateClick = (candidate) => {
         onCandidateSelect(candidate);
-        setSelectedCandidate(candidate);
         setIsOpen(false);
     };
 
