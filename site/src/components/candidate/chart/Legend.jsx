@@ -14,7 +14,7 @@ import {
 
 function Renderer({ legend, state, amt }) {
 
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768);

@@ -32,12 +32,14 @@ ChartJS.register(
 );
 
 function GetYAxisLabels({ inputData }) {
+
     const sums = inputData.labels.map((_, idx) => (
         inputData.datasets.reduce((sum, dataset) => (
             sum + (dataset.data[idx] || 0)
         ), 0)
     ));
     const maxSum = Math.max(...sums);
+
     const data = {
         labels: inputData.labels,
         datasets: [{
@@ -46,6 +48,7 @@ function GetYAxisLabels({ inputData }) {
             ).fill(null)
         }]
     };
+
     const options = {
         scales: {
             x: {
@@ -74,9 +77,13 @@ function GetYAxisLabels({ inputData }) {
         maintainAspectRatio: false,
         responsive: true
     };
+
     return (
         <div className={styles.yAxisContainer}>
-            <Line data={data} options={options} />
+            <Line
+                data={data}
+                options={options}
+            />
         </div>
     )
 }
@@ -84,10 +91,10 @@ function GetYAxisLabels({ inputData }) {
 
 function CreateChart({ data }) {
 
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
+            setIsMobile(window.innerWidth < 820);
         };
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);

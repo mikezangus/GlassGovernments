@@ -6,7 +6,7 @@ import styles from "../../../styles/candidate/Map.module.css";
 
 export default function RenderMap({ state, candId, coords }) {
 
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768);
