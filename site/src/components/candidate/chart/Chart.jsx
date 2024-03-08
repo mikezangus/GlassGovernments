@@ -18,7 +18,6 @@ import useFetchGraph from "../../../hooks/useFetchGraph";
 import styles from "../../../styles/candidate/Chart.module.css";
 
 
-
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -35,16 +34,45 @@ ChartJS.register(
 
 function CreateChart({ data }) {
 
-    const graphContainerRef = useRef();
-    const totalWidth = data.labels.length * 69;
-
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     useEffect(() => {
-        const element = graphContainerRef.current;
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    let labelSpacing
+    isMobile ? labelSpacing = 75 : labelSpacing = 100
+
+    const chartContainerRef = useRef(null);
+    const [chartContainerWidth, setChartContainerWidth] = useState(0);
+    useEffect(() => {
+        const updateChartContainerWidth = () => {
+            if (chartContainerRef.current) {
+                setChartContainerWidth(chartContainerRef.current.offsetWidth)
+            }
+        };
+        updateChartContainerWidth();
+        window.addEventListener("resize", updateChartContainerWidth);
+        return () => window.removeEventListener("resize", updateChartContainerWidth)
+    }, []);
+
+    const labelCount = data.labels.length;
+    let chartWidth = labelCount * labelSpacing;
+    if (chartWidth < chartContainerWidth) {
+        chartWidth = chartContainerWidth
+    }
+
+    const chartScrollContainerRef = useRef();
+    useEffect(() => {
+        const element = chartScrollContainerRef.current;
         if (element) {
-            element.style.width = `${totalWidth}px`;
-            element.scrollLeft = totalWidth;
+            element.style.width = `${chartWidth}px`;
+            element.scrollLeft = chartWidth;
         }
-    }, [data.labels.length, totalWidth]);
+    }, [data.labels.length, chartWidth]);
 
     const options = {
         scales: {
@@ -92,14 +120,17 @@ function CreateChart({ data }) {
     };
 
     return (
-        <div className={styles.mainContainer}>
+        <div
+            className={styles.chartContainer}
+            ref={chartContainerRef}
+        >
             <div
-                className={styles.chartContainer}
-                ref={graphContainerRef}
+                className={styles.chartScrollContainer}
+                ref={chartScrollContainerRef}
             >
                 <div
                     className={styles.chartCanvas}
-                    style={{ width: `${totalWidth}px` }}
+                    style={{ width: chartWidth }}
                 >
                     <Line
                         data={data}
