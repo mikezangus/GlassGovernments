@@ -31,6 +31,56 @@ ChartJS.register(
     TimeSeriesScale
 );
 
+function GetYAxisLabels({ inputData }) {
+    const sums = inputData.labels.map((_, idx) => (
+        inputData.datasets.reduce((sum, dataset) => (
+            sum + (dataset.data[idx] || 0)
+        ), 0)
+    ));
+    const maxSum = Math.max(...sums);
+    const data = {
+        labels: inputData.labels,
+        datasets: [{
+            data: new Array(
+                inputData.labels.length
+            ).fill(null)
+        }]
+    };
+    const options = {
+        scales: {
+            x: {
+                display: false
+            },
+            y: {
+                beginAtZero: true,
+                stacked: true,
+                display: true,
+                suggestedMax: maxSum,
+                position: "right",
+                grid: {
+                    drawBorder: false,
+                    drawOnChartArea: false,
+                },
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                enabled: false
+            }
+        },
+        maintainAspectRatio: false,
+        responsive: true
+    };
+    return (
+        <div className={styles.yAxisContainer}>
+            <Line data={data} options={options} />
+        </div>
+    )
+}
+
 
 function CreateChart({ data }) {
 
@@ -103,6 +153,14 @@ function CreateChart({ data }) {
                 stacked: true,
                 display: true,
                 position: "right",
+                grid: {
+                    drawBorder: true,
+                    drawOnChartArea: true
+                },
+                ticks: {
+                    display: false,
+                    autoSkip: false
+                }
             }
         },
         plugins: {
@@ -120,6 +178,7 @@ function CreateChart({ data }) {
     };
 
     return (
+
         <div
             className={styles.chartContainer}
             ref={chartContainerRef}
@@ -161,7 +220,13 @@ export default function Chart({ year, state, candidate }) {
     }
 
     return (
+        <div className={styles.mainContainer}>
+        <GetYAxisLabels inputData={data} />
         <CreateChart data={data} />
+
+
+
+        </div>
     );
 
 };

@@ -3,7 +3,7 @@ import useFetchLegend from "../../../hooks/useFetchLegend";
 import calculatePercentage from "../../../lib/calculatePercentage";
 import formatCurrency from "../../../lib/formatCurrency";
 import showStateName from "../../../lib/showStateName";
-import styles from "../../../styles/candidate/Chart.module.css";
+import styles from "../../../styles/candidate/Legend.module.css";
 import {
     greenOpaque,
     greenTransparent,
