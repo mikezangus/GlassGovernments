@@ -4,48 +4,72 @@ import formatContAmt from "../../lib/formatContAmt";
 import styles from "../../styles/selections/Dropdown.module.css";
 
 
+function RenderButton({ selectedCandidate, isOpen, toggleDropdown }) {
+    return (
+        <button
+            className={`
+                ${styles.button}
+                ${isOpen ? styles.active : ""}
+            `}
+            onClick={toggleDropdown}
+        >
+            {
+                selectedCandidate
+                    ? `Candidate: ${selectedCandidate.name}`
+                    : "Select a candidate"
+            }
+        </button>
+    );
+};
+
+
+function RenderMenuItem({ candidate, handleCandidateClick }) {
+    const { amt, candId, name, party } = candidate;
+    const partyLetter = party
+        ? `(${party.charAt(0)})`
+        : "";
+    return (
+        <button
+            className={styles.item}
+            key={`${candId}`}
+            onClick={() => handleCandidateClick(candidate)}
+        >
+            {name} {partyLetter} - ${formatContAmt(amt)}
+        </button>
+    );
+};
+
+
+function RenderMenu({ candidates, handleCandidateClick }) {
+    return (
+        <div className={styles.menu}>
+            {candidates
+                .filter(candidate => candidate.amt > 1000)
+                .sort((a, b) => b.amt - a.amt)
+                .map((candidate) => {
+                    return RenderMenuItem({ candidate, handleCandidateClick })
+                })
+            }
+        </div>
+    );
+};
+
+
 function Renderer({ candidates, selectedCandidate, isOpen, toggleDropdown, handleCandidateClick }) {
     return (
         <div className={styles.dropdown}>
             <div className={styles.container}>
-                <button
-                    className={
-                        `${styles.button}
-                        ${isOpen
-                            ? styles.active
-                            : ""
-                        }`
-                    }
-                    onClick={toggleDropdown}
-                >
-                    {
-                        selectedCandidate
-                            ? `Candidate: ${selectedCandidate.name}`
-                            : "Select a candidate ▽"
-                    }
-                </button>
+                <RenderButton
+                    selectedCandidate={selectedCandidate}
+                    isOpen={isOpen}
+                    toggleDropdown={toggleDropdown}
+                />
+
                 {isOpen && (
-                    <div className={styles.menu}>
-                        {candidates
-                            .filter(candidate => candidate.amt > 1000)
-                            .sort((a, b) => b.amt - a.amt)
-                            .map((candidate) => {
-                                const { amt, candId, name, party } = candidate;
-                                const partyFormatted = party
-                                    ? `(${party.charAt(0)})`
-                                    : "";
-                                return (
-                                    <button
-                                        className={styles.item}
-                                        key={`${candId}`}
-                                        onClick={() => handleCandidateClick(candidate)}
-                                    >
-                                        {name} {partyFormatted} - ${formatContAmt(amt)}
-                                    </button>
-                                )
-                            })
-                        }
-                    </div>
+                    <RenderMenu 
+                        candidates={candidates}
+                        handleCandidateClick={handleCandidateClick}
+                    />
                 )}
             </div>
         </div>

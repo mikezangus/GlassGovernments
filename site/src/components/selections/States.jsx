@@ -4,40 +4,57 @@ import showStateName from "../../lib/showStateName";
 import styles from "../../styles/selections/Dropdown.module.css";
 
 
-function Renderer({ states, selectedState, isOpen, toggleDropdown, handleStateClick }) {
+function RenderButton({ isOpen, toggleDropdown, selectedState }) {
+    return (
+        <button
+            className={`
+                ${styles.button}
+                ${isOpen ? styles.active : ""}
+            `}
+            onClick={toggleDropdown}
+        >
+            {
+                selectedState
+                    ? `State: ${showStateName(selectedState)}`
+                    : "Select a state"
+            }
+        </button>
+    );
+};
+
+
+function RenderMenu({ states, handleStateClick }) {
+    return (
+        <div className={styles.menu}>
+            {states.map((state) => (
+                <button
+                    className={styles.item}
+                    key={state}
+                    onClick={() => handleStateClick(state)}
+                >
+                    {showStateName(state)}
+                </button>
+            ))}
+        </div>
+    );
+};
+
+
+function Renderer({ isOpen, toggleDropdown, selectedState, states, handleStateClick }) {
     return (
         <div className={styles.container}>
-            <button
-                    className={
-                        `${styles.button}
-                        ${isOpen
-                            ? styles.active
-                            : ""
-                        }`
-                    }
-                    onClick={toggleDropdown}
-                >
-                    {
-                        selectedState
-                            ? `State: ${showStateName(selectedState)}`
-                            : "Select a state ▽"
-                    }
-                </button>
-                {isOpen && (
-                    <div className={styles.menu}>
-                        {states.map((state) => (
-                            <button
-                                className={styles.item}
-                                key={state}
-                                onClick={() => handleStateClick(state)}
-                            >
-                                {showStateName(state)}
-                            </button>
-                        ))}
-                    </div>
-                )}
-            </div>
-
+            <RenderButton
+                isOpen={isOpen}
+                toggleDropdown={toggleDropdown}
+                selectedState={selectedState}
+            />
+            {isOpen && (
+                <RenderMenu
+                    states={states}
+                    handleStateClick={handleStateClick}
+                />
+            )}
+        </div>
     );
 };
 

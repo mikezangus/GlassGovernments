@@ -3,36 +3,45 @@ import useFetchOffices from "../../hooks/useFetchOffices";
 import styles from "../../styles/selections/Switch.module.css";
 
 
-function Renderer({ offices, defaultOffice, handleOfficeClick }) {
-
+function RenderItem({ office, defaultOffice, handleOfficeClick }) {
     const officeNames = {
         H: "House",
         P: "Presidency",
         S: "Senate"
     };
-    
+    return (
+        <button
+            key={office}
+            className={`
+                ${styles.button}
+                ${
+                    defaultOffice === office
+                        ? styles.active
+                        : ""
+                }
+            `}
+            onClick={() => handleOfficeClick(office)}
+        >
+            {officeNames[office] || office}
+        </button>
+    );
+};
+
+
+function Renderer({ offices, defaultOffice, handleOfficeClick }) {
     return (
         <div className={styles.switchContainer}>
             <div className={styles.buttonsContainer}>
                 {offices.map((office) => (
-                    <button
-                        key={office}
-                        className={
-                            `${styles.button}
-                            ${defaultOffice === office
-                                ? styles.active
-                                : ""
-                            }`
-                        }
-                        onClick={() => handleOfficeClick(office)}
-                    >
-                        {officeNames[office] || office}
-                    </button>
+                    <RenderItem
+                        office={office}
+                        defaultOffice={defaultOffice}
+                        handleOfficeClick={handleOfficeClick}
+                    />
                 ))}
             </div>
         </div>
     );
-    
 };
 
 

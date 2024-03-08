@@ -3,24 +3,36 @@ import useFetchYears from "../../hooks/useFetchYears";
 import styles from "../../styles/selections/Switch.module.css";
 
 
+function RenterItem({ year, defaultYear, handleYearClick }) {
+    return (
+        <button
+            key={year}
+            className={`
+                ${styles.button}
+                ${
+                    defaultYear === year
+                        ? `${styles.active}`
+                        : ""
+                }
+            `}
+            onClick={() => handleYearClick(year)}
+        >
+            {year}
+        </button>
+    );
+};
+
+
 function Renderer({ years, defaultYear, handleYearClick }) {
     return (
         <div className={styles.switchContainer}>
             <div className={styles.buttonsContainer}>
                 {years.map((year) => (
-                    <button
-                        key={year}
-                        className={
-                            `${styles.button}
-                            ${defaultYear === year
-                                ? `${styles.active}`
-                                : ""
-                            }`
-                        }
-                        onClick={() => handleYearClick(year)}
-                    >
-                        {year}
-                    </button>
+                    <RenterItem
+                        year={year}
+                        defaultYear={defaultYear}
+                        handleYearClick={handleYearClick}
+                    />
                 ))}
             </div>
         </div>
