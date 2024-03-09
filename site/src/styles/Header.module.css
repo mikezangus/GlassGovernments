@@ -10,6 +10,7 @@
     background-color: var(--color-darkgray-transparent);
     height: 75px;
     align-items: center;
+    box-shadow: var(--shadow);
 }
 
 .headerItemsContainer {
