@@ -47,7 +47,7 @@ main {
 
     main {
         flex-direction: column;
-        margin-top: calc(5% + 75px);
+        margin-top: calc(8% + 75px);
         gap: 25px
     }
 
