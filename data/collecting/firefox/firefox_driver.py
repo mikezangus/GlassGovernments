@@ -1,6 +1,7 @@
 import os
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from .download_firefox_app import main as download_firefox_app
 from .download_geckodriver import main as download_geckodriver
 
@@ -18,51 +19,49 @@ def verify_required_files(binary_path: str, app_dir: str, geckodriver_path: str)
     return True
 
 
-def set_options(binary_path: str, download_dir: str, headless: bool) -> Options:
-
+def set_options(binary_path: str, headless: bool, download_dir: str = None) -> Options:
     options = Options()
     options.binary_location = binary_path
-   
+    if headless:
+        options.add_argument("--headless")
+    if download_dir is not None:
+        options.set_preference("browser.download.alwaysOpenPanel", False)
+        options.set_preference("browser.download.dir", download_dir)
+        options.set_preference("browser.download.folderList", 2)
+        options.set_preference("browser.download.manager.showAlertOnComplete", False)
+        options.set_preference("browser.download.manager.showWhenStarting", False)
+        options.set_preference("browser.download.manager.useWindow", False)
+        options.set_preference("browser.download.panel.shown", False)
+        options.set_preference("browser.download.useDownloadDir", True)
     options.set_preference("browser.cache.disk.enable", False)
     options.set_preference("browser.cache.memory.enable", False)
     options.set_preference("browser.cache.offline.enable", False)
     options.set_preference("browser.privatebrowsing.autostart", True)
     options.set_preference("network.http.use-cache", False)
-
-    options.set_preference("browser.download.alwaysOpenPanel", False)
-    options.set_preference("browser.download.dir", download_dir)
-    options.set_preference("browser.download.folderList", 2)
-    options.set_preference("browser.download.manager.showAlertOnComplete", False)
-    options.set_preference("browser.download.manager.showWhenStarting", False)
-    options.set_preference("browser.download.manager.useWindow", False)
-    options.set_preference("browser.download.panel.shown", False)
-    options.set_preference("browser.download.useDownloadDir", True)
-
     options.set_preference("layout.css.devPixelsPerPx", "1")
-
-    if headless:
-        options.add_argument("--headless")
-
     return options
 
 
-def load_driver(geckodriver_path: str, options: Options, geckodriver_log_path: str) -> webdriver.Firefox:
-    driver = webdriver.Firefox(
+def load_driver(geckodriver_path: str, log_path: str, options: Options) -> webdriver.Firefox:
+    service = Service(
         executable_path = geckodriver_path,
+        log_path = log_path
+    )
+    driver = webdriver.Firefox(
         options = options,
-        log_path = geckodriver_log_path
+        service = service
     )
     driver.maximize_window()
     return driver
 
 
-def main(download_dir: str, headless: bool) -> tuple[bool, webdriver.Firefox]:
+def main(headless: bool, download_dir: str = None) -> tuple[bool, webdriver.Firefox]:
     firefox_dir = os.path.dirname(os.path.abspath(__file__))
-    binary_path = os.path.join(firefox_dir, "Firefox Developer Edition.app", "Contents", "MacOS", "firefox")
+    binary_path = os.path.join(firefox_dir, "Firefox.app", "Contents", "MacOS", "firefox")
     geckodriver_path = os.path.join(firefox_dir, "geckodriver")
-    geckodriver_log_path = os.path.join(firefox_dir, "geckodriver.log")
+    log_path = os.path.join(firefox_dir, "geckodriver.log")
     if not verify_required_files(binary_path, firefox_dir, geckodriver_path):
         return False, None
-    options = set_options(binary_path, download_dir, headless)
-    driver = load_driver(geckodriver_path, options, geckodriver_log_path)
+    options = set_options(binary_path, headless, download_dir)
+    driver = load_driver(geckodriver_path, log_path, options)
     return True, driver
