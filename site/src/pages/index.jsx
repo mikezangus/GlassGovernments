@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Head from "next/head";
 import Selections from "../components/Selections";
 import Candidate from "../components/Candidate";
 
@@ -34,6 +35,12 @@ export default function Home() {
     return (
 
         <>
+
+        <Head>
+            <title>
+                Glass Governments
+            </title>
+        </Head>
 
         <Selections
             handleYearSelection={handleYearSelection}
