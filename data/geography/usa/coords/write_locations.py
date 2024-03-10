@@ -10,7 +10,7 @@ usa_dir = os.path.dirname(coords_dir)
 geography_dir = os.path.dirname(usa_dir)
 data_dir = os.path.dirname(geography_dir)
 sys.path.append(data_dir)
-from directories import get_config_file_path, get_data_files_dir
+from data.utils.directories import get_config_file_path, get_data_files_dir
 
 
 def get_api_key() -> str:

@@ -7,17 +7,17 @@ from file_types.committees import download_committees
 from file_types.committee_contributions import download_committee_contributions
 from file_types.individual_contributions import download_individual_contributions
 from file_types.other_contributions import download_other_contributions
-from firefox.firefox_driver import main as firefox_driver
 from modules.await_downloads import await_downloads
-from modules.get_year import get_year
 from modules.load_page import load_page
 from modules.move_files import move_files
 from modules.unzip_files import unzip_files
 
-collecting_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = os.path.dirname(collecting_dir)
-sys.path.append(data_dir)
-from directories import get_download_dir
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.dirname(CURRENT_DIR)
+sys.path.append(DATA_DIR)
+from utils.directories import get_download_dir
+from utils.decide_year import decide_year
+from utils.firefox.load_driver import load_driver
 
 
 def download_files(driver: webdriver.Firefox, input_year: str) -> tuple[bool, str | None]:
@@ -45,16 +45,16 @@ def manage_files(download_dir: str, election_year: str) -> None:
     return
 
 
-def main():
-    input_year = get_year()
-    download_dir = get_download_dir(input_year)
-    driver_loaded, driver = firefox_driver(download_dir, True)
+def scraper():
+    year = decide_year(False)
+    download_dir = get_download_dir(year)
+    driver_loaded, driver = load_driver(True, download_dir)
     if not driver_loaded:
         print("Failed to load web driver")
         return
     if not load_page(driver):
         return
-    files_downloaded, election_year = download_files(driver, input_year)
+    files_downloaded, election_year = download_files(driver, year)
     if not files_downloaded:
         driver.quit()
         return
@@ -64,4 +64,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    scraper()

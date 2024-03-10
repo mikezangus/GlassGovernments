@@ -3,11 +3,11 @@ import pandas as pd
 import subprocess
 import sys
 from selenium import webdriver
-from utils.convert_office_code_to_name import convert_office_code_to_name
-from utils.convert_state_code_to_name import convert_state_code_to_name
-from utils.get_name import get_name
-from utils.open_site import open_site
-from utils.search import search
+from .utils.convert_office_code_to_name import convert_office_code_to_name
+from .utils.convert_state_code_to_name import convert_state_code_to_name
+from .utils.get_name import get_name
+from .utils.open_site import open_site
+from .utils.search import search
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -63,15 +63,16 @@ def process_df(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def process_names():
+def process_names(year: str = None):
     caffeinate_path = os.path.join(
         DATA_DIR,
         "utils",
         "caffeinate.sh"
     )
     subprocess.run([caffeinate_path, "start"])
-    year = decide_year(False)
-    output_collection = f"x{year}_cands"
+    if not year:
+        year = decide_year(False)
+    output_collection = f"{year}_cands"
     uri, db_name = get_mongo_config()
     input_df = load_pd_df_from_mongo(
         uri,
@@ -79,7 +80,6 @@ def process_names():
         f"{year}_cands_raw",
         "Candidate Names"
     )
-    input_df = input_df.iloc[:5]
     print(input_df.head())
     existing_items_df = load_pd_df_from_mongo(
         uri,

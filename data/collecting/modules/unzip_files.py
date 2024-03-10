@@ -2,11 +2,11 @@ import os
 import sys
 import zipfile
 
-modules_dir = os.path.dirname(os.path.abspath(__file__))
-collecting_dir = os.path.dirname(modules_dir)
-data_dir = os.path.dirname(collecting_dir)
-sys.path.append(data_dir)
-from directories import get_raw_year_dir
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+COLLECTING_DIR = os.path.dirname(CURRENT_DIR)
+DATA_DIR = os.path.dirname(COLLECTING_DIR)
+sys.path.append(DATA_DIR)
+from utils.directories import get_raw_year_dir
 
 
 def unzip_files(election_year: str) -> bool:

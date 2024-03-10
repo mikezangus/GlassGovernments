@@ -6,32 +6,34 @@ PROCESSING_DIR = os.path.dirname(CURRENT_DIR)
 sys.path.append(PROCESSING_DIR)
 from utils.filter_out_existing_items import filter_out_existing_items
 from utils.get_mongo_config import get_mongo_config
-from utils.join_dfs import join_dfs
 from utils.load_df_from_file import load_df_from_file
 from utils.load_df_from_mongo import load_spark_df_from_mongo
 from utils.load_headers import load_headers
 from utils.load_spark import load_spark
+from utils.rename_cols import rename_cols
 from utils.sanitize_df import sanitize_df
 from utils.set_cols import set_cols
 from utils.upload_df import upload_df
-
+from utils.candidates.filter_df import filter_df
+from utils.candidates.update_districts import update_districts
 DATA_DIR = os.path.dirname(PROCESSING_DIR)
 sys.path.append(DATA_DIR)
 from utils.decide_year import decide_year
+from geography.usa.states.load_states import load_states
 
 
-def process_committees(year: str = None):
+def process_candidates(year: str = None):
     print(f"\n{'-' * 100}\n{'-' * 100}")
-    print("Started processing Committees")
-    file_type = "ccl"
+    print("Started processing Candidates")
+    file_type = "cn"
     if not year:
         year = decide_year(True)
-    output_collection = f"{year}_cmtes"
+    output_collection = f"{year}_cands_raw"
     uri, _ = get_mongo_config()
     spark = load_spark(uri)
     headers = load_headers(file_type)
     input_cols = set_cols(
-        "cmte",
+        "cand",
         "input",
         headers
     )
@@ -43,33 +45,32 @@ def process_committees(year: str = None):
         headers,
         input_cols
     )
-    cand_df = load_spark_df_from_mongo(
-        spark,
-        uri,
-        f"{year}_cands",
-        ["CAND_ID"],
-        "Candidates"
+    state_codes = load_states(
+        "all",
+        "code_list"
     )
-    main_df = join_dfs(
+    main_df = filter_df(
         main_df,
-        cand_df,
-        "CAND_ID",
-        "inner"
-        "filter out ineligible candidates"
+        year,
+        state_codes
     )
+    main_df = rename_cols(
+        "cand",
+        main_df
+    )
+    main_df = update_districts(main_df)
     main_df = sanitize_df(
-        "cmte",
+        "cand",
         main_df
     )
     existing_items_df = load_spark_df_from_mongo(
         spark,
         uri,
         output_collection,
-        subject = "Existing Items"
     )
     if existing_items_df is not None:
         output_cols = set_cols(
-            "cmte",
+            "cand",
             "output"
         )
         main_df = filter_out_existing_items(
@@ -84,13 +85,13 @@ def process_committees(year: str = None):
         output_collection,
         uri,
         main_df,
-        "append"
+        "overwrite"
     )
     spark.stop()
-    print(f"\nFinished processing Committees")
+    print(f"\nFinished processing Candidates")
     print(f"{'-' * 100}\n{'-' * 100}\n")
     return
 
 
 if __name__ == "__main__":
-    process_committees()
+    process_candidates()
