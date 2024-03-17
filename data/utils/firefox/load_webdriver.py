@@ -2,8 +2,11 @@ import os
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
-from .download_firefox_app import main as download_firefox_app
-from .download_geckodriver import main as download_geckodriver
+from .download_app import download_app as download_firefox_app
+from .download_geckodriver import download_geckodriver as download_geckodriver
+
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def verify_required_files(binary_path: str, app_dir: str, geckodriver_path: str) -> bool:
@@ -42,7 +45,7 @@ def set_options(binary_path: str, headless: bool, download_dir: str = None) -> O
     return options
 
 
-def load_driver(geckodriver_path: str, log_path: str, options: Options) -> webdriver.Firefox:
+def create_webdriver(geckodriver_path: str, log_path: str, options: Options) -> webdriver.Firefox:
     service = Service(
         executable_path = geckodriver_path,
         log_path = log_path
@@ -55,13 +58,12 @@ def load_driver(geckodriver_path: str, log_path: str, options: Options) -> webdr
     return driver
 
 
-def main(headless: bool, download_dir: str = None) -> tuple[bool, webdriver.Firefox]:
-    firefox_dir = os.path.dirname(os.path.abspath(__file__))
-    binary_path = os.path.join(firefox_dir, "Firefox.app", "Contents", "MacOS", "firefox")
-    geckodriver_path = os.path.join(firefox_dir, "geckodriver")
-    log_path = os.path.join(firefox_dir, "geckodriver.log")
-    if not verify_required_files(binary_path, firefox_dir, geckodriver_path):
+def load_webdriver(headless: bool, download_dir: str = None) -> tuple[bool, webdriver.Firefox]:
+    binary_path = os.path.join(CURRENT_DIR, "Firefox.app", "Contents", "MacOS", "firefox")
+    geckodriver_path = os.path.join(CURRENT_DIR, "geckodriver")
+    log_path = os.path.join(CURRENT_DIR, "geckodriver.log")
+    if not verify_required_files(binary_path, CURRENT_DIR, geckodriver_path):
         return False, None
     options = set_options(binary_path, headless, download_dir)
-    driver = load_driver(geckodriver_path, log_path, options)
+    driver = create_webdriver(geckodriver_path, log_path, options)
     return True, driver
