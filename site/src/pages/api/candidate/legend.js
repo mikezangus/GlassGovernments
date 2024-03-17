@@ -12,7 +12,7 @@ export default async function handler(req, res) {
                     .send(name, " | Prior selections required");
             }
             const db = await getDB();
-            const collection = await db.collection(`x${year}_conts`);
+            const collection = await db.collection(`${year}_conts`);
             const query = {
                 CAND_ID: candId,
             };

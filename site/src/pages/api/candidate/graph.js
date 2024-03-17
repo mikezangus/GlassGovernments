@@ -12,7 +12,7 @@ export default async function handler(req, res) {
                     .send(name, " | Prior selections required");
             }
             const db = await getDB();
-            const collection = db.collection(`x${year}_conts`);
+            const collection = db.collection(`${year}_conts`);
             const filterOutNegativeAmts = {
                 $expr : {
                     $gt: ["$AMT", 0]
