@@ -36,9 +36,10 @@ function PrintConstituency({ office, state, district }) {
 function Renderer({ legend, office, state, district, amt }) {
 
     const sortedItems = legend.sort((a, b) => {
-        return a.LOCATION === "IN"
-            ? 1
-            : -1
+        if (a.DOMESTIC === b.DOMESTIC) {
+            return 0;
+        }
+        return a.DOMESTIC ? 1 : -1;
     });
 
     return (
