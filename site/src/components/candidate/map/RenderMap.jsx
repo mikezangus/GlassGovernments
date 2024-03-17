@@ -40,9 +40,10 @@ export default function RenderMap({ state, candId, coords }) {
                 zoom={zoom}
                 maxZoom ={12}
                 style={{ height: "100%", width: "100%" }}
+                attributionControl={false}
             >
 
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
 
                 <CreateHeatmap coords={coords}/>
 

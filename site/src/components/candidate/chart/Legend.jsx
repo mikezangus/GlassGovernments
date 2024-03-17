@@ -12,7 +12,7 @@ import {
 } from "../../../lib/colors";
 
 
-function Renderer({ legend, state, amt }) {
+function PrintConstituency({ office, state, district }) {
 
     const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
     useEffect(() => {
@@ -23,11 +23,24 @@ function Renderer({ legend, state, amt }) {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    let constituency;
+    office === "S" || district == "00"
+        ? isMobile
+            ? constituency = state
+            : constituency = showStateName(state)
+        : constituency = `${state}-${district}`
+    return constituency;
+}
+
+
+function Renderer({ legend, office, state, district, amt }) {
+
     const sortedItems = legend.sort((a, b) => {
         return a.LOCATION === "IN"
             ? 1
             : -1
     });
+
     return (
         <div className={styles.legendContainer}>
             {sortedItems.map((constituency, index) => (
@@ -36,17 +49,17 @@ function Renderer({ legend, state, amt }) {
                     key={index}
                     style={{
                         borderColor: `${
-                            constituency.LOCATION === "IN"
+                            constituency.DOMESTIC
                                 ? greenOpaque
                                 : brownOpaque
                         }`,
                         background: `${
-                            constituency.LOCATION === "IN"
+                            constituency.DOMESTIC
                                 ? greenTransparent
                                 : brownTransparent
                         }`,
                         color: `${
-                            constituency.LOCATION === "IN"
+                            constituency.DOMESTIC
                                 ? "black"
                                 : "black"
                         }`
@@ -54,16 +67,20 @@ function Renderer({ legend, state, amt }) {
                 >
                     <div>
                         {
-                            constituency.LOCATION === "IN"
+                            constituency.DOMESTIC
                                 ? `From inside ${
-                                    isMobile 
-                                        ? state
-                                        : showStateName(state)
+                                    PrintConstituency({
+                                        office,
+                                        state,
+                                        district
+                                    })
                                 }`
                                 : `From outside ${
-                                    isMobile
-                                        ? state
-                                        : showStateName(state)
+                                    PrintConstituency({
+                                        office,
+                                        state,
+                                        district
+                                    })
                                 }`
                         }
                     </div>
@@ -84,8 +101,8 @@ function Renderer({ legend, state, amt }) {
 
 
 export default function Legend({ year, state, candidate }) {
-
-    const { candId, amt } = candidate; 
+    console.log("candidate", candidate)
+    const { office, district, candId, amt } = candidate; 
     const [legend, setLegend] = useState([]);
 
     useFetchLegend(year, state, candId, setLegend);
@@ -93,7 +110,9 @@ export default function Legend({ year, state, candidate }) {
     return (
         <Renderer
             legend={legend}
+            office={office}
             state={state}
+            district={district}
             amt={amt}
         />
     );

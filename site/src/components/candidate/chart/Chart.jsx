@@ -35,13 +35,13 @@ ChartJS.register(
 
 export default function Chart({ year, state, candidate }) {
 
-    const { candId } = candidate;
+    const { office, district, candId } = candidate;
 
     const [data, setData] = useState({
         labels: [],
         datasets: []
     });
-    useFetchGraph(year, state, candId, setData);
+    useFetchGraph(year, office, state, district, candId, setData);
 
     if (!data.datasets || data.labels.length === 0) {
         return null;

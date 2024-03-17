@@ -44,9 +44,6 @@ export default function Candidate({ year, state, district, candidate }) {
                     candidate={candidate}
                 />
 
-
-
-
             </div>
     
         </div>

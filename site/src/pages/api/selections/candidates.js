@@ -30,7 +30,9 @@ export default async function handler(req, res) {
                 _id: {
                     candId: "$CAND_ID",
                     name: "$NAME",
-                    party: "$PARTY"
+                    party: "$PARTY",
+                    district: "$DISTRICT",
+                    office: "$OFFICE",
                 },
                 amt: {
                     $sum: "$conts.AMT"
@@ -41,6 +43,8 @@ export default async function handler(req, res) {
                 candId: "$_id.candId",
                 name: "$_id.name",
                 party: "$_id.party",
+                district: "$_id.district",
+                office: "$_id.office",
                 amt: 1
             };
             const pipeline = [
@@ -53,6 +57,7 @@ export default async function handler(req, res) {
             const data = await collection
                 .aggregate(pipeline)
                 .toArray();
+            console.log("candidates", data)
             res.json(data);
         } catch (err) {
             console.error(name, " | Error: ", err);

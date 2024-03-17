@@ -12,7 +12,7 @@ export default async function handler(req, res) {
                     .send(name, " | Prior selections required");
             }
             const db = await getDB();
-            const collection = db.collection(`${year}_conts`);
+            const collection = db.collection(`x${year}_conts`);
             const filterOutNegativeAmts = {
                 $expr : {
                     $gt: ["$AMT", 0]
@@ -27,21 +27,21 @@ export default async function handler(req, res) {
                     YEAR: { $year: { $toDate: "$DATE" } },
                     MONTH: { $month: { $toDate: "$DATE" } }
                 },
-                INSIDE_AMT: {
+                DOMESTIC_AMT: {
                     $sum: {
                         $cond: [
-                            { $eq: ["$STATE", state] },
+                            { $eq: ["$DOMESTIC", true] },
                             "$AMT",
                             0
                         ]
                     }
                 },
-                OUTSIDE_AMT: {
+                FOREIGN_AMT: {
                     $sum: {
                         $cond: [
-                            { $eq: ["$STATE", state] },
-                            0,
-                            "$AMT"
+                            { $eq: ["$DOMESTIC", false] },
+                            "$AMT",
+                            0 
                         ]
                     }
                 }
@@ -58,8 +58,8 @@ export default async function handler(req, res) {
                 _id: 0,
                 YEAR: "$_id.YEAR",
                 MONTH: "$_id.MONTH",
-                INSIDE_AMT: 1,
-                OUTSIDE_AMT: 1
+                DOMESTIC_AMT: 1,
+                FOREIGN_AMT: 1
             };
             const pipeline = [
                 { $match: query },
@@ -71,6 +71,7 @@ export default async function handler(req, res) {
             const data = await collection
                 .aggregate(pipeline)
                 .toArray();
+            console.log("graph", data)
             res.json(data);
         } catch (err) {
             console.error(name, " | Error: ", err);

@@ -7,7 +7,18 @@ import {
 } from "../lib/colors"
 
 
-export default function useFetchGraph(year, state, candID, setData) {
+function WriteLabel({office, state, district}) {
+    let label;
+    office === "S" || district === "00"
+        ? label = state
+        : label = `${state}-${district}`
+    return label;
+};
+
+
+export default function useFetchGraph(year, office, state, district, candID, setData) {
+
+    const label = WriteLabel({ office, state, district });
 
     useEffect(() => {
 
@@ -29,26 +40,26 @@ export default function useFetchGraph(year, state, candID, setData) {
                             item.YEAR, item.MONTH - 1
                         ).toISOString()
                     );
-                    const inStateData = data.map(
-                        item => item.INSIDE_AMT
+                    const domesticData = data.map(
+                        item => item.DOMESTIC_AMT
                     );
-                    const outStateData = data.map(
-                        item => item.OUTSIDE_AMT
+                    const foreignData = data.map(
+                        item => item.FOREIGN_AMT
                     );
 
                     setData({
                         labels,
                         datasets: [
                             {
-                                label: `Inside ${state}`,
-                                data: inStateData,
+                                label: `Inside ${label}`,
+                                data: domesticData,
                                 borderColor: greenOpaque,
                                 backgroundColor: greenTransparent,
                                 fill: "origin",
                             },
                             {
-                                label: `Outside ${state}`,
-                                data: outStateData,
+                                label: `Outside ${label}`,
+                                data: foreignData,
                                 borderColor: brownOpaque,
                                 backgroundColor: brownTransparent,
                                 fill: "origin",
