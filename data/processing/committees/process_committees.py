@@ -8,7 +8,7 @@ from utils.filter_out_existing_items import filter_out_existing_items
 from utils.get_mongo_config import get_mongo_config
 from utils.join_dfs import join_dfs
 from utils.load_df_from_file import load_df_from_file
-from utils.load_df_from_mongo import load_spark_df_from_mongo
+from utils.load_df_from_mongo import load_df_from_mongo
 from utils.load_headers import load_headers
 from utils.load_spark import load_spark
 from utils.sanitize_df import sanitize_df
@@ -43,29 +43,31 @@ def process_committees(year: str = None):
         headers,
         input_cols
     )
-    cand_df = load_spark_df_from_mongo(
-        spark,
+    cand_df = load_df_from_mongo(
+        "spark",
         uri,
-        f"{year}_cands",
-        ["CAND_ID"],
-        "Candidates"
+        f"{year}_cands_raw",
+        spark=spark,
+        fields=["CAND_ID"],
+        subject="Candidates"
     )
     main_df = join_dfs(
         main_df,
         cand_df,
         "CAND_ID",
-        "inner"
+        "inner",
         "filter out ineligible candidates"
     )
     main_df = sanitize_df(
         "cmte",
         main_df
     )
-    existing_items_df = load_spark_df_from_mongo(
-        spark,
+    existing_items_df = load_df_from_mongo(
+        "spark",
         uri,
         output_collection,
-        subject = "Existing Items"
+        spark=spark,
+        subject="Existing Items"
     )
     if existing_items_df is not None:
         output_cols = set_cols(

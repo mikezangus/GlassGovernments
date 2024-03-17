@@ -9,20 +9,19 @@ from .utils.get_name import get_name
 from .utils.open_site import open_site
 from .utils.search import search
 
-
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROCESSING_DIR = os.path.dirname(CURRENT_DIR)
 sys.path.append(PROCESSING_DIR)
 from utils.get_mongo_config import get_mongo_config
 from utils.filter_out_existing_items import filter_out_existing_items
-from utils.load_df_from_mongo import load_pd_df_from_mongo
+from utils.load_df_from_mongo import load_df_from_mongo
 from utils.sanitize_df import sanitize_df
 from utils.upload_df import upload_df
 
 DATA_DIR = os.path.dirname(PROCESSING_DIR)
 sys.path.append(DATA_DIR)
 from utils.decide_year import decide_year
-from utils.firefox.load_driver import load_driver
+from utils.firefox.load_webdriver import load_webdriver
 
 
 def process_name(driver: webdriver.Firefox, query: str) -> str | None:
@@ -40,7 +39,7 @@ def process_df(df: pd.DataFrame) -> pd.DataFrame:
     for index, row in df.iterrows():
         progress_msg = f"[{(index + 1):,}/{len(df):,}]"
         try:
-            driver_loaded, driver = load_driver(True)
+            driver_loaded, driver = load_webdriver(True)
             if not driver_loaded:
                 return
             state = convert_state_code_to_name(row["STATE"])
@@ -74,31 +73,26 @@ def process_names(year: str = None):
         year = decide_year(False)
     output_collection = f"{year}_cands"
     uri, db_name = get_mongo_config()
-    input_df = load_pd_df_from_mongo(
+    input_df = load_df_from_mongo(
+        "pandas",
         uri,
-        db_name,
         f"{year}_cands_raw",
-        "Candidate Names"
-    )
-    print(input_df.head())
-    existing_items_df = load_pd_df_from_mongo(
-        uri,
         db_name,
+        subject="Candidate Names"
+    )
+    existing_items_df = load_df_from_mongo(
+        "pandas",
+        uri,
         output_collection,
-        "Existing Items"
+        db_name,
+        subject="Existing Items"
     )
     if existing_items_df is not None:
-        print("INPUT DF:")
-        print(input_df.head())
-        print("EXISTING ITEMS DF:")
-        print(existing_items_df.head())
         input_df = filter_out_existing_items(
             input_df,
             existing_items_df,
             "CAND_ID"
         )
-        print("FILTERED DF:")
-        print(input_df.head())
     if len(input_df) == 0:
         print("No new items to process, exiting")
         return

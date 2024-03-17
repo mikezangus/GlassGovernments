@@ -7,7 +7,7 @@ sys.path.append(PROCESSING_DIR)
 from utils.filter_out_existing_items import filter_out_existing_items
 from utils.get_mongo_config import get_mongo_config
 from utils.load_df_from_file import load_df_from_file
-from utils.load_df_from_mongo import load_spark_df_from_mongo
+from utils.load_df_from_mongo import load_df_from_mongo
 from utils.load_headers import load_headers
 from utils.load_spark import load_spark
 from utils.rename_cols import rename_cols
@@ -63,10 +63,11 @@ def process_candidates(year: str = None):
         "cand",
         main_df
     )
-    existing_items_df = load_spark_df_from_mongo(
-        spark,
+    existing_items_df = load_df_from_mongo(
+        "spark",
         uri,
         output_collection,
+        spark = spark
     )
     if existing_items_df is not None:
         output_cols = set_cols(
