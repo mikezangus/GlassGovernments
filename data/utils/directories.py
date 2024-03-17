@@ -38,29 +38,6 @@ def get_headers_dir() -> str:
     return dir
 
 
-def get_raw_file_dir(year: str, file_type: str) -> str:
-    dir = os.path.join(
-        get_raw_dir(),
-        year,
-        file_type
-    )
-    verify_dir_exists(dir)
-    return dir
-
-
-def get_config_file_path() -> str:
-    return os.path.join(DATA_DIR, "config.json")
-
-
-def get_load_states_dir() -> str:
-    return os.path.join(
-        DATA_DIR,
-        "geography",
-        "usa",
-        "states"
-    )
-
-
 def get_download_dir(year: str) -> str:
     dir = os.path.join(
         get_data_files_dir(),
@@ -78,3 +55,25 @@ def get_raw_year_dir(year: str) -> str:
     )
     verify_dir_exists(dir)
     return dir
+
+
+def get_raw_file_dir(year: str, file_type: str) -> str:
+    dir = os.path.join(
+        get_raw_year_dir(year),
+        file_type
+    )
+    verify_dir_exists(dir)
+    return dir
+
+
+def get_load_states_dir() -> str:
+    return os.path.join(
+        DATA_DIR,
+        "geography",
+        "usa",
+        "states"
+    )
+
+
+def get_config_file_path() -> str:
+    return os.path.join(DATA_DIR, "config.json")
