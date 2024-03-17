@@ -3,7 +3,7 @@ import sys
 from candidates.process_candidates import process_candidates
 from candidates.process_names import process_names
 from committees.process_committees import process_committees
-from contributions.process_contributions import process_contributions
+from contributions.process_contributions import process_all_contributions as process_contributions
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.dirname(CURRENT_DIR)
