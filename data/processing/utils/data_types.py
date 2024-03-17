@@ -5,5 +5,6 @@ DataType = Literal[
     "cand",
     "cmte",
     "cont",
+    "dist",
     "name"
 ]
