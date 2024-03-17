@@ -10,7 +10,6 @@ PROCESSING_DIR = os.path.dirname(CURRENT_DIR)
 sys.path.append(PROCESSING_DIR)
 from utils.filter_out_existing_items import filter_out_existing_items
 from utils.get_mongo_config import get_mongo_config
-from utils.join_dfs import join_dfs
 from utils.load_df_from_file import load_df_from_file
 from utils.load_df_from_mongo import load_df_from_mongo
 from utils.load_headers import load_headers
@@ -23,7 +22,7 @@ from utils.contributions.convert_to_coords import convert_to_coords
 from utils.contributions.filter_out_ineligible_cands import filter_out_ineligible_cands
 from utils.contributions.filter_out_zero_amts import filter_out_zero_amts
 from utils.contributions.format_df import format_df
-from processing.utils.contributions.process_cont_domesticity import process_cont_domesticity
+from utils.contributions.process_cont_domesticity import process_cont_domesticity
 
 DATA_DIR = os.path.dirname(PROCESSING_DIR)
 sys.path.append(DATA_DIR)
@@ -43,7 +42,7 @@ def process_contributions(
     if not year:
         year = decide_year(True)
 
-    output_collection_name = f"x{year}_conts"
+    output_collection_name = f"{year}_conts"
     uri, db_name = get_mongo_config()
     spark = load_spark(uri)
     headers = load_headers(file_type)
@@ -74,6 +73,7 @@ def process_contributions(
     )
 
     if conts_df is None:
+        print("No items to upload, exiting")
         return
     
     conts_df = rename_cols(
@@ -84,16 +84,16 @@ def process_contributions(
     conts_df = format_df(conts_df)
 
     conts_df = convert_to_coords(
-        spark, 
-        uri,
-        conts_df
+        spark=spark, 
+        uri=uri,
+        input_df=conts_df
     )
 
     cands_df = load_df_from_mongo(
-        "pandas",
-        uri,
-        f"{year}_cands_raw",
-        db_name,
+        df_type="pandas",
+        uri=uri,
+        collection_name=f"{year}_cands_raw",
+        db_name=db_name,
         fields=[
             "CAND_ID",
             "STATE",
@@ -104,10 +104,10 @@ def process_contributions(
     )
 
     dists_df = load_df_from_mongo(
-        "pandas",
-        uri,
-        f"{year}_dists",
-        db_name,
+        df_type="pandas",
+        uri=uri,
+        collection_name=f"{year}_dists",
+        db_name=db_name,
         fields=[
             "STATE",
             "DISTRICT",
@@ -117,9 +117,9 @@ def process_contributions(
     )
 
     districtwide_conts_df, statewide_conts_df = process_cont_domesticity(
-        cands_df,
-        dists_df,
-        conts_df.toPandas()
+        cands_df=cands_df,
+        dists_df=dists_df,
+        conts_df=conts_df.toPandas()
     )
 
     spark.stop()
@@ -141,16 +141,14 @@ def process_contributions(
         ],
         axis=0
     ).reset_index(drop=True)
+    print("\nFinished concatenating Districtwide and Statewide Contributions DataFrames")
+    print(f"Item count: {len(df):,}")
+    print(df.head())
 
     df["LOCATION"] = df["LOCATION"].apply(
         lambda x:
             mapping(x) if x is not None else None
     )
-
-    print("\nConcat DF:")
-    print(len(df))
-    print(df.head(50))
-
 
     existing_items_df = load_df_from_mongo(
         "pandas",
@@ -165,6 +163,9 @@ def process_contributions(
             "output",
             cont_type=file_type
         )
+        existing_items_cols = [
+            col for col in existing_items_cols if col != "LOCATION"
+        ]
         df = filter_out_existing_items(
             df,
             existing_items_df,

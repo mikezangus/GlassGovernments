@@ -67,7 +67,8 @@ def process_candidates(year: str = None):
         "spark",
         uri,
         output_collection,
-        spark = spark
+        spark=spark,
+        subject="Existing Items DF"
     )
     if existing_items_df is not None:
         output_cols = set_cols(

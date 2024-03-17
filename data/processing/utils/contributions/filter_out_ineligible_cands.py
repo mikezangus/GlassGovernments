@@ -50,6 +50,5 @@ def filter_out_ineligible_cands(
         )
 
     if df.limit(1).count() == 0:
-        print("No items to upload, exiting")
         return
     return df

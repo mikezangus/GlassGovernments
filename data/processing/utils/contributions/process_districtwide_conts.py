@@ -12,6 +12,24 @@ def write_msg(
     return msg
 
 
+def process_conts_df(
+    df: pd.DataFrame
+) -> gpd.GeoDataFrame:
+    df_name = "Contributions"
+    df["LOCATION"] = df["LOCATION"].apply(
+        lambda x:
+            Point(x["coordinates"]) if x is not None else None
+    )
+    print(write_msg(df_name, "convert locations to points", df))
+    gdf = gpd.GeoDataFrame(
+        data=df,
+        geometry="LOCATION",
+        crs="EPSG:4326"
+    )
+    print(write_msg(df_name, "create Geo DF", gdf))
+    return gdf
+
+
 def process_cands_dists_df(
     cands_df: pd.DataFrame,
     dists_df: pd.DataFrame
@@ -38,27 +56,9 @@ def process_cands_dists_df(
     return gdf
 
 
-def process_conts_df(
-    df: pd.DataFrame
-) -> gpd.GeoDataFrame:
-    df_name = "Contributions"
-    df["LOCATION"] = df["LOCATION"].apply(
-        lambda x:
-            Point(x["coordinates"]) if x is not None else None
-    )
-    print(write_msg(df_name, "convert locations to points", df))
-    gdf = gpd.GeoDataFrame(
-        data=df,
-        geometry="LOCATION",
-        crs="EPSG:4326"
-    )
-    print(write_msg(df_name, "create Geo DF", gdf))
-    return gdf
-
-
 def perform_point_in_polygon_test(
-    conts_gdf,
-    cands_dists_gdf
+    conts_gdf: gpd.GeoDataFrame,
+    cands_dists_gdf: gpd.GeoDataFrame
 ) -> gpd.GeoDataFrame:
     df_name="Point-in-Polygon"
     df = pd.merge(
@@ -84,11 +84,16 @@ def process_districtwide_conts(
     dists_df: pd.DataFrame,
     conts_df: pd.DataFrame
 ) -> pd.DataFrame:
-    cands_dists_gdf = process_cands_dists_df(cands_df, dists_df)
-    conts_gdf = process_conts_df(conts_df)
+    conts_gdf = process_conts_df(
+        df=conts_df
+    )
+    cands_dists_gdf = process_cands_dists_df(
+        cands_df=cands_df,
+        dists_df=dists_df
+    )
     pip_gdf = perform_point_in_polygon_test(
-        conts_gdf,
-        cands_dists_gdf
+        conts_gdf=conts_gdf,
+        cands_dists_gdf=cands_dists_gdf
     )
     df = pd.DataFrame(pip_gdf)
     return df

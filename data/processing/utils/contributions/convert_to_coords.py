@@ -20,16 +20,20 @@ def manage_cols(df: DataFrame) -> DataFrame:
     return df
 
 
-def convert_to_coords(spark: SparkSession, uri: str, main_df: DataFrame) -> DataFrame:
+def convert_to_coords(
+    spark: SparkSession,
+    uri: str,
+    input_df: DataFrame
+) -> DataFrame:
     location_df = load_spark_df_from_mongo(
-        spark,
-        uri,
-        "locations",
-        ["COORDS", "ZIP"],
-        "Locations"
+        spark=spark,
+        uri=uri,
+        collection_name="locations",
+        fields=["COORDS", "ZIP"],
+        subject="Locations"
     )
     df = join_dfs(
-        main_df,
+        input_df,
         location_df,
         "ZIP",
         "left",

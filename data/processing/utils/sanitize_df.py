@@ -40,7 +40,7 @@ def sanitize_df(
     type: DataType,
     df: pd.DataFrame | DataFrame
 ) -> pd.DataFrame | DataFrame:
-    print("Started sanitizing DataFrame")
+    print("\nStarted sanitizing DataFrame")
     cols = set_cols(type, "output")
     missing_cols = [
         c for c in cols if c not in df.columns

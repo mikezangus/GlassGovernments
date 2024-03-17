@@ -11,6 +11,7 @@ from utils.upload_df import upload_df
 
 DATA_DIR = os.path.dirname(PROCESSING_DIR)
 sys.path.append(DATA_DIR)
+from utils.decide_year import decide_year
 from geography.usa.cartography.load_fips_to_state import load_fips_to_state
 
 
@@ -28,11 +29,10 @@ def convert_fips_to_state(
     fips_dict: dict
 ) -> gpd.GeoDataFrame:
     gdf["STATE"] = gdf["STATEFP"].map(fips_dict)
-    return gdf.drop(
-        columns=["STATEFP"],
-        inplace=True
+    gdf = gdf.drop(
+        columns=["STATEFP"]
     )
-
+    return gdf
 
 
 def organize_cols(
@@ -43,11 +43,12 @@ def organize_cols(
         "CD118FP",
         "geometry"
     ]]
-    return gdf \
+    gdf = gdf \
         .rename(columns={
             "CD118FP": "DISTRICT",
             "geometry": "GEOMETRY"
         })
+    return gdf
 
 
 def convert_to_geojson(
@@ -64,7 +65,9 @@ def convert_to_geojson(
     return gdf
 
 
-def main():
+def process_districts(year: str = None):
+    if not year:
+        year = decide_year(False)
     gdf = gpd.read_file(SHAPEFILE_DIR)
     gdf = convert_fips_to_state(
         gdf,
@@ -74,7 +77,7 @@ def main():
     gdf = convert_to_geojson(gdf)
     uri, db_name = get_mongo_config()
     upload_df(
-        "2024_dists",
+        f"{year}_dists",
         uri,
         gdf,
         db_name,
@@ -83,4 +86,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    process_districts()

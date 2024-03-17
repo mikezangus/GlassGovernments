@@ -15,17 +15,17 @@ JoinType = Literal[
 
 
 def join_dfs(
-    df1: DataFrame,
-    df2: DataFrame,
+    left_df: DataFrame,
+    right_df: DataFrame,
     join_col: str,
     join_type: JoinType,
     action: str = None
 ) -> DataFrame:
     print(f"\nStarted {action}")
-    start_count = df1.count()
+    start_count = left_df.count()
     print(f"Item count before join: {start_count:,}")
-    df = df1.join(
-        other=df2,
+    df = left_df.join(
+        other=right_df,
         on=join_col,
         how=join_type
     )

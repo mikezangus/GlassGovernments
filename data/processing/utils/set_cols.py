@@ -52,7 +52,7 @@ COL_MAP: dict[
                 "STATE",
                 "ZIP_CODE",
                 "TRANSACTION_AMT",
-                "TRANSACTION_DT"
+                "TRANSACTION_DT",
             ],
             "oth": [
                 "CMTE_ID",
@@ -61,7 +61,7 @@ COL_MAP: dict[
                 "STATE",
                 "ZIP_CODE",
                 "TRANSACTION_AMT",
-                "TRANSACTION_DT"
+                "TRANSACTION_DT",
             ],
             "pas2": [
                 "CAND_ID",
@@ -70,7 +70,7 @@ COL_MAP: dict[
                 "STATE",
                 "ZIP_CODE",
                 "TRANSACTION_AMT",
-                "TRANSACTION_DT"
+                "TRANSACTION_DT",
             ]
         },
         "output": [
@@ -81,7 +81,7 @@ COL_MAP: dict[
             "LOCATION",
             "AMT",
             "DATE",
-            "DOMESTIC"
+            "DOMESTIC",
         ]
     },
     "dist": {
