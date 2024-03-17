@@ -23,33 +23,36 @@ SHAPEFILE_DIR = os.path.join(
 )
 
 
-def convert_fips_to_state(gdf: gpd.GeoDataFrame, fips_dict: dict) -> gpd.GeoDataFrame:
+def convert_fips_to_state(
+    gdf: gpd.GeoDataFrame,
+    fips_dict: dict
+) -> gpd.GeoDataFrame:
     gdf["STATE"] = gdf["STATEFP"].map(fips_dict)
-    return gdf
-
-
-def organize_cols(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-    relevant_input_cols = [
-        "STATEFP",
-        "CD118FP",
-        "geometry"
-    ]
-    gdf = gdf[relevant_input_cols]
-    gdf.drop(
+    return gdf.drop(
         columns=["STATEFP"],
         inplace=True
     )
-    gdf = gdf \
-        .rename(
-            columns={
-                "CD118FP": "DISTRICT",
-                "geometry": "GEOMETRY"
-            } 
-        )
-    return gdf
 
 
-def convert_to_geojson(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+
+def organize_cols(
+    gdf: gpd.GeoDataFrame
+) -> gpd.GeoDataFrame:
+    gdf = gdf[[
+        "STATE",
+        "CD118FP",
+        "geometry"
+    ]]
+    return gdf \
+        .rename(columns={
+            "CD118FP": "DISTRICT",
+            "geometry": "GEOMETRY"
+        })
+
+
+def convert_to_geojson(
+    gdf: gpd.GeoDataFrame
+) -> gpd.GeoDataFrame:
     gdf["GEOMETRY"] = gdf["GEOMETRY"].apply(
         lambda x:
             gpd.GeoSeries([x]).to_json()
@@ -63,11 +66,20 @@ def convert_to_geojson(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
 
 def main():
     gdf = gpd.read_file(SHAPEFILE_DIR)
-    gdf = convert_fips_to_state(gdf, load_fips_to_state())
+    gdf = convert_fips_to_state(
+        gdf,
+        load_fips_to_state()
+    )
     gdf = organize_cols(gdf)
     gdf = convert_to_geojson(gdf)
     uri, db_name = get_mongo_config()
-    upload_df("2024_dists", uri, gdf, db_name, mode="overwrite")
+    upload_df(
+        "2024_dists",
+        uri,
+        gdf,
+        db_name,
+        "overwrite"
+    )
 
 
 if __name__ == "__main__":

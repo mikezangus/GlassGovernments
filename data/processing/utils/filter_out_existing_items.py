@@ -11,9 +11,9 @@ def filter_out_existing_items_pandas(
     df = pd.merge(
         main_df,
         existing_items_df[cols],
-        on = cols,
-        how = "left",
-        indicator = True
+        on=cols,
+        how="left",
+        indicator=True
     )
     df = df[
         df["_merge"] == "left_only"
@@ -23,7 +23,7 @@ def filter_out_existing_items_pandas(
     return df
 
 
-def filter_out_existing_items(
+def filter_out_existing_items_spark(
     main_df: DataFrame,
     existing_items_df: DataFrame,
     cols: list
@@ -35,9 +35,9 @@ def filter_out_existing_items(
     )
     existing_items_df = existing_items_df.select(cols)
     df = main_df.join(
-        other = existing_items_df,
-        on = cols,
-        how = "left_anti"
+        other=existing_items_df,
+        on=cols,
+        how="left_anti"
     )
     print("Finished filtering out existing items")
     print(f"Item count: {df.count():,}")
@@ -52,6 +52,6 @@ def filter_out_existing_items(
     if isinstance(main_df, pd.DataFrame) and isinstance(existing_items_df, pd.DataFrame):
         return filter_out_existing_items_pandas(main_df, existing_items_df, cols)
     elif isinstance(main_df, DataFrame) and isinstance(existing_items_df, DataFrame):
-        return filter_out_existing_items(main_df, existing_items_df, cols)
+        return filter_out_existing_items_spark(main_df, existing_items_df, cols)
     else:
         raise ValueError("Incorrect or mismatching types for input DataFrames")

@@ -5,7 +5,10 @@ from .data_types import DataType
 from .set_cols import set_cols
 
 
-def sanitize_pandas_df(input_df: pd.DataFrame, cols: list) -> pd.DataFrame:
+def sanitize_pandas_df(
+    input_df: pd.DataFrame,
+    cols: list
+) -> pd.DataFrame:
     print(f"Item count: {len(input_df):,}")
     df = input_df.dropna(subset = cols)
     df = df[cols]
@@ -14,8 +17,12 @@ def sanitize_pandas_df(input_df: pd.DataFrame, cols: list) -> pd.DataFrame:
     return df
 
 
-def sanitize_spark_df(input_df: DataFrame, cols: list) -> DataFrame:
+def sanitize_spark_df(
+    input_df: DataFrame,
+    cols: list
+) -> DataFrame:
     print(f"Item count: {input_df.count():,}")
+    input_df.show()
     filter_condition = None
     for c in cols:
         if filter_condition is None:
@@ -29,15 +36,20 @@ def sanitize_spark_df(input_df: DataFrame, cols: list) -> DataFrame:
     return df
 
 
-def sanitize_df(type: DataType, input_df: pd.DataFrame | DataFrame) -> pd.DataFrame | DataFrame:
+def sanitize_df(
+    type: DataType,
+    df: pd.DataFrame | DataFrame
+) -> pd.DataFrame | DataFrame:
     print("Started sanitizing DataFrame")
     cols = set_cols(type, "output")
-    missing_cols = [c for c in cols if c not in input_df.columns]
+    missing_cols = [
+        c for c in cols if c not in df.columns
+    ]
     if missing_cols:
         raise ValueError(
             f"Missing required columns: {', '.join(missing_cols)}"
         )
-    if isinstance(input_df, pd.DataFrame):
-        return sanitize_pandas_df(input_df, cols)
-    elif isinstance(input_df, DataFrame):
-        return sanitize_spark_df(input_df, cols)
+    if isinstance(df, pd.DataFrame):
+        return sanitize_pandas_df(df, cols)
+    elif isinstance(df, DataFrame):
+        return sanitize_spark_df(df, cols)

@@ -14,14 +14,20 @@ JoinType = Literal[
 ]
 
 
-def join_dfs(df1: DataFrame, df2: DataFrame, join_col: str, join_type: JoinType, action: str = None) -> DataFrame:
+def join_dfs(
+    df1: DataFrame,
+    df2: DataFrame,
+    join_col: str,
+    join_type: JoinType,
+    action: str = None
+) -> DataFrame:
     print(f"\nStarted {action}")
     start_count = df1.count()
     print(f"Item count before join: {start_count:,}")
     df = df1.join(
-        other = df2,
-        on = join_col,
-        how = join_type
+        other=df2,
+        on=join_col,
+        how=join_type
     )
     print(f"Finished {action}")
     end_count = df.count()

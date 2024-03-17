@@ -1,11 +1,17 @@
-from typing import Dict, List, Literal
+from typing import Literal
 from .data_types import DataType
 
 
-ColMapping = Dict[str, List[str]]
-
-
-COL_MAP: Dict[str, Dict[str, ColMapping]] = {
+COL_MAP: dict[
+    str,
+    dict[
+        str,
+        dict[
+            str,
+            list[str]
+        ]
+    ]
+] = {
     "cand": {
         "input": [
             "CAND_ID",
@@ -71,12 +77,26 @@ COL_MAP: Dict[str, Dict[str, ColMapping]] = {
             "CAND_ID",
             "ENTITY",
             "CITY",
-            "STATE",
+            "CONT_STATE",
             "LOCATION",
             "AMT",
-            "DATE"
+            "DATE",
+            "DOMESTIC"
         ]
     },
+    "dist": {
+        "input": [
+            "STATEFP",
+            "CD118FP",
+            "geometry"
+        ],
+        "output": [
+            "STATE",
+            "DISTRICT",
+            "GEOMETRY"
+        ]
+    }
+    ,
     "name": {
         "output": [
             "CAND_ID",
@@ -94,29 +114,24 @@ COL_MAP: Dict[str, Dict[str, ColMapping]] = {
 def set_cols(
     type: DataType,
     mode: Literal["input", "output"],
-    headers: List[str] = None,
+    headers: list[str] = None,
     cont_type: Literal["indiv", "oth", "pas2"] = None
-) -> List[str]:
-    
+) -> list[str]:
     if type not in COL_MAP:
         raise ValueError(
             f"Type {type} is invalid.\nValid types:\n{', '.join(COL_MAP.keys())}"
         )
-    
     cols = COL_MAP[type][mode]
-
     if type == "cont" and mode == "input":
         if not cont_type or cont_type not in cols:
             raise ValueError(
                 f"Contribution type {cont_type} is invalid. Valid types:\n{', '.join(cols.keys())}"
             )
         cols = cols[cont_type]
-
     if mode == "input":
         if headers is None:
             raise ValueError(
                 "To set input columns, headers must be provided"
             )
         return [headers.index(c) for c in cols]
-    
     return cols

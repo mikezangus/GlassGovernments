@@ -11,7 +11,7 @@ from geography.usa.states.load_states import load_states
 
 
 def convert_state_code_to_name(state_code: str) -> str:
-    states_dict = load_states("all", "dict")
+    states_dict = load_states("all", "all_dict")
     inverse_states_dict = {
         v: k for k, v in states_dict.items()
     }

@@ -7,10 +7,10 @@ sys.path.append(CONTRIBUTIONS_DIR)
 from process_contributions import process_contributions
 
 
-def process_others(year: str = None) -> None:
+def process_other(year: str = None) -> None:
     process_contributions("Other", "oth", "itoth.txt", year)  
     return
 
 
 if __name__ == "__main__":
-    process_others()
+    process_other()
