@@ -5,18 +5,12 @@ import formatConstituency from "../../lib/formatConstituency";
 import colorParty from "../../lib/colorParty";
 import styles from "../../styles/candidate/Bio.module.css";
 import formatCurrency from "../../lib/formatCurrency";
+import useIsMobile from "../../lib/useIsMobile";
 
 
 function RenderPartyAndConstituency({ partyRaw, candidate, state, district }) {
 
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 820);
-        };
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    const isMobile = useIsMobile();
 
     const party = formatParty(partyRaw)
     const partyColor = candidate ? colorParty(party) : "gray";
@@ -53,7 +47,7 @@ function Renderer({ state, district, candidate }) {
                 district={district}
             />
             <div className={styles.amt}>
-                Total Raised: {formatCurrency(amt)}
+                Total Raised — {formatCurrency(amt)}
             </div>
         </div>
     );

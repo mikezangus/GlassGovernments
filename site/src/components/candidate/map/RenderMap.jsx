@@ -1,20 +1,13 @@
 import React, {useEffect, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import CreateHeatmap from "./CreateHeatmap";
+import useIsMobile from "../../../lib/useIsMobile";
 import styles from "../../../styles/candidate/Map.module.css";
 
 
 export default function RenderMap({ state, candId, coords }) {
 
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-        window.addEventListener("resize", handleResize);
-        return () => 
-            window.removeEventListener("resize", handleResize);
-    }, []);
+    const isMobile = useIsMobile();
 
     let position = []
     let zoom

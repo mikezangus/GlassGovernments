@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
+import useIsMobile from "../../../lib/useIsMobile";
 import styles from "../../../styles/candidate/Chart.module.css";
 
 
@@ -12,17 +13,6 @@ function getPadding(digitCount) {
         case 7: return 51;
         default: return 0;
     }
-};
-
-
-const useResize = () => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
-    useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 820);
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-    return isMobile;
 };
 
 
@@ -85,8 +75,6 @@ const options = {
 
 export default function ChartData({ data, digitCount }) {
 
-    const isMobile = useResize();
-
     const padding = getPadding(digitCount);
 
     const chartContainerRef = useRef(null);
@@ -95,6 +83,7 @@ export default function ChartData({ data, digitCount }) {
     }, [chartContainerRef.current?.offsetWidth]);
 
     const labelCount = data.labels.length;
+    const isMobile = useIsMobile();
     const labelSpacing = isMobile ? 75: 100;
     let chartWidth = labelCount * labelSpacing;
     if (chartWidth < chartContainerWidth) {
@@ -136,4 +125,3 @@ export default function ChartData({ data, digitCount }) {
     );
 
 };
-

@@ -1,29 +1,23 @@
 import React, { useEffect, useState } from "react";
-import useFetchLegend from "../../../hooks/useFetchLegend";
+import useFetchLegend from "../../../hooks/candidates/useFetchLegend";
 import calculatePercentage from "../../../lib/calculatePercentage";
 import formatCurrency from "../../../lib/formatCurrency";
 import showStateName from "../../../lib/showStateName";
-import styles from "../../../styles/candidate/Legend.module.css";
 import {
     greenOpaque,
     greenTransparent,
     brownOpaque,
     brownTransparent
 } from "../../../lib/colors";
+import useIsMobile from "../../../lib/useIsMobile";
+import styles from "../../../styles/candidate/Legend.module.css";
+
 
 
 function PrintConstituency({ office, state, district }) {
 
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 820);
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
     let constituency;
+    const isMobile = useIsMobile();
     office === "S" || district == "00"
         ? isMobile
             ? constituency = state
@@ -102,12 +96,9 @@ function Renderer({ legend, office, state, district, amt }) {
 
 
 export default function Legend({ year, state, candidate }) {
-    console.log("candidate", candidate)
     const { office, district, candId, amt } = candidate; 
     const [legend, setLegend] = useState([]);
-
     useFetchLegend(year, state, candId, setLegend);
-
     return (
         <Renderer
             legend={legend}
