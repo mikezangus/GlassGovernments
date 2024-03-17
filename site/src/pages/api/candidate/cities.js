@@ -16,21 +16,21 @@ export default async function handler(req, res) {
             const query = { CAND_ID: candId };
             const group = {
                 _id:
-                    { CITY: "$CITY", STATE: "$CONT_STATE" },
-                AMT:
+                    { city: "$CITY", state: "$CONT_STATE" },
+                amt:
                     { $sum: "$AMT" }
             };
             const projection = {
                 _id: 0,
-                CITY: "$_id.CITY",
-                STATE: "$_id.STATE",
-                AMT: 1
+                city: "$_id.city",
+                state: "$_id.state",
+                amt: 1
             };
             const pipeline = [
                 { $match: query },
                 { $group: group },
                 { $project: projection },
-                { $sort: { AMT: -1 } },
+                { $sort: { amt: -1 } },
                 { $limit: 5 }
             ];
             const data = await collection

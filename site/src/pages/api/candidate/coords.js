@@ -5,8 +5,8 @@ export default async function handler(req, res) {
     const name = "Coordinates API";
     if (req.method === "GET") {
         try {
-            const { year, candID } = req.query;
-            if (!year || !candID) return res
+            const { year, candId } = req.query;
+            if (!year || !candId) return res
                 .status(400)
                 .send(name, " | Prior selections required");
             const db = await getDB();
@@ -16,17 +16,17 @@ export default async function handler(req, res) {
                 LOCATION: 1,
                 AMT: 1
             };
-            const docs = await collection
+            const items = await collection
                 .find(
-                    { CAND_ID: candID },
+                    { CAND_ID: candId },
                     { projection: projection}
                 )
                 .toArray();
-            const data = docs
-                    .map(doc => (
+            const data = items
+                    .map(item => (
                         {
-                            COORDS: doc.LOCATION,
-                            AMT: parseFloat(doc.AMT)
+                            COORDS: item.LOCATION,
+                            AMT: parseFloat(item.AMT)
                         }
                     ))
                     .filter(item => item != null);

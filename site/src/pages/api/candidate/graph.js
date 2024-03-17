@@ -14,9 +14,7 @@ export default async function handler(req, res) {
             const db = await getDB();
             const collection = db.collection(`${year}_conts`);
             const filterOutNegativeAmts = {
-                $expr : {
-                    $gt: ["$AMT", 0]
-                }
+                $expr: { $gt: ["$AMT", 0] }
             };
             const query = {
                 CAND_ID: candID,
@@ -71,7 +69,6 @@ export default async function handler(req, res) {
             const data = await collection
                 .aggregate(pipeline)
                 .toArray();
-            console.log("graph", data)
             res.json(data);
         } catch (err) {
             console.error(name, " | Error: ", err);
@@ -83,6 +80,6 @@ export default async function handler(req, res) {
         res.setHeader("Allow", ["GET"]);
         res
             .status(405)
-            .end(`Method ${req.method} Not Allowed`)
+            .end(`Method ${req.method} Not Allowed`);
     }
 };

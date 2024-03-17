@@ -35,7 +35,6 @@ export default async function handler(req, res) {
             const data = await collection
                 .aggregate(pipeline)
                 .toArray();
-            console.log(data)
             res.json(data);
         } catch (err) {
             console.error(name, " | Error: ", err);

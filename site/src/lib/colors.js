@@ -1,8 +1,8 @@
-export const green = "47, 255, 141";
-export const brown = "60, 27, 5";
+export const green = "45, 255, 140";
+export const brown = "100, 30, 5";
 
 export const greenOpaque = `rgb(${green})`;
-export const greenTransparent = `rgba(${green}, 0.5)`;
+export const greenTransparent = `rgba(${green}, 0.35)`;
 
 export const brownOpaque = `rgb(${brown})`;
-export const brownTransparent = `rgba(${brown}, 0.4)`;
+export const brownTransparent = `rgba(${brown}, 0.35)`;
