@@ -12,7 +12,12 @@ ModeType = Literal[
 ]
 
 
-def upload_pandas_df(collection_name: str, uri: str, db_name: str, df: pd.DataFrame) -> None:
+def upload_pandas_df(
+    collection_name: str,
+    uri: str,
+    db_name: str,
+    df: pd.DataFrame
+) -> None:
     count = len(df)
     print(f"\nStarted uploading {count:,} items to collection {collection_name}")
     print(df.head())
@@ -28,7 +33,12 @@ def upload_pandas_df(collection_name: str, uri: str, db_name: str, df: pd.DataFr
     return
 
 
-def upload_spark_df(collection_name: str, uri: str, df: DataFrame, mode: ModeType) -> None:
+def upload_spark_df(
+    collection_name: str,
+    uri: str,
+    df: DataFrame,
+    mode: ModeType
+) -> None:
     count = df.count()
     print(f"\nStarted uploading {count:,} items to collection {collection_name}")
     df.show()
@@ -45,7 +55,13 @@ def upload_spark_df(collection_name: str, uri: str, df: DataFrame, mode: ModeTyp
     return
 
 
-def upload_df(collection_name: str, uri: str, df: pd.DataFrame | DataFrame, db_name: str = None, mode: ModeType = None) -> None:
+def upload_df(
+    collection_name: str,
+    uri: str,
+    df: pd.DataFrame | DataFrame,
+    db_name: str = None,
+    mode: ModeType = None
+) -> None:
     if isinstance(df, pd.DataFrame):
         upload_pandas_df(collection_name, uri, db_name, df)
     elif isinstance(df, DataFrame):
