@@ -16,7 +16,7 @@ export default async function handler(req, res) {
             const query = { CAND_ID: candId };
             const group = {
                 _id:
-                    { CITY: "$CITY", STATE: "$STATE" },
+                    { CITY: "$CITY", STATE: "$CONT_STATE" },
                 AMT:
                     { $sum: "$AMT" }
             };
