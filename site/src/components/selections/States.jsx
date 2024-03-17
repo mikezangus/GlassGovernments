@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useFetchStates from "../../hooks/useFetchStates";
+import useFetchStates from "../../hooks/selections/useFetchStates";
 import showStateName from "../../lib/showStateName";
 import styles from "../../styles/selections/Dropdown.module.css";
 

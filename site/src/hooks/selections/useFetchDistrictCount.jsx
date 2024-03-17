@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 
 
-export default function useCountDistricts(year, office, state, handleDistrictSelection) {
+export default function useFetchDistrictCount(year, office, state, handleDistrictSelection) {
 
     const name = "Count Districts Hook";
     const [districtCount, setDistrictCount] = useState(0);
 
     useEffect(() => {
         if (year && office && state) {
-            const countDistricts = async () => {
+            const fetchDistrictCount = async () => {
                 try {
                     const params = new URLSearchParams({ year, office, state });
                     const url = `/api/selections/districts?${params.toString()}`;
@@ -22,7 +22,7 @@ export default function useCountDistricts(year, office, state, handleDistrictSel
                     setDistrictCount(0);
                 };
             };
-            countDistricts();
+            fetchDistrictCount();
         };
     }, [year, office, state]);
     return districtCount;

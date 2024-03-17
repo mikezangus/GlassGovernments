@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useFetchDistricts from "../../hooks/useFetchDistricts";
+import useFetchDistricts from "../../hooks/selections/useFetchDistricts";
 import styles from "../../styles/selections/Dropdown.module.css";
 
 

@@ -15,7 +15,7 @@ import {
 import "chartjs-adapter-moment";
 import ChartData from "./ChartData";
 import ChartYAxis from "./ChartYAxis";
-import useFetchGraph from "../../../hooks/useFetchGraph";
+import useFetchGraph from "../../../hooks/candidates/useFetchGraph";
 import styles from "../../../styles/candidate/Chart.module.css";
 
 

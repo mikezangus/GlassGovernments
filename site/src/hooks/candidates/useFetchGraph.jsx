@@ -4,7 +4,7 @@ import {
     greenTransparent,
     brownOpaque,
     brownTransparent
-} from "../lib/colors"
+} from "../../lib/colors"
 
 
 function WriteLabel({office, state, district}) {

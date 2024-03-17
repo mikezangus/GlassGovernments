@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useFetchCandidates from "../../hooks/useFetchCandidates";
+import useFetchCandidates from "../../hooks/selections/useFetchCandidates";
 import formatContAmt from "../../lib/formatContAmt";
 import styles from "../../styles/selections/Dropdown.module.css";
 

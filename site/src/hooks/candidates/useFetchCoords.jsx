@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 
 
-export default function useFetchCoords(year, candID, setCoords) {
+export default function useFetchCoords(year, candId, setCoords) {
     const name = "Fetch Coordinates Hook"
     useEffect(() => {
-        if (year && candID) {
+        if (year && candId) {
             const fetchCoords = async () => {
                 try {
                     const params = new URLSearchParams(
-                        { year, candID }
+                        { year, candId }
                     );
                     const url = `/api/candidate/coords?${params.toString()}`;
                     const response = await fetch(url);
@@ -22,5 +22,5 @@ export default function useFetchCoords(year, candID, setCoords) {
             };
             fetchCoords();
         };
-    }, [year, candID]);
+    }, [year, candId]);
 };

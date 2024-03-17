@@ -4,7 +4,7 @@ import Offices from "./selections/Offices.jsx";
 import States from "./selections/States.jsx";
 import Districts from "./selections/Districts.jsx";
 import Candidates from "./selections/Candidates.jsx";
-import useCountDistricts from "../hooks/useCountDistricts.jsx";
+import useFetchDistrictCount from "../hooks/selections/useFetchDistrictCount.jsx";
 import styles from "../styles/selections/Selections.module.css";
 
 
@@ -19,7 +19,7 @@ export default function Selections(
 ) {
 
     const isPresidential = selectedOffice === "P";
-    const districtCount = useCountDistricts(selectedYear, selectedOffice, selectedState, handleDistrictSelection);
+    const districtCount = useFetchDistrictCount(selectedYear, selectedOffice, selectedState, handleDistrictSelection);
 
     return (
 
