@@ -27,7 +27,7 @@ main {
     display: flex;
     flex-direction: row;
     width: 100%vh;
-    margin-top: calc(3% + 75px);
+    margin-top: calc(3% + 100px);
     margin-left: 5%;
     margin-right: 5%;
     margin-bottom: 5%;
@@ -47,7 +47,7 @@ main {
 
     main {
         flex-direction: column;
-        margin-top: calc(8% + 75px);
+        margin-top: calc(10% + 100px);
         gap: 25px
     }
 
