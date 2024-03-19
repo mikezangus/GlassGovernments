@@ -1,16 +1,18 @@
 import React from "react";
-import "leaflet/dist/leaflet.css";
+import { Analytics } from "@vercel/analytics/react"
 import Header from "../components/Header";
+import "leaflet/dist/leaflet.css";
 import "../styles/index.css";
 
 
 export default function App({ Component, pageProps }) {
     return (
         <>
-        <Header />
-        <main>
-            <Component {...pageProps} />
-        </main>
+            <Analytics />
+            <Header />
+            <main>
+                <Component {...pageProps} />
+            </main>
         </>
     );
 };
