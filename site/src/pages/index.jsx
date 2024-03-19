@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Head from "next/head";
 import HTMLHead from "../components/HTMLHead";
 import Selections from "../components/Selections";
 import Candidate from "../components/Candidate";
@@ -32,9 +31,7 @@ export default function Home() {
     };
     return (
         <>
-        <Head>
-            <HTMLHead />
-        </Head>
+        <HTMLHead />
         <Selections
             handleYearSelection={handleYearSelection}
             selectedYear={selectedYear}

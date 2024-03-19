@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 
 
 export default function HTMLHead() {
@@ -7,15 +8,13 @@ export default function HTMLHead() {
     const description = "";
     const imageURL = "https://glass-governments.vercel.app/og_image.png";
     return( 
-        <>
+        <Head>
         <meta charset="utf-8" />
         <meta
             name="viewport"
             content="width=device-width, initial-scale=1"
         />
-        <title>
-            Glass Governments
-        </title>
+        <title>{title}</title>
         <link
             rel="stylesheet"
             href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -60,6 +59,6 @@ export default function HTMLHead() {
             property="twitter:image"
             content={imageURL}
         />
-        </>
+        </Head>
     );
 };
