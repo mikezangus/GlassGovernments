@@ -41,6 +41,10 @@ export default function HTMLHead() {
             content={imageURL}
         />
         <meta
+            property="twitter:card"
+            content="summary_large_image"
+        />
+        <meta
             property="twitter:url"
             content={url}
         />
