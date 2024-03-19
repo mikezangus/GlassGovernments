@@ -49,6 +49,7 @@ export default function Home() {
         />
         {selectedYear && selectedOffice && selectedState && selectedDistrict && selectedCandidate && (
             <Candidate
+                key={selectedCandidate.candId}
                 year={selectedYear}
                 office={selectedOffice}
                 state={selectedState}

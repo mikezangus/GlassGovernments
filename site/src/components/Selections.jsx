@@ -56,8 +56,7 @@ export default function Selections(
                 selectedYear &&
                 selectedOffice === "H" &&
                 selectedState &&
-                districtCount > 1 &&
-                (
+                districtCount > 1 && (
                     <Districts
                         year={selectedYear}
                         office={selectedOffice}

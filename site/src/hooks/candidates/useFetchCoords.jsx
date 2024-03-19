@@ -22,9 +22,7 @@ export default function useFetchCoords(year, candId, setCoords) {
                         ${name} | Network response was not ok
                     `);
                 }
-                console.log("response", response)
                 const data = await response.json();
-                console.log(data)
                 setCoords(prevCoords => [...prevCoords, ...data]);
                 if (data.length < limit) {
                     setIsComplete(true);
