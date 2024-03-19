@@ -6,7 +6,7 @@
     --color-darkgray-transparent: rgb(21, 21, 21, 0.95);
     --color-black: #000000;
     --transition-duration: 0.3s;
-    --font-size-huge: 50px;
+    --font-size-extra-large: 50px;
     --font-size-large: 26px;
     --font-size-medium: 23px;
     --font-size-small: 20px;
@@ -37,7 +37,7 @@ main {
 @media (max-width: 820px) {
 
     :root {
-        --font-size-huge: 40px;
+        --font-size-extra-large: 40px;
         --font-size-large: 20px;
         --font-size-medium: 18px;
         --font-size-small: 16px;

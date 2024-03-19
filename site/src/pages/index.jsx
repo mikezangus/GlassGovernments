@@ -35,11 +35,39 @@ export default function Home() {
     return (
 
         <>
-
         <Head>
+            <meta charset="utf-8" />
+            <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1"
+            />
             <title>
                 Glass Governments
             </title>
+            <link
+                rel="stylesheet"
+                href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+            />
+            <meta
+                property="og:type"
+                content="website"
+            />
+            <meta
+                property="og:url"
+                content="https://glassgovernments.com"
+            />
+            <meta
+                property="og:title"
+                content="Glass Governments"
+            />
+            <meta
+                property="og:description"
+                content=""
+            />
+            <meta
+                property="og:image"
+                content="https://glass-governments.vercel.app/og_image.png"
+            />
         </Head>
 
         <Selections
