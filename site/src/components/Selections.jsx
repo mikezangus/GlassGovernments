@@ -17,18 +17,18 @@ export default function Selections(
         handleCandidateSelection, selectedCandidate
     }
 ) {
-
     const isPresidential = selectedOffice === "P";
-    const districtCount = useFetchDistrictCount(selectedYear, selectedOffice, selectedState, handleDistrictSelection);
-
+    const districtCount = useFetchDistrictCount(
+        selectedYear,
+        selectedOffice,
+        selectedState,
+        handleDistrictSelection
+    );
     return (
-
         <div className={styles.selectionsContainer}>
-
             <Years
                 onYearSelect={handleYearSelection}
             />
-
             {selectedYear && (
                 <Offices
                     year={selectedYear}
@@ -41,38 +41,47 @@ export default function Selections(
                     }}
                 />
             )}
-
-
-            {selectedYear && !isPresidential && (
-                <States
-                    year={selectedYear}
-                    office={selectedOffice}
-                    selectedState={selectedState}
-                    onStateSelect={handleStateSelection}
-                />
-            )}
-            {selectedYear && selectedOffice === "H" && selectedState && districtCount > 1 && (
-                <Districts
-                    year={selectedYear}
-                    office={selectedOffice}
-                    state={selectedState}
-                    selectedDistrict={selectedDistrict}
-                    onDistrictSelect={handleDistrictSelection}
-                />
-            )}
-
-            {selectedYear && selectedOffice && (selectedState || isPresidential ) && (selectedDistrict || isPresidential) && (
-                <Candidates
-                    year={selectedYear}
-                    office={selectedOffice}
-                    state={selectedState}
-                    district={selectedDistrict}
-                    selectedCandidate={selectedCandidate}
-                    onCandidateSelect={handleCandidateSelection}
-                />
-            )}
-
+            {
+                selectedYear &&
+                !isPresidential && (
+                    <States
+                        year={selectedYear}
+                        office={selectedOffice}
+                        selectedState={selectedState}
+                        onStateSelect={handleStateSelection}
+                    />
+                )
+            }
+            {
+                selectedYear &&
+                selectedOffice === "H" &&
+                selectedState &&
+                districtCount > 1 &&
+                (
+                    <Districts
+                        year={selectedYear}
+                        office={selectedOffice}
+                        state={selectedState}
+                        selectedDistrict={selectedDistrict}
+                        onDistrictSelect={handleDistrictSelection}
+                    />
+                )
+            }
+            {
+                selectedYear &&
+                selectedOffice &&
+                (selectedState || isPresidential) &&
+                (selectedDistrict || isPresidential) && (
+                    <Candidates
+                        year={selectedYear}
+                        office={selectedOffice}
+                        state={selectedState}
+                        district={selectedDistrict}
+                        selectedCandidate={selectedCandidate}
+                        onCandidateSelect={handleCandidateSelection}
+                    />
+                )
+            }
         </div>
     );
-
 };
