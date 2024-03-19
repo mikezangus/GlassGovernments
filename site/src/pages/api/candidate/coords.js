@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     const name = "Coordinates API";
     if (req.method === "GET") {
         try {
-            const { year, candId } = req.query;
+            const { year, candId, limit, skip } = req.query;
             if (!year || !candId) return res
                 .status(400)
                 .send(name, " | Prior selections required");
@@ -21,6 +21,8 @@ export default async function handler(req, res) {
                     { CAND_ID: candId },
                     { projection: projection}
                 )
+                .skip(parseInt(skip))
+                .limit(parseInt(limit))
                 .toArray();
             const data = items
                     .map(item => (
@@ -30,6 +32,7 @@ export default async function handler(req, res) {
                         }
                     ))
                     .filter(item => item != null);
+            console.log("COORDS", data)
             res.json(data);
         } catch (err) {
             console.error(name, " | Error: ", err);
