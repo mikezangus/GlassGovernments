@@ -103,11 +103,11 @@ def process_names(year: str = None):
         main_df
     )
     upload_df(
-        output_collection,
-        uri,
-        main_df,
-        db_name,
-        "overwrite"
+        collection_name=output_collection,
+        uri=uri,
+        df=main_df,
+        db_name=db_name,
+        mode="overwrite"
     )
     subprocess.run([caffeinate_path, "stop"])
     return

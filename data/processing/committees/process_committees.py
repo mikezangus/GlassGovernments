@@ -83,10 +83,10 @@ def process_committees(year: str = None):
         print("No items to upload, exiting")
         return
     upload_df(
-        output_collection,
-        uri,
-        main_df,
-        "append"
+        collection_name=output_collection,
+        uri=uri,
+        df=main_df,
+        mode="append"
     )
     spark.stop()
     print(f"\nFinished processing Committees")

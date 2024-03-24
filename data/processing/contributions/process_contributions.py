@@ -176,11 +176,11 @@ def process_contributions(
         return
 
     upload_df(
-        output_collection_name,
-        uri,
-        df,
-        db_name,
-        "append"
+        collection_name=output_collection_name,
+        uri=uri,
+        df=df,
+        db_name=db_name,
+        mode="append"
     )
     print(df.head())
     

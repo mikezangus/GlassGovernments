@@ -84,10 +84,10 @@ def process_candidates(year: str = None):
         print("No items to upload, exiting")
         return
     upload_df(
-        output_collection,
-        uri,
-        main_df,
-        "overwrite"
+        collection_name=output_collection,
+        uri=uri,
+        df=main_df,
+        mode="overwrite"
     )
     spark.stop()
     print(f"\nFinished processing Candidates")
