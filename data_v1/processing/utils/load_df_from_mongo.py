@@ -12,6 +12,8 @@ def load_spark_df_from_mongo(
     subject: str=None
 ) -> DataFrame | None:
     print(f"\nStarted loading {subject} Spark DataFrame from Mongo")
+    print("uri", uri)
+    print("collection:", collection_name)
     df = spark.read \
         .format("mongo") \
         .option("uri", uri) \
@@ -66,6 +68,10 @@ def load_df_from_mongo(
     subject: str=None
 ) -> pd.DataFrame | DataFrame:
     if df_type == "pandas":
-        return load_pandas_df_from_mongo(uri, db_name, collection_name, fields, subject)
+        return load_pandas_df_from_mongo(
+            uri, db_name, collection_name, fields, subject
+        )
     elif df_type == "spark":
-        return load_spark_df_from_mongo(spark, uri, collection_name, fields, subject)
+        return load_spark_df_from_mongo(
+            spark, uri, collection_name, fields, subject
+        )
