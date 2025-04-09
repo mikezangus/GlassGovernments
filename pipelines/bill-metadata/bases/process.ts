@@ -1,4 +1,4 @@
-import { RawBill, Bill } from "../types";
+import { Bill, RawBill } from "../types";
 
 
 export default function process(input: RawBill[]): Bill[]

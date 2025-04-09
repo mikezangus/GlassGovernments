@@ -51,16 +51,17 @@ async function fetchBatchedResponses(congress: number, offset: number): Promise<
 
 export default async function fetchFromWeb(congress: number): Promise<any[]>
 {
-    const bills: any[] = [];
+    const data: any[] = [];
     let offset = 0;
+    console.log("\n");
     while (true) {
         const responses = await fetchBatchedResponses(congress, offset);
         if (!responses || responses.length === 0) {
             break;
         }
-        bills.push(...responses);
+        data.push(...responses);
         offset += BATCH_SIZE;
     }
-    console.log(`Finished fetching ${bills.length} records for Congress ${congress}`);
-    return bills;
+    console.log(`Finished fetching ${data.length} records for Congress ${congress}`);
+    return data;
 }

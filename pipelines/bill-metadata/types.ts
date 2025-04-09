@@ -1,6 +1,3 @@
-import { FieldPacket, RowDataPacket } from "mysql2/promise";
-
-
 export type RawBill = {
     congress: string;
     type: string;
@@ -15,9 +12,3 @@ export type Bill = {
     num: string;
     action: number;
 };
-
-
-export type MySQLResponse = [
-    RowDataPacket[],
-    FieldPacket[]
-];
