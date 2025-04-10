@@ -10,5 +10,5 @@ export type Bill = {
     congress: number;
     type: string;
     num: string;
-    action: number;
+    action: boolean;
 };
