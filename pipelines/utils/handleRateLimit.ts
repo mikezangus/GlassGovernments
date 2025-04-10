@@ -29,17 +29,17 @@ export default async function handleRateLimit<T>(
         } catch (err) {
             const error = err as RateLimitError;
             if (error.response?.status === rateLimitStatus) {
-                console.warn(`⏳ [${++attempt}/${maxAttempts}] Trying again in ${delay / 1000}s`);
+                console.warn(`⏳ ${id} [${++attempt}/${maxAttempts}] Trying again in ${delay / 1000}s`);
                 await wait(delay);
                 delay *= 2;
             } else {
                 status = error.response?.status ?? null;
                 message = error.message || error.toString();
-                console.warn(`❓ [${++attempt}/${maxAttempts}] Trying again now. Error:`, message);
+                console.warn(`❓ ${id} [${++attempt}/${maxAttempts}] Trying again now. Error:`, message);
             }
         }
     }
-    console.error(`Maximum attempts hit. Failed to fetch response.\nError:\n${message}`);
+    console.error(`${id} Maximum attempts hit. Failed to fetch response.\nError:\n${message}`);
     log(`ID: ${id} | Status: ${status}`);
     return [];
 }
