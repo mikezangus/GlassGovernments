@@ -18,10 +18,11 @@ async function main(startArg: string | undefined, endArg: string | undefined)
     if (isNaN(startCongress) || isNaN(endCongress)) {
         process.exit(1);
     }
-    if (endCongress > currentCongress()) {
-        process.exit(1);
-    }
-    for (let congress = startCongress; congress <= endCongress; congress++) {
+    for (
+        let congress = startCongress;
+        congress <= endCongress && congress >= 102 && congress <= currentCongress();
+        congress++
+    ) {
         const data: Bill[] = [];
         try {
             const responses = await fetchFromWeb(congress);

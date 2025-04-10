@@ -17,13 +17,11 @@ async function main(startArg: string | undefined, endArg: string | undefined)
     if (isNaN(startCongress) || isNaN(endCongress)) {
         process.exit(1);
     }
-    if (startCongress < 102) {
-        process.exit(1);
-    }
-    if (endCongress > currentCongress()) {
-        process.exit(1);
-    }
-    for (let congress = startCongress; congress <= endCongress; congress++) {
+    for (
+        let congress = startCongress;
+        congress <= endCongress && congress >= 102 && congress <= currentCongress();
+        congress++
+    ) {
         try {
             const data = await fetchFromDB(congress);
             await fetchFromWeb(data);
