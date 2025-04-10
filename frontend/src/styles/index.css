@@ -1,0 +1,46 @@
+:root
+{
+    --c-darkgray: #0a0a0a;
+}
+
+
+body
+{
+    margin: 0;
+    width: 100vw;
+    color: white;
+    background-color: var(--c-darkgray);
+}
+
+
+main
+{
+    padding: 2rem;
+}
+
+
+a
+{
+    text-decoration: none;
+    color: inherit;
+    transition: filter 0.2s ease;
+}
+
+
+a:hover
+{
+    filter: brightness(75%);
+}
+
+
+a:visited
+{
+    color: inherit;
+}
+
+
+h1
+{
+    width: 100%;
+    text-align: center;
+}

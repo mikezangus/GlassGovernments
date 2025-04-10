@@ -1,0 +1,29 @@
+.headerContainer
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3rem;
+    padding: 2rem;
+    background-color: black;
+}
+
+
+.titleContainer
+{
+    width: auto;
+    font-size: large;
+    font-weight: bold;
+}
+
+
+.productsContainer
+{
+    font-size: medium;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}

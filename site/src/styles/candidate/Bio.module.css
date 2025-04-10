@@ -1,0 +1,24 @@
+.bio {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-size: var(--font-size-extra-large);
+    font-weight: bolder;
+}
+
+.partyConstituencyContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.party, .constituency, .amt {
+    font-size: var(--font-size-medium);
+}
+
+@media (max-width: 820px) {
+    .partyConstituencyContainer {
+        flex-direction: column;
+    }
+}
