@@ -1,9 +1,9 @@
 import { Bill, RawBill } from "../types";
 
 
-export default function createRow(input: RawBill[]): Bill[]
+export default function createRow(data: RawBill[]): Bill[]
 {
-    return input.map((item) => {
+    return data.map((item) => {
         const id = `${item.congress}_${item.type}_${item.number}`;
         const congress = Number(item.congress);
         return {
