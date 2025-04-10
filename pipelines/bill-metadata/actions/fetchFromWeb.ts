@@ -1,11 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import dotenv from "dotenv";
-import path from "path";
+import "../../../config"
 import { Bill } from "../types";
 import handleRateLimit from "../../utils/handleRateLimit";
 
 
-dotenv.config({ path: path.resolve(__dirname, "../../../.env")});
 const API_KEY = process.env.CONGRESS_API_KEY;
 
 
