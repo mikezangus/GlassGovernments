@@ -1,37 +1,40 @@
-import { spawn } from "child_process";
 import { Bill } from "../types";
+import createRow from "./createRow";
+import currentCongress from "../../utils/currentCongress";
 import fetchFromWeb from "./fetchFromWeb";
 import insertToDB from "./insertToDB";
-import process from "./process";
 import pool from "../../../db";
 
 
-const START_CONGRESS = 1;
-const END_CONGRESS = 119;
-
-
-async function main()
+async function main(startArg: string | undefined, endArg: string | undefined)
 {
-    const caffeinate = spawn(
-        "caffeinate",
-        ["-d", "-i", "-s", "-u"],
-        { detached: false, stdio: "ignore" }
-    );
-    for (let congress = START_CONGRESS; congress <= END_CONGRESS; congress++) {
+    if (!startArg) {
+        process.exit(1);
+    } else if (!endArg) {
+        endArg = startArg;
+    }
+    const startCongress = parseInt(startArg);
+    const endCongress = parseInt(endArg);
+    if (isNaN(startCongress) || isNaN(endCongress)) {
+        process.exit(1);
+    }
+    if (endCongress > currentCongress()) {
+        process.exit(1);
+    }
+    for (let congress = startCongress; congress <= endCongress; congress++) {
         const data: Bill[] = [];
         try {
             const responses = await fetchFromWeb(congress);
-            data.push(...process(responses));
+            data.push(...createRow(responses));
             await insertToDB(data);
         } catch (err) {
             console.error(err);
         }
     }
     await pool.end();
-    caffeinate.kill("SIGTERM");
 }
 
 
 if (require.main === module) {
-    main();
+    main(process.argv[2], process.argv[3]);
 }

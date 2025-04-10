@@ -6,12 +6,6 @@ interface RateLimitError extends Error {
 }
 
 
-async function wait(delay: number): Promise<void>
-{
-    return new Promise(resolve => setTimeout(resolve, delay));
-}
-
-
 export default async function handleRateLimit<T>(
     fetch: () => Promise<T>,
     id: string | null,
@@ -30,7 +24,7 @@ export default async function handleRateLimit<T>(
             const error = err as RateLimitError;
             if (error.response?.status === rateLimitStatus) {
                 console.warn(`⏳ ${id} [${++attempt}/${maxAttempts}] Trying again in ${delay / 1000}s`);
-                await wait(delay);
+                await new Promise(resolve => setTimeout(resolve, delay));
                 delay *= 2;
             } else {
                 status = error.response?.status ?? null;

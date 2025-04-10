@@ -1,3 +1,4 @@
+import currentCongress from "../../utils/currentCongress";
 import fetchFromDB from "./fetchFromDB";
 import fetchFromWeb from "./fetchFromWeb";
 import insertToDB from "./insertToDB";
@@ -19,9 +20,12 @@ async function main(startArg: string | undefined, endArg: string | undefined)
     if (startCongress < 102) {
         process.exit(1);
     }
+    if (endCongress > currentCongress()) {
+        process.exit(1);
+    }
     for (let congress = startCongress; congress <= endCongress; congress++) {
         try {
-            let data = await fetchFromDB(congress);
+            const data = await fetchFromDB(congress);
             await fetchFromWeb(data);
             await insertToDB(data, congress);
         } catch (err) {
