@@ -1,6 +1,6 @@
+import { Bill } from "../types";
 import pool from "../../../db";
 import { tableName } from "../sql";
-import { Bill } from "../types";
 
 
 export default async function insertToDB(data: Bill[], congress: number): Promise<void>
