@@ -1,3 +1,4 @@
+import currentCongress from "../../utils/currentCongress";
 import fetchFromDB from "./fetchFromDB";
 import fetchFromWeb from "./fetchFromWeb";
 import insertToDB from "./insertToDB";
@@ -17,6 +18,9 @@ async function main(startArg: string | undefined, endArg: string | undefined)
         process.exit(1);
     }
     if (startCongress < 102) {
+        process.exit(1);
+    }
+    if (endCongress > currentCongress()) {
         process.exit(1);
     }
     for (let congress = startCongress; congress <= endCongress; congress++) {
