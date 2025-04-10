@@ -25,7 +25,7 @@ async function main(startArg: string | undefined, endArg: string | undefined)
     }
     for (let congress = startCongress; congress <= endCongress; congress++) {
         try {
-            let data = await fetchFromDB(congress);
+            const data = await fetchFromDB(congress);
             await fetchFromWeb(data);
             await insertToDB(data, congress);
         } catch (err) {
