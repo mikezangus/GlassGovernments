@@ -20,7 +20,7 @@ async function main(startArg: string | undefined, endArg: string | undefined)
     }
     for (
         let congress = startCongress;
-        congress <= endCongress && congress >= 102 && congress <= currentCongress();
+        congress <= endCongress && congress <= currentCongress();
         congress++
     ) {
         const data: Bill[] = [];
