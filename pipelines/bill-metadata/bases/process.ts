@@ -11,7 +11,7 @@ export default function process(input: RawBill[]): Bill[]
             congress: congress,
             type: item.type,
             num: item.number,
-            action: 0
+            action: false
         }
     });
 }
