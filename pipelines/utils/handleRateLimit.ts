@@ -23,7 +23,7 @@ export default async function handleRateLimit<T>(
         } catch (err) {
             const error = err as RateLimitError;
             if (error.response?.status === rateLimitStatus) {
-                console.warn(`⏳ ${id} [${++attempt}/${maxAttempts}] Trying again in ${delay / 1000}s`);
+                console.warn(`⏳ ${id} [Attempt ${++attempt}/${maxAttempts}] Trying again in ${delay / 1000}s`);
                 await new Promise(resolve => setTimeout(resolve, delay));
                 delay *= 2;
             } else {
