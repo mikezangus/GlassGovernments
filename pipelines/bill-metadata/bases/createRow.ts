@@ -11,6 +11,7 @@ export default function createRow(data: RawBill[]): Bill[]
             congress: congress,
             type: item.type,
             num: item.number,
+            title: item.title,
             action: false
         }
     });
