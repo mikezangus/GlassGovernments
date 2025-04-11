@@ -1,7 +1,7 @@
 export type RawBill = {
     congress: string;
     type: string;
-    number: string;
+    num: number;
     title: string;
 };
 
@@ -10,7 +10,10 @@ export type Bill = {
     id: string;
     congress: number;
     type: string;
-    num: string;
+    num: number;
     title: string,
-    action: boolean;
+    h_vote: number;
+    h_year: number;
+    s_vote: number;
+    s_session: number;
 };

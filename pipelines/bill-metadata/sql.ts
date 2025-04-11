@@ -8,9 +8,12 @@ export const schema = `
     id VARCHAR(15) PRIMARY KEY,
     congress SMALLINT,
     type VARCHAR(7),
-    num VARCHAR(5),
+    num INTEGER,
     title TEXT,
-    action BOOLEAN DEFAULT FALSE
+    h_vote INTEGER,
+    h_year INTEGER,
+    s_vote iNTEGER,
+    s_session INTEGER
 `;
 
 

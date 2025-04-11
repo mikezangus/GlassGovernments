@@ -2,13 +2,14 @@ import axios from "axios";
 import "../../../config";
 import handleRateLimit from "../../utils/handleRateLimit";
 import log from "../../utils/log";
+import { RawBill } from "../types";
 
 
 const API_KEY = process.env.CONGRESS_API_KEY;
 const BATCH_SIZE = 250;
 
 
-async function fetchResponse(congress: number, offset: number): Promise<any[]>
+async function fetchResponse(congress: number, offset: number): Promise<RawBill[]>
 {
     try {
         const response = await axios.get(
@@ -30,10 +31,10 @@ async function fetchResponse(congress: number, offset: number): Promise<any[]>
 }
 
 
-async function fetchBatchedResponses(congress: number, offset: number): Promise<any[]>
+async function fetchBatchedResponses(congress: number, offset: number): Promise<RawBill[]>
 {
-    console.log(`Started fetching for Congress ${congress} [${offset} - ${offset + BATCH_SIZE}]`);
-    let response = []
+    console.log(`Fetching for Congress ${congress} [${offset} - ${offset + BATCH_SIZE}]`);
+    let response: RawBill[] = []
     try {
         response = await handleRateLimit(
             () => fetchResponse(congress, offset),
@@ -49,7 +50,7 @@ async function fetchBatchedResponses(congress: number, offset: number): Promise<
 }
 
 
-export default async function fetchFromWeb(congress: number): Promise<any[]>
+export default async function fetchFromWeb(congress: number): Promise<RawBill[]>
 {
     const data: any[] = [];
     let offset = 0;
@@ -62,6 +63,6 @@ export default async function fetchFromWeb(congress: number): Promise<any[]>
         data.push(...responses);
         offset += BATCH_SIZE;
     }
-    console.log(`Finished fetching ${data.length} records for Congress ${congress}`);
+    console.log(`Fetched ${data.length} records for Congress ${congress}`);
     return data;
 }
