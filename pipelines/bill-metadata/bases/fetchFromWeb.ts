@@ -52,7 +52,7 @@ async function fetchBatchedResponses(congress: number, offset: number): Promise<
 
 export default async function fetchFromWeb(congress: number): Promise<RawBill[]>
 {
-    const data: any[] = [];
+    const data: RawBill[] = [];
     let offset = 0;
     console.log("\n");
     while (true) {

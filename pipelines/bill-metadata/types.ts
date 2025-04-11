@@ -1,7 +1,7 @@
 export type RawBill = {
     congress: string;
     type: string;
-    num: number;
+    number: number;
     title: string;
 };
 
