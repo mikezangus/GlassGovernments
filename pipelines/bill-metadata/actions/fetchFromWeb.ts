@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import "../../../config"
 import { Bill } from "../types";
 import handleRateLimit from "../../utils/handleRateLimit";
+import log from "../../utils/log";
 
 
 const API_KEY = process.env.CONGRESS_API_KEY;
@@ -37,6 +38,7 @@ export default async function fetchFromWeb(data: Bill[]): Promise<void>
         } catch (err) {
             console.error(err);
             console.log(`${'⚠️'} [${i + 1}/${data.length}] ${item.id}`);
+            log(item.id);
         }
     }
 }

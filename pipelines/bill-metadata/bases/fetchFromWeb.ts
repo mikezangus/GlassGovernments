@@ -1,6 +1,7 @@
 import axios from "axios";
 import "../../../config";
 import handleRateLimit from "../../utils/handleRateLimit";
+import log from "../../utils/log";
 
 
 const API_KEY = process.env.CONGRESS_API_KEY;
@@ -32,18 +33,19 @@ async function fetchResponse(congress: number, offset: number): Promise<any[]>
 async function fetchBatchedResponses(congress: number, offset: number): Promise<any[]>
 {
     console.log(`Started fetching for Congress ${congress} [${offset} - ${offset + BATCH_SIZE}]`);
+    let response = []
     try {
-        const response = await handleRateLimit(
+        response = await handleRateLimit(
             () => fetchResponse(congress, offset),
             `Congress: ${congress} | Batch: ${offset} - ${BATCH_SIZE}`,
             10,
             429
         );
-        return response ?? [];
     } catch (err) {
         console.error(err);
-        return [];
+        log(`${congress} ${err}`);
     }
+    return response ?? [];
 }
 
 
