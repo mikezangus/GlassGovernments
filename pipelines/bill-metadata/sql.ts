@@ -9,11 +9,11 @@ export const schema = `
     congress SMALLINT,
     type VARCHAR(7),
     num INTEGER,
-    title TEXT,
     h_vote INTEGER,
     h_year INTEGER,
     s_vote iNTEGER,
-    s_session INTEGER
+    s_session INTEGER,
+    title TEXT
 `;
 
 

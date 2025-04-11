@@ -11,9 +11,9 @@ export type Bill = {
     congress: number;
     type: string;
     num: number;
-    title: string,
     h_vote: number;
     h_year: number;
     s_vote: number;
     s_session: number;
+    title: string,
 };

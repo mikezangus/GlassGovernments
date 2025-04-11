@@ -8,7 +8,7 @@ export default async function fetchFromDB(congress: number): Promise<Bill[]>
     const query = `
         SELECT * FROM ${tableName}
         WHERE congress = $1
-        AND h_vote = 0 OR s_vote = 0`;
+        AND (h_vote = 0 OR s_vote = 0)`;
     try {
         const result = await pool.query(query, [congress]);
         return result.rows;
