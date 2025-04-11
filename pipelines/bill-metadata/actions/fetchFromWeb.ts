@@ -3,6 +3,7 @@ import "../../../config"
 import { Bill } from "../types";
 import handleRateLimit from "../../utils/handleRateLimit";
 import log from "../../utils/log";
+import populateFields from "./populateFields";
 
 
 const API_KEY = process.env.CONGRESS_API_KEY;
@@ -16,11 +17,12 @@ const url = (congress: number, type: string, num: string): string =>
 
 export default async function fetchFromWeb(data: Bill[]): Promise<void>
 {
+    let affected = 0;
     for (const [i, item] of data.entries()) {
         try {
             const response = await handleRateLimit(
                 () => axios.get(
-                    url(item.congress, item.type, item.num),
+                    url(item.congress, item.type, String(item.num)),
                     { responseType: "json" }
                 ),
                 item.id,
@@ -33,7 +35,8 @@ export default async function fetchFromWeb(data: Bill[]): Promise<void>
             );
             console.log(`${votes.length > 0 ? '✅' : '❌'} [${i + 1}/${data.length}] ${item.id}`);
             if (votes.length > 0) {
-                item.action = true;
+                populateFields(item, votes);
+                affected++;
             }
         } catch (err) {
             console.error(err);
@@ -41,4 +44,5 @@ export default async function fetchFromWeb(data: Bill[]): Promise<void>
             log(item.id);
         }
     }
+    console.log(`Fetched ${affected} actions for Congress ${data[0].congress}'s ${data.length} bills`);
 }
