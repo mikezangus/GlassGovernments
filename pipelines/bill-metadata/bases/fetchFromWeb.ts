@@ -11,23 +11,18 @@ const BATCH_SIZE = 250;
 
 async function fetchResponse(congress: number, offset: number): Promise<RawBill[]>
 {
-    try {
-        const response = await axios.get(
-            `https://api.congress.gov/v3/bill/${congress}`,
-            {
-                params: {
-                    api_key: API_KEY,
-                    format: "json",
-                    offset: offset,
-                    limit: BATCH_SIZE,
-                }
+    const response = await axios.get(
+        `https://api.congress.gov/v3/bill/${congress}`,
+        {
+            params: {
+                api_key: API_KEY,
+                format: "json",
+                offset: offset,
+                limit: BATCH_SIZE,
             }
-        )
-        return response.data?.bills ?? [];
-    } catch (err) {
-        console.error(err);
-        return [];
-    }
+        }
+    )
+    return response.data?.bills ?? [];
 }
 
 
@@ -38,7 +33,7 @@ async function fetchBatchedResponses(congress: number, offset: number): Promise<
     try {
         response = await handleRateLimit(
             () => fetchResponse(congress, offset),
-            `Congress: ${congress} | Batch: ${offset} - ${BATCH_SIZE}`,
+            `Congress ${congress} [${offset} - ${BATCH_SIZE}]`,
             10,
             429
         );
