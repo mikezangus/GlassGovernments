@@ -1,9 +1,9 @@
-import { Bill } from "../types";
+import { BillMetadata } from "../types";
 import pool from "../../../db";
 import { tableName } from "../sql";
 
 
-export default async function insertToDB(data: Bill[], congress: number): Promise<void>
+export default async function insertToDB(data: BillMetadata[]): Promise<void>
 {
     const query = `
         UPDATE ${tableName}
@@ -19,9 +19,10 @@ export default async function insertToDB(data: Bill[], congress: number): Promis
             s_session IS DISTINCT FROM $5
         );
     `;
-    try {
-        let affected = 0;
-        for (const item of data) {
+    console.log(`Inserting ${data.length} rows to ${tableName}`);
+    let affected = 0;
+    for (const item of data) {
+        try {
             const result = await pool.query(query, [
                 item.id,
                 item.h_vote,
@@ -30,10 +31,10 @@ export default async function insertToDB(data: Bill[], congress: number): Promis
                 item.s_session
             ]);
             affected += result.rowCount ?? 0;
-        }
-        console.log(`Updated ${affected} ${tableName} rows for Congress ${congress}`);
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }  
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }  
+    }
+    console.log(`Inserted ${affected} rows to ${tableName}`);
 }

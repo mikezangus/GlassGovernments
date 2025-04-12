@@ -25,7 +25,7 @@ async function main(startArg: string | undefined, endArg: string | undefined)
         try {
             const data = await fetchFromDB(congress);
             await fetchFromWeb(data);
-            await insertToDB(data, congress);
+            await insertToDB(data);
         } catch (err) {
             console.error(err);
         }
