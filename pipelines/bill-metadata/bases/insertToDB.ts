@@ -1,11 +1,12 @@
-import { Bill } from "../types";
-import { createTable, tableName } from "../sql";
+import { BillMetadata } from "../types";
+import createTable from "../../utils/createTable";
 import pool from "../../../db";
+import { schema, tableName } from "../sql";
 
 
-export default async function insertToDB(data: Bill[]): Promise<void>
+export default async function insertToDB(data: BillMetadata[]): Promise<void>
 {
-    await createTable();
+    await createTable(tableName, schema);
     const query = `
         INSERT INTO ${tableName}
         (id, congress, type, num, h_vote, h_year, s_vote, s_session, title)
@@ -13,9 +14,10 @@ export default async function insertToDB(data: Bill[]): Promise<void>
         ON CONFLICT (id) DO NOTHING
     `;
     console.log(`Inserting ${data.length} rows to ${tableName}`);
+    let affected = 0;
     for (const item of data) {
         try {
-            await pool.query(query, [
+            const result = await pool.query(query, [
                 item.id,
                 item.congress,
                 item.type,
@@ -26,6 +28,7 @@ export default async function insertToDB(data: Bill[]): Promise<void>
                 item.s_session,
                 item.title
             ]);
+            affected += result.rowCount ?? 0;
         } catch (err) {
             console.error(`
                 Error: ${err}
@@ -41,4 +44,5 @@ export default async function insertToDB(data: Bill[]): Promise<void>
             `);
         }
     }
+    console.log(`Inserted ${affected} rows to ${tableName}`);
 }
