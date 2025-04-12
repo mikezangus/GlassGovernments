@@ -28,4 +28,5 @@ export default async function insertToDB(data: BillText[]): Promise<void>
         }
     }
     console.log(`Inserted ${affected} rows to ${tableName}`);
+    await pool.end();
 }
