@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { BillText } from "./types";
+import { BillText } from "../types";
 
 
 const DIR = path.resolve(__dirname, "../../data/bill-texts");

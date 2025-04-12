@@ -1,6 +1,6 @@
 import { BillText } from "./types";
-import createTable from "../utils/createTable";
-import pool from "../../db";
+import createTable from "../../utils/createTable";
+import pool from "../../../db";
 import { schema, tableName } from "./sql";
 
 
