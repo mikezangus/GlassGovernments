@@ -1,10 +1,10 @@
-import fetchFromFiles from "./fetchFromFiles";
+import loadFromFiles from "./loadFromFiles";
 import insertToDB from "./insertToDB";
 
 
 async function main()
 {
-    const data = await fetchFromFiles();
+    const data = await loadFromFiles();
     await insertToDB(data);
 }
 
