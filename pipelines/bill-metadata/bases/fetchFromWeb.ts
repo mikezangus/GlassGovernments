@@ -2,14 +2,14 @@ import axios from "axios";
 import "../../../config";
 import handleRateLimit from "../../utils/handleRateLimit";
 import log from "../../utils/log";
-import { RawBill } from "../types";
+import { RawBillMetadata } from "../types";
 
 
 const API_KEY = process.env.CONGRESS_API_KEY;
 const BATCH_SIZE = 250;
 
 
-async function fetchResponse(congress: number, offset: number): Promise<RawBill[]>
+async function fetchResponse(congress: number, offset: number): Promise<RawBillMetadata[]>
 {
     const response = await axios.get(
         `https://api.congress.gov/v3/bill/${congress}`,
@@ -26,10 +26,10 @@ async function fetchResponse(congress: number, offset: number): Promise<RawBill[
 }
 
 
-async function fetchBatchedResponses(congress: number, offset: number): Promise<RawBill[]>
+async function fetchBatchedResponses(congress: number, offset: number): Promise<RawBillMetadata[]>
 {
     console.log(`Fetching for Congress ${congress} [${offset} - ${offset + BATCH_SIZE}]`);
-    let response: RawBill[] = []
+    let response: RawBillMetadata[] = []
     try {
         response = await handleRateLimit(
             () => fetchResponse(congress, offset),
@@ -45,9 +45,9 @@ async function fetchBatchedResponses(congress: number, offset: number): Promise<
 }
 
 
-export default async function fetchFromWeb(congress: number): Promise<RawBill[]>
+export default async function fetchFromWeb(congress: number): Promise<RawBillMetadata[]>
 {
-    const data: RawBill[] = [];
+    const data: RawBillMetadata[] = [];
     let offset = 0;
     console.log("\n");
     while (true) {

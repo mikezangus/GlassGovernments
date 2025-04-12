@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import "../../../config"
-import { Bill } from "../types";
+import { BillMetadata } from "../types";
 import handleRateLimit from "../../utils/handleRateLimit";
 import log from "../../utils/log";
 import populateFields from "./populateFields";
@@ -15,7 +15,7 @@ const url = (congress: number, type: string, num: string): string =>
     `actions?api_key=${API_KEY}&format=json&sort=updateDate+desc`;
 
 
-export default async function fetchFromWeb(data: Bill[]): Promise<void>
+export default async function fetchFromWeb(data: BillMetadata[]): Promise<void>
 {
     let affected = 0;
     for (const [i, item] of data.entries()) {

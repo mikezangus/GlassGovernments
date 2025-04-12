@@ -1,7 +1,7 @@
-import { RawBill, Bill } from "../types";
+import { RawBillMetadata, BillMetadata } from "../types";
 
 
-export default function createRow(data: RawBill[]): Bill[]
+export default function createRow(data: RawBillMetadata[]): BillMetadata[]
 {
     return data
         .filter(item => item.congress && item.type && item.number)

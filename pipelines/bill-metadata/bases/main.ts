@@ -1,4 +1,4 @@
-import { Bill } from "../types";
+import { BillMetadata } from "../types";
 import createRow from "./createRow";
 import currentCongress from "../../utils/currentCongress";
 import fetchFromWeb from "./fetchFromWeb";
@@ -23,7 +23,7 @@ async function main(startArg: string | undefined, endArg: string | undefined)
         congress <= endCongress && congress <= currentCongress();
         congress++
     ) {
-        const data: Bill[] = [];
+        const data: BillMetadata[] = [];
         try {
             const responses = await fetchFromWeb(congress);
             data.push(...createRow(responses));

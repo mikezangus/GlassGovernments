@@ -1,4 +1,4 @@
-export type RawBill = {
+export type RawBillMetadata = {
     congress: string;
     type: string;
     number: number;
@@ -6,7 +6,7 @@ export type RawBill = {
 };
 
 
-export type Bill = {
+export type BillMetadata = {
     id: string;
     congress: number;
     type: string;

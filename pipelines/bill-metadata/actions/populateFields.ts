@@ -1,7 +1,7 @@
-import { Bill } from "../types";
+import { BillMetadata } from "../types";
 
 
-export default function populateFields(bill: Bill, votes: any[]): void
+export default function populateFields(bill: BillMetadata, votes: any[]): void
 {
     for (const vote of votes) {
         if (vote.chamber === "House" && vote.date && vote.rollNumber) {

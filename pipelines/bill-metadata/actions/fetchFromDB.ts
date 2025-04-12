@@ -1,9 +1,9 @@
-import { Bill } from "../types";
+import { BillMetadata } from "../types";
 import pool from "../../../db";
 import { tableName } from "../sql";
 
 
-export default async function fetchFromDB(congress: number): Promise<Bill[]>
+export default async function fetchFromDB(congress: number): Promise<BillMetadata[]>
 {
     const query = `
         SELECT * FROM ${tableName}
