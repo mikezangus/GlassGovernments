@@ -1,17 +1,18 @@
 import fs from "fs/promises";
 import path from "path";
-import { BillText } from "./types";
+import { BillText } from "../types";
 
 
-const DIR = path.resolve(__dirname, "../data/bill-texts");
+const DIR = path.resolve(__dirname, "../../data/bill-texts");
 
 
-export default async function fetchFromFiles(): Promise<BillText[]>
+export default async function loadFromFiles(): Promise<BillText[]>
 {
     const data: BillText[] = [];
     const fileNames = await fs.readdir(DIR);
     for (const fileName of fileNames) {
         try {
+            console.log(fileName);
             const filePath = path.join(DIR, fileName);
             const stat = await fs.stat(filePath);
             if (!stat.isFile()

@@ -1,6 +1,6 @@
 import { BillText } from "./types";
-import createTable from "../utils/createTable";
-import pool from "../../db";
+import createTable from "../../utils/createTable";
+import pool from "../../../db";
 import { schema, tableName } from "./sql";
 
 
@@ -28,4 +28,5 @@ export default async function insertToDB(data: BillText[]): Promise<void>
         }
     }
     console.log(`Inserted ${affected} rows to ${tableName}`);
+    await pool.end();
 }

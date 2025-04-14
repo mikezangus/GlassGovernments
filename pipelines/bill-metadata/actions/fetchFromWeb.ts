@@ -30,18 +30,18 @@ export default async function fetchFromWeb(data: BillMetadata[]): Promise<void>
                 429
             ) as AxiosResponse<any>;
             const actions = response.data?.actions || [];
-            const votes = actions.filter(
-                (action: any) => action.recordedVotes?.length > 0
-            );
-            console.log(`${votes.length > 0 ? '✅' : '❌'} [${i + 1}/${data.length}] ${item.id}`);
-            if (votes.length > 0) {
-                populateFields(item, votes);
+            const recordedVotes: any[] = actions
+                .filter((action: any) => action.recordedVotes?.length > 0)
+                .flatMap((action: any) => action.recordedVotes ?? []);
+            console.log(`${recordedVotes.length > 0 ? '✅' : '❌'} [${i + 1}/${data.length}] ${item.id}`);
+            if (recordedVotes.length > 0) {
+                populateFields(item, recordedVotes);
                 affected++;
             }
         } catch (err) {
             console.error(err);
             console.log(`${'⚠️'} [${i + 1}/${data.length}] ${item.id}`);
-            log(item.id);
+            log(`${item.id} | Error: ${err}`);
         }
     }
     console.log(`Fetched ${affected} actions for Congress ${data[0].congress}'s ${data.length} bills`);
