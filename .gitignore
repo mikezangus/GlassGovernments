@@ -1,19 +1,11 @@
 __pycache__/
 .vscode/
-*.log
-
-old/
-data_v0/
-
+node_modules/
 
 .DS_Store
-
-config.json
-__init__.py
-logs/
-assets/
-node_modules
 .env
 
+data_v*
 
-*_v1
+*.csv
+*.log
