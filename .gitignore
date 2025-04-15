@@ -1,6 +1,7 @@
 __pycache__/
 .vscode/
 node_modules/
+old/
 
 .DS_Store
 .env
@@ -9,3 +10,4 @@ data_v*
 
 *.csv
 *.log
+*.xml
