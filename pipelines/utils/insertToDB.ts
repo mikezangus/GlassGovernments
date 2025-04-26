@@ -1,4 +1,4 @@
-import pool from "../../db";
+import pool from "../../localDB";
 
 
 export default async function insertToDB(

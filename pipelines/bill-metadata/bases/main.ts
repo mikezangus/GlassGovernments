@@ -3,7 +3,7 @@ import createRow from "./createRow";
 import currentCongress from "../../utils/currentCongress";
 import fetchFromWeb from "./fetchFromWeb";
 import insertToDB from "./insertToDB";
-import pool from "../../../db";
+import pool from "../../../localDB";
 
 
 async function main(startArg: string | undefined, endArg: string | undefined)
