@@ -41,6 +41,7 @@ def parse_guid(guid: str) -> dict[str, str]:
         raise ValueError
 
     return {
+        "id": guid,
         "year": year,
         "session": session,
         "bill_type": bill_type,
