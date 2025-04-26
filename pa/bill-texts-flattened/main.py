@@ -1,0 +1,26 @@
+import os
+import sys
+from flatten_text import flatten_text
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
+from fetch_from_db import fetch_from_db
+from insert_to_db import insert_to_db
+
+
+def main():
+    rows = fetch_from_db(
+        "pa_bill_texts_source",
+        query_params={"select": '*'}
+    )
+    flattened_rows = []
+    for row in rows:
+        flattened_text = flatten_text(row["text"])
+        flattened_rows.append({
+            "id": row["id"],
+            "text": flattened_text
+        })
+    insert_to_db("pa_bill_texts_flattened", flattened_rows)
+
+
+if __name__ == "__main__":
+    main()
