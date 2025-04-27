@@ -1,5 +1,5 @@
 import { BillMetadata } from "../types";
-import pool from "../../../localDB";
+import pool from "../../../../localDB";
 import { tableName } from "../sql";
 
 

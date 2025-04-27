@@ -1,6 +1,6 @@
 import { BillMetadata } from "../types";
-import createTable from "../../utils/createTable";
-import pool from "../../../localDB";
+import createTable from "../../../utils/createTable";
+import pool from "../../../../localDB";
 import { schema, tableName } from "../sql";
 
 

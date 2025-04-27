@@ -1,9 +1,8 @@
-import { BillMetadata } from "../types";
-import createRow from "./createRow";
-import currentCongress from "../../utils/currentCongress";
+import currentCongress from "../../../utils/currentCongress";
+import fetchFromDB from "./fetchFromDB";
 import fetchFromWeb from "./fetchFromWeb";
 import insertToDB from "./insertToDB";
-import pool from "../../../localDB";
+import pool from "../../../../localDB";
 
 
 async function main(startArg: string | undefined, endArg: string | undefined)
@@ -20,13 +19,12 @@ async function main(startArg: string | undefined, endArg: string | undefined)
     }
     for (
         let congress = startCongress;
-        congress <= endCongress && congress <= currentCongress();
+        congress <= endCongress && congress >= 102 && congress <= currentCongress();
         congress++
     ) {
-        const data: BillMetadata[] = [];
         try {
-            const responses = await fetchFromWeb(congress);
-            data.push(...createRow(responses));
+            const data = await fetchFromDB(congress);
+            await fetchFromWeb(data);
             await insertToDB(data);
         } catch (err) {
             console.error(err);
