@@ -3,6 +3,7 @@ from db import supabase_headers, supabase_url
 
 
 def insert_to_db(table_name: str, data: list[dict]) -> None:
+    print(f"\nInserting to {table_name}")
     url = f"{supabase_url}/rest/v1/{table_name}"
     headers = {
         **supabase_headers,
