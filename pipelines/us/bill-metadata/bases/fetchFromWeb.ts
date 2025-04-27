@@ -1,7 +1,7 @@
 import axios from "axios";
 import "../../../../config";
-import handleRateLimit from "../../../utils/handleRateLimit";
-import log from "../../../utils/log";
+import handleRateLimit from "../../utils/handleRateLimit";
+import log from "../../utils/log";
 import { RawBillMetadata } from "../types";
 
 

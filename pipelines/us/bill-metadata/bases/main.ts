@@ -1,6 +1,6 @@
 import { BillMetadata } from "../types";
 import createRow from "./createRow";
-import currentCongress from "../../../utils/currentCongress";
+import currentCongress from "../../utils/currentCongress";
 import fetchFromWeb from "./fetchFromWeb";
 import insertToDB from "./insertToDB";
 import pool from "../../../../localDB";
