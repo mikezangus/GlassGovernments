@@ -1,4 +1,4 @@
-import currentCongress from "../../../utils/currentCongress";
+import currentCongress from "../../utils/currentCongress"
 import fetchFromDB from "./fetchFromDB";
 import fetchFromWeb from "./fetchFromWeb";
 import insertToDB from "./insertToDB";

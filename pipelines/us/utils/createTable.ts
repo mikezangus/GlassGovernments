@@ -1,4 +1,4 @@
-import pool from "../../localDB";
+import pool from "../../../localDB";
 
 
 export default async function createTable(

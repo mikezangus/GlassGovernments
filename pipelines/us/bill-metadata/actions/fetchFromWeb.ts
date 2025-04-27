@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import "../../../../config"
 import { BillMetadata } from "../types";
-import handleRateLimit from "../../../utils/handleRateLimit";
-import log from "../../../utils/log";
+import handleRateLimit from "../../utils/handleRateLimit";
+import log from "../../utils/log";
 import populateFields from "./populateFields";
 
 
