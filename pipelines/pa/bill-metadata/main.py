@@ -1,11 +1,14 @@
-import os
-import sys
 from fetch_guids import fetch_guids
 from parse_guid import parse_guid
+import os
+import sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(CURRENT_DIR))
-from insert_to_db import insert_to_db
+STATE_DIR = os.path.dirname(CURRENT_DIR)
+sys.path.append(os.path.dirname(STATE_DIR))
 from urls import house_rss_url, senate_rss_url
+PIPELINES_DIR = os.path.dirname(STATE_DIR)
+sys.path.append(os.path.dirname(PIPELINES_DIR))
+from insert_to_db import insert_to_db
 
 
 def main():

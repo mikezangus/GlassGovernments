@@ -1,12 +1,15 @@
+from fetch_html_from_web import fetch_html_from_web
+from extract_text_from_html import extract_text_from_html
 import os
 import sys
-from fetch_html_from_web import fetch_html_from_web
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(CURRENT_DIR))
-from extract_text_from_html import extract_text_from_html
+STATE_DIR = os.path.dirname(CURRENT_DIR)
+sys.path.append(os.path.dirname(STATE_DIR))
+from urls import bill_text_url
+PIPELINES_DIR = os.path.dirname(STATE_DIR)
+sys.path.append(os.path.dirname(PIPELINES_DIR))
 from fetch_from_db import fetch_from_db
 from insert_to_db import insert_to_db
-from urls import bill_text_url
 
 
 def main():

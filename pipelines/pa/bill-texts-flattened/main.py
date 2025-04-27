@@ -1,8 +1,9 @@
+from flatten_text import flatten_text
 import os
 import sys
-from flatten_text import flatten_text
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(CURRENT_DIR))
+PIPELINES_DIR = os.path.dirname(os.path.dirname(CURRENT_DIR))
+sys.path.append(os.path.dirname(PIPELINES_DIR))
 from fetch_from_db import fetch_from_db
 from insert_to_db import insert_to_db
 

@@ -1,11 +1,12 @@
-import os
-import sys
 from clean_tokens import clean_tokens
 from find_universal_tokens import find_universal_tokens
 from group_by_type import group_by_type
 from tokenize_text import tokenize_text
+import os
+import sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(CURRENT_DIR))
+PIPELINES_DIR = os.path.dirname(os.path.dirname(CURRENT_DIR))
+sys.path.append(os.path.dirname(PIPELINES_DIR))
 from fetch_from_db import fetch_from_db
 from insert_to_db import insert_to_db
 
