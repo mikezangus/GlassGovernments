@@ -93,7 +93,7 @@ export default function BillTrackingComponent()
             <div style={{ display: "flex", flexDirection: "row", gap: "5rem" }}>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div>Currency</div>
-                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, listStyle: "none" }}>
+                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, paddingLeft: 0, listStyle: "none" }}>
                         {Array.isArray(currencyBills) && currencyBills.map((bill: BillMetadata) => (
                             <li
                                 key={bill.id}
@@ -107,7 +107,7 @@ export default function BillTrackingComponent()
                 </div>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div>Agriculture</div>
-                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, listStyle: "none" }}>
+                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, paddingLeft: 0, listStyle: "none" }}>
                         {Array.isArray(agricultureBills) && agricultureBills.map((bill: BillMetadata) => (
                             <li
                                 key={bill.id}
@@ -121,7 +121,7 @@ export default function BillTrackingComponent()
                 </div>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div>Healthcare</div>
-                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, listStyle: "none" }}>
+                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, paddingLeft: 0, listStyle: "none" }}>
                         {Array.isArray(healthcareBills) && healthcareBills.map((bill: BillMetadata) => (
                             <li
                                 key={bill.id}
