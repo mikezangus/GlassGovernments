@@ -1,9 +1,19 @@
 import fetchFromDB from "@/lib/fetchFromDB"
 
 
-async function fetchBillsByToken(token: string)
+type BillMetadata = {
+    id?: string;
+    year?: number;
+    session?: string;
+    bill_type?: string;
+    bill_num?: number;
+    print_num?: number;
+}
+
+
+async function fetchBillsByToken(token: string): Promise<BillMetadata[]>
 {
-    const tokens = await fetchFromDB<{ id: string }[]>(
+    const fetchedIDs = await fetchFromDB<{ id: string }>(
         "pa_bill_texts_cleaned",
         {
             filters: [{
@@ -13,21 +23,22 @@ async function fetchBillsByToken(token: string)
             }]
         }
     );
-    const ids = (tokens ?? []).map(row => row.id);
+    const tokenIDs = Array.isArray(fetchedIDs) ? fetchedIDs : [];
+    const ids = (tokenIDs ?? []).map(row => row.id);
     if (ids.length == 0) {
         return [];
     }
-    const metadata = await fetchFromDB(
+    const metadata = await fetchFromDB<BillMetadata>(
         "pa_bill_metadata",
         {
             filters: [{
                 column: "id",
                 operator: "in",
                 value: `(${ids.map(id => `"${id}"`).join(",")})`
-            }]
+            }],
         }
     )
-    return metadata ?? [];
+    return Array.isArray(metadata) ? metadata : [];
 }
 
 export default async function BillTrackingComponent()
@@ -40,7 +51,7 @@ export default async function BillTrackingComponent()
             <div style={{ display: "flex", flexDirection: "column" }}>
                 <div>Currency</div>
                 <ul style={{ display: "flex", flexDirection: "column", margin: 0, listStyle: "none" }}>
-                    {Array.isArray(currencyBills) && currencyBills.map((bill: any) => (
+                    {Array.isArray(currencyBills) && currencyBills.map((bill: BillMetadata) => (
                         <li key={bill.id}>{bill.bill_type} {bill.bill_num}</li>
                     ))}
                 </ul>
@@ -48,7 +59,7 @@ export default async function BillTrackingComponent()
             <div style={{ display: "flex", flexDirection: "column" }}>
                 <div>Agriculture</div>
                 <ul style={{ display: "flex", flexDirection: "column", margin: 0, listStyle: "none" }}>
-                    {Array.isArray(agricultureBills) && agricultureBills.map((bill: any) => (
+                    {Array.isArray(agricultureBills) && agricultureBills.map((bill: BillMetadata) => (
                         <li key={bill.id}>{bill.bill_type} {bill.bill_num}</li>
                     ))}
                 </ul>
@@ -56,7 +67,7 @@ export default async function BillTrackingComponent()
             <div style={{ display: "flex", flexDirection: "column" }}>
                 <div>Healthcare</div>
                 <ul style={{ display: "flex", flexDirection: "column", margin: 0, listStyle: "none" }}>
-                    {Array.isArray(healthcareBills) && healthcareBills.map((bill: any) => (
+                    {Array.isArray(healthcareBills) && healthcareBills.map((bill: BillMetadata) => (
                         <li key={bill.id}>{bill.bill_type} {bill.bill_num}</li>
                     ))}
                 </ul>

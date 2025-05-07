@@ -1,7 +1,25 @@
 import { db } from "./db";
 
 
-export default async function fetchFromDB<T = any>
+type FilterValue = string | number | boolean | null;
+
+
+interface Filter {
+    column: string;
+    operator: string;
+    value: FilterValue | FilterValue[];
+}
+
+
+interface FetchOptions {
+    select?: string;
+    filters?: Filter[];
+    limit?: number;
+    single?: boolean;
+}
+
+
+export default async function fetchFromDB<T>
 (
     table: string,
     {
@@ -9,17 +27,12 @@ export default async function fetchFromDB<T = any>
         filters = [],
         limit,
         single = false
-    }: {
-        select?: string;
-        filters?: { column: string; operator: string; value: any }[];
-        limit?: number;
-        single?: boolean;
-    } = {}
+    }: FetchOptions = {}
 ): Promise<T[] | T | null>
 {
     let query = db.from(table).select(select);
     for (const { column, operator, value } of filters) {
-        query = query.filter(column, operator as any, value);
+        query = query.filter(column, operator, value);
     }
     if (limit !== undefined) {
         query = query.limit(limit);
