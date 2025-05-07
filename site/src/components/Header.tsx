@@ -10,15 +10,9 @@ export default function Header()
                 Glass Governments
             </Link>
             <div className={styles.productsContainer}>
-                <Link href="/funding">
-                    Candidate Fundings
-                </Link>
-                <Link href="/bills">
-                    Bills
-                </Link>
-                <Link href="/votes">
-                    Vote Predictions
-                </Link>
+                <Link href="/bill-tracking">Bill Tracking</Link>
+                <Link href="/funding">Candidate Fundings</Link>
+                <Link href="/votes">Vote Predictions</Link>
             </div>
         </div>
     );

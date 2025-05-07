@@ -16,10 +16,7 @@ def main():
     flattened_rows = []
     for row in rows:
         flattened_text = flatten_text(row["text"])
-        flattened_rows.append({
-            "id": row["id"],
-            "text": flattened_text
-        })
+        flattened_rows.append({ "id": row["id"], "text": flattened_text })
     insert_to_db("pa_bill_texts_flattened", flattened_rows)
 
 
