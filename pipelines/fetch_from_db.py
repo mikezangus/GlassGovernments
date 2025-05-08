@@ -1,5 +1,5 @@
 import requests
-from pipelines.db import supabase_headers, supabase_url
+from db import supabase_headers, supabase_url
 
 
 def fetch_from_db(table_name: str, query_params: dict = None) -> list[dict]:
