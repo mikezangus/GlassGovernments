@@ -76,7 +76,9 @@ def fetch_rss_actions(url: str) -> list[dict[str, str]]:
         except:
             continue
         pubdate = entry.get("published")
-
+        enacted = entry.get("parss_enacted")
+        passed_lower = entry.get("parss_passedhouse")
+        passed_upper = entry.get("parss_passedsenate")
         actions.append({
             "guid": metadata["guid"],
             "year": metadata["year"],
@@ -84,7 +86,10 @@ def fetch_rss_actions(url: str) -> list[dict[str, str]]:
             "bill_type": metadata["bill_type"],
             "bill_num": metadata["bill_num"],
             "print_num": metadata["print_num"],
-            "pubdate": pubdate
+            "pubdate": pubdate,
+            "enacted": enacted,
+            "passed_lower": passed_lower,
+            "passed_upper": passed_upper
         })
     return actions
 
@@ -110,6 +115,7 @@ def fetch_updates() -> list[dict[str, str]]:
         rss_actions.extend(fetch_rss_actions(url))
     
     for action in rss_actions:
+        print("\naction:", action)
         guid = action["guid"]
         rss_pubdate = action["pubdate"]
         if guid not in db_guid_to_pubdate or db_guid_to_pubdate[guid] != rss_pubdate:
@@ -120,7 +126,10 @@ def fetch_updates() -> list[dict[str, str]]:
                 "bill_type": action["bill_type"],
                 "bill_num": action["bill_num"],
                 "print_num": action["print_num"],
-                "pubdate": rss_pubdate
+                "pubdate": rss_pubdate,
+                "enacted": action["enacted"],
+                "passed_lower": action["passed_lower"],
+                "passed_upper": action["passed_upper"]
             })
 
     return updates
