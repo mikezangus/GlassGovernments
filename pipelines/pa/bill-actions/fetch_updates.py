@@ -115,21 +115,32 @@ def fetch_updates() -> list[dict[str, str]]:
         rss_actions.extend(fetch_rss_actions(url))
     
     for action in rss_actions:
-        print("\naction:", action)
         guid = action["guid"]
         rss_pubdate = action["pubdate"]
         if guid not in db_guid_to_pubdate or db_guid_to_pubdate[guid] != rss_pubdate:
+            if action["enacted"].lower() == "yes":
+                enacted = True
+            else:
+                enacted = False
+            if action["passed_lower"].lower() == "yes":
+                passed_lower = True
+            else:
+                passed_lower = False
+            if action["passed_upper"].lower() == "yes":
+                passed_upper = True
+            else:
+                passed_upper = False
             updates.append({
-                "guid": guid,
-                "year": action["year"],
+                "id": guid,
+                "year": int(action["year"]),
                 "session": action["session"],
                 "bill_type": action["bill_type"],
-                "bill_num": action["bill_num"],
-                "print_num": action["print_num"],
+                "bill_num": int(action["bill_num"]),
+                "print_num": int(action["print_num"]),
                 "pubdate": rss_pubdate,
-                "enacted": action["enacted"],
-                "passed_lower": action["passed_lower"],
-                "passed_upper": action["passed_upper"]
+                "enacted": enacted,
+                "passed_lower": passed_lower,
+                "passed_upper": passed_upper
             })
 
     return updates
