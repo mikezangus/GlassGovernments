@@ -1,157 +1,101 @@
 "use client";
 
 import { useState } from "react";
-import fetchFromDB from "@/lib/fetchFromDB"
+import fetchFromDB from "@/lib/fetchFromDB";
+import insertToDB from "@/lib/insertToDB"
 
 
-type BillMetadata = {
-    id?: string;
-    year?: number;
-    session?: string;
-    bill_type?: string;
-    bill_num?: number;
-    print_num?: number;
+interface User {
+    phone_number: string;
+    keywords: string[];
 }
 
 
-async function fetchBillsByToken(token: string): Promise<BillMetadata[]>
+async function fetchUser(phoneNumber: string): Promise<User | null>
 {
-    const fetchedIDs = await fetchFromDB<{ id: string }>(
-        "pa_bill_texts_cleaned",
-        {
-            filters: [{
-                column: "tokens",
-                operator: "cs",
-                value: `{${token.toLowerCase()}}`
-            }]
-        }
-    );
-    const tokenIDs = Array.isArray(fetchedIDs) ? fetchedIDs : [];
-    const ids = (tokenIDs ?? []).map(row => row.id);
-    if (ids.length == 0) {
-        return [];
+    try {
+        const res = await fetchFromDB<User>(
+            "users",
+            {
+                filters: [
+                    { column: "phone_number", operator: "eq", value: phoneNumber}
+                ],
+                single: true
+            }
+        );
+        return res as User;
+    } catch {
+        return null;
     }
-    const metadata = await fetchFromDB<BillMetadata>(
-        "pa_bill_metadata",
-        {
-            filters: [{
-                column: "id",
-                operator: "in",
-                value: `(${ids.map(id => `"${id}"`).join(",")})`
-            }],
-        }
-    )
-    return Array.isArray(metadata) ? metadata : [];
 }
 
 
-async function fetchBillText(id: string): Promise<string | null>
+async function updateUserKeywords(phoneNumber: string, keywords: string[])
 {
-    const fetchedText = await fetchFromDB<{ text: string | null }>(
-        "pa_bill_texts_source",
-        {
-            filters: [{
-                column: "id",
-                operator: "eq",
-                value: id
-            }]
-        }
+    await insertToDB(
+        "users",
+        [{ phone_number: phoneNumber, keywords: keywords }],
+        "phone_number"
     );
-    const text = Array.isArray(fetchedText) ? fetchedText[0] : fetchedText;
-    return text?.text ?? null;
 }
 
 
 export default function BillTrackingComponent()
 {
-    const [selectedText, setSelectedText] = useState<string | null>(null);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-    const [currencyBills, setCurrencyBills] = useState<BillMetadata[]>([]);
-    const [agricultureBills, setAgricultureBills] = useState<BillMetadata[]>([]);
-    const [healthcareBills, setHealthcareBills] = useState<BillMetadata[]>([]);
-
-    useState(() => {
-        (async () => {
-            setCurrencyBills(await fetchBillsByToken("currency"));
-            setAgricultureBills(await fetchBillsByToken("agriculture"));
-            setHealthcareBills(await fetchBillsByToken("healthcare"));
-        })();
-    });
-
-    const handleClick = async (id?: string) => {
-        if (!id) {
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [keyword, setKeyword] = useState("");
+    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+    const  handleSubmit = async () =>
+    {
+        if (phoneNumber.length > 20 || keyword.length > 20) {
+            setStatus("error");
             return;
         }
-        const text = await fetchBillText(id);
-        setSelectedText(text);
-        setIsPopupOpen(true);
-    }
+        setStatus("loading");
+        try {
+            const user = await fetchUser(phoneNumber);
+            if (user) {
+                const keywords = user.keywords || [];
+                if (!keywords.includes(keyword)) {
+                    const updated = [...keywords, keyword];
+                    await updateUserKeywords(phoneNumber, updated);     
+                }
+            } else {
+                await insertToDB(
+                    "users",
+                    [{ phone_number: phoneNumber, keywords: [keyword]}]
+                );
+            }
 
+    
+            setStatus("success");
+            setPhoneNumber("");
+            setKeyword("");
+        } catch {
+            setStatus("error");
+        }
+    }
     return (
         <>
-            <div style={{ display: "flex", flexDirection: "row", gap: "5rem" }}>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div>Currency</div>
-                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, paddingLeft: 0, listStyle: "none" }}>
-                        {Array.isArray(currencyBills) && currencyBills.map((bill: BillMetadata) => (
-                            <li
-                                key={bill.id}
-                                onClick={() => handleClick(bill.id)}
-                                style={{ cursor: "pointer", textDecoration: "underline" }}
-                            >
-                                {bill.bill_type} {bill.bill_num}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div>Agriculture</div>
-                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, paddingLeft: 0, listStyle: "none" }}>
-                        {Array.isArray(agricultureBills) && agricultureBills.map((bill: BillMetadata) => (
-                            <li
-                                key={bill.id}
-                                onClick={() => handleClick(bill.id)}
-                                style={{ cursor: "pointer", textDecoration: "underline" }}
-                            >
-                                {bill.bill_type} {bill.bill_num}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div>Healthcare</div>
-                    <ul style={{ display: "flex", flexDirection: "column", margin: 0, paddingLeft: 0, listStyle: "none" }}>
-                        {Array.isArray(healthcareBills) && healthcareBills.map((bill: BillMetadata) => (
-                            <li
-                                key={bill.id}
-                                onClick={() => handleClick(bill.id)}
-                                style={{ cursor: "pointer", textDecoration: "underline" }}
-                            >
-                                {bill.bill_type} {bill.bill_num}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-            {isPopupOpen && (
-                <div style={{
-                    position: "fixed",
-                    top: "10%",
-                    left: "10%",
-                    width: "80%",
-                    height: "80%",
-                    backgroundColor: "lightgray",
-                    color: "black",
-                    padding: "2rem",
-                    overflowY: "scroll",
-                    zIndex: 1000
-                }}>
-                    <button onClick={() => setIsPopupOpen(false)}>Close</button>
-                    <pre style={{ whiteSpace: "pre-wrap" }}>{selectedText}</pre>
-                </div>
-            )}
+        <div style={{ display: "flex", flexDirection: "column", maxWidth: "50vw" }}>
+            <input
+                type="text"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="Enter your phone number"
+                maxLength={20}
+            />
+            <input
+                type="text"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="Enter keyword to track"
+                maxLength={20}
+            />
+            <button onClick={handleSubmit}>Submit</button>
+            {status === "success" && <div>Submitted successfully</div>}
+            {status === "error" && <div>Submission failed</div>}
+        </div>
         </>
-
     )
 }
