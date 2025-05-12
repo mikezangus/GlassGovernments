@@ -1,5 +1,5 @@
 import requests
-from pipelines.db import supabase_headers, supabase_url
+from db import supabase_headers, supabase_url
 
 
 def insert_to_db(table_name: str, data: list[dict]) -> None:
