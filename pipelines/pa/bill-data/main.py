@@ -7,7 +7,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATE_DIR = os.path.dirname(CURRENT_DIR)
 PIPELINES_DIR = os.path.dirname(STATE_DIR)
 sys.path.append(PIPELINES_DIR)
-from insert_to_db import insert_to_db
+from insert_to_db import insert_to_db, OnDuplicate
 
 
 rss_base_url = "https://legis.state.pa.us/WU01/LI/RSS/"
@@ -24,8 +24,8 @@ def main():
     for entry in rss_entries:
         metadata_rows.append(parse_metadata(entry))
         actions_rows.append(parse_actions(entry))
-    insert_to_db("bill_metadata", metadata_rows)
-    insert_to_db("bill_actions", actions_rows)
+    insert_to_db("bill_metadata", metadata_rows, OnDuplicate.IGNORE, "id")
+    insert_to_db("bill_actions", actions_rows, OnDuplicate.MERGE, "id")
 
 
 if __name__ == "__main__":
