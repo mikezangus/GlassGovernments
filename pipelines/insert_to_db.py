@@ -10,11 +10,12 @@ class OnDuplicate(Enum):
 
 def insert_to_db(
     table_name: str,
-    data: list[dict],
+    rows: list[dict],
     on_duplicate: OnDuplicate,
-    conflict_key: str | None = None
+    conflict_key: str | None = None,
+    batch_size: int = 500
 ) -> None:
-    print(f"\nInserting to {table_name}")
+    print(f"\nInserting {len(rows)} rows to {table_name}")
     if on_duplicate == OnDuplicate.MERGE and not conflict_key:
         raise ValueError("conflict_key must be provided when using OnDuplicate.MERGE")
     url = f"{supabase_url}/rest/v1/{table_name}"
@@ -24,9 +25,17 @@ def insert_to_db(
         **supabase_headers,
         "Prefer": f"resolution={on_duplicate.value}-duplicates,return=representation"
     }
-    response = requests.post(url, headers=headers, json=data)
-    if response.ok:
-        inserted = response.json()
-        print(f"Inserted {len(inserted)} rows to {table_name}")
-    else:
-        print(f"Error inserting to {table_name}:", response.status_code, response.text)
+    inserted_count = 0
+    for i in range(0, len(rows), batch_size):
+        batch = rows[i:i + batch_size]
+        print(f"Inserting batch [{i + 1} - {min(i + batch_size, len(rows))}]")
+        try:
+            response = requests.post(url, headers=headers, json=batch)
+        except Exception as e:
+            print("Error:", e)
+        if response.ok:
+            inserted = response.json()
+            inserted_count += len(inserted)
+        else:
+            print(f"❌ Error inserting to {table_name}:", response.status_code, response.text)
+    print(f"Inserted {inserted_count} rows to {table_name}")
