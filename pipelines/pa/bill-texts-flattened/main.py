@@ -5,21 +5,27 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PIPELINES_DIR = os.path.dirname(os.path.dirname(CURRENT_DIR))
 sys.path.append(PIPELINES_DIR)
 from fetch_from_db import fetch_from_db
-from insert_to_db import insert_to_db
+from filter_rows import filter_rows
+from insert_to_db import insert_to_db, OnDuplicate
 
 
 def main():
-    rows = fetch_from_db(
+    source_rows = fetch_from_db(
         "bill_texts_source",
-        query_params={"select": '*'}
+        query_params={ "select": '*' }
     )
-    flattened_rows = []
-    for row in rows:
-        flattened_rows.append({
+    existing_flat_rows = fetch_from_db(
+        "bill_texts_flat",
+        query_params={ "select": "id" }
+    )
+    input_rows = filter_rows(source_rows, existing_flat_rows, "id")
+    output_rows = []
+    for row in input_rows:
+        output_rows.append({
             "id": row["id"],
             "text": flatten_text(row["text"])
         })
-    insert_to_db("bill_texts_flat", flattened_rows)
+    insert_to_db("bill_texts_flat", output_rows, OnDuplicate.MERGE, "id")
 
 
 if __name__ == "__main__":
