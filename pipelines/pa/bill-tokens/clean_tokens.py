@@ -1,14 +1,16 @@
 def clean_tokens(
-    bill: dict[str, object], universal_tokens: set[str]
+    row: dict[str, object],
+    universal_tokens: set[str]
 ) -> list[str]:
     bad_words = set(universal_tokens)
-    id = bill["id"].lower()
+    id = row["id"].lower()
     bad_words.add(id)
     bad_words.add(id.replace("p", "pn", 1))
-    bad_words.add(str(bill["bill_num"]))
-    bad_words.add(str(bill["print_num"]))
+    bill_num, print_num = id.split('_')[4:6]
+    bad_words.add(bill_num)
+    bad_words.add(print_num)
     cleaned_tokens = []
-    for token in bill["raw_tokens"]:
+    for token in row["raw_tokens"]:
         if token not in bad_words:
             cleaned_tokens.append(token)
     return cleaned_tokens

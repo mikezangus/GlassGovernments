@@ -1,10 +1,10 @@
 def group_by_type(
-    bills: list[dict[str, object]]
+    rows: list[dict[str, object]]
 ) -> dict[str, list[dict[str, object]]]:
     grouped = {}
-    for bill in bills:
-        bill_type = bill["bill_type"]
+    for row in rows:
+        bill_type = row["id"].split('_')[3]
         if bill_type not in grouped:
             grouped[bill_type] = []
-        grouped[bill_type].append(bill)
+        grouped[bill_type].append(row)
     return grouped
