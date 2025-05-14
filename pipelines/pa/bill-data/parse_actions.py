@@ -9,5 +9,13 @@ def parse_actions(entry: dict[str, any]) -> dict[str, any]:
         "enacted": entry["parss_enacted"].upper() == "YES",
         "passed_lower": entry["parss_passedhouse"].upper() == "YES",
         "passed_upper": entry["parss_passedsenate"].upper() == "YES",
-        "pubdate": datetime(*entry["published_parsed"][:6], tzinfo=timezone.utc).isoformat()
+        "pubdate": datetime(
+            *entry["published_parsed"][:6],
+            tzinfo=timezone.utc
+        ).isoformat(),
+        "prime_sponsor": ' '.join((entry["parss_primesponsor"].split(' ')[1:])),
+        "cosponsors": entry["parss_cosponsors"] \
+            .replace(" and ", ", ") \
+            .replace(", ", ',') \
+            .split(',')
     }
