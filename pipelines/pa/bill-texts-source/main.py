@@ -14,16 +14,16 @@ from insert_to_db import insert_to_db, OnDuplicate
 def main():
     metadata_rows = fetch_from_db(
         "bill_metadata",
-        query_params={
+        {
             "select": "id,text_url",
             "state": "eq.PA"
         }
     )
     if not metadata_rows:
-        print("❌ Failed to fetch from bill_metadata")
+        raise ValueError("❌ Failed to fetch from bill_metadata")
     existing_text_rows  = fetch_from_db(
         "bill_texts_source",
-        query_params={ "select": "id" }
+        { "select": "id" }
     ) or []
     input_rows = filter_rows(metadata_rows, existing_text_rows, "id")
     output_rows = []

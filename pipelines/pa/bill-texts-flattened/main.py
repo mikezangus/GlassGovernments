@@ -10,14 +10,10 @@ from insert_to_db import insert_to_db, OnDuplicate
 
 
 def main():
-    source_rows = fetch_from_db(
-        "bill_texts_source",
-        query_params={ "select": '*' }
-    )
-    existing_flat_rows = fetch_from_db(
-        "bill_texts_flat",
-        query_params={ "select": "id" }
-    )
+    source_rows = fetch_from_db("bill_texts_source", { "select": '*' })
+    if not source_rows:
+        raise ValueError("❌ Failed to fetch from bill_texts_source")
+    existing_flat_rows = fetch_from_db("bill_texts_flat", { "select": "id" })
     input_rows = filter_rows(source_rows, existing_flat_rows, "id")
     output_rows = []
     for row in input_rows:
