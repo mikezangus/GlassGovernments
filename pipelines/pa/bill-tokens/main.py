@@ -13,9 +13,9 @@ from insert_to_db import insert_to_db, OnDuplicate
 
 
 def main():
-    flat_rows = fetch_from_db("bill_texts_flat", { "select": '*' })
+    flat_rows = fetch_from_db("bill_texts_clean", { "select": '*' })
     if not flat_rows:
-        raise ValueError("❌ Failed to fetch from bill_texts_flat")
+        raise ValueError("❌ Failed to fetch from bill_texts_clean")
     existing_tokens_rows = fetch_from_db(
         "bill_tokens",
         { "select": "id" }
