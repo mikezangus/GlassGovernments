@@ -13,14 +13,14 @@ from insert_to_db import insert_to_db, OnDuplicate
 
 
 def main():
-    flat_rows = fetch_from_db("bill_texts_clean", { "select": '*' })
-    if not flat_rows:
+    clean_rows = fetch_from_db("bill_texts_clean", { "select": '*' })
+    if not clean_rows:
         raise ValueError("❌ Failed to fetch from bill_texts_clean")
     existing_tokens_rows = fetch_from_db(
         "bill_tokens",
         { "select": "id" }
     ) or []
-    input_rows = filter_rows(flat_rows, existing_tokens_rows, "id")
+    input_rows = filter_rows(clean_rows, existing_tokens_rows, "id")
     raw_tokens_rows = tokenize_rows(input_rows)
     grouped_by_type = group_by_type(raw_tokens_rows)
     output = []
