@@ -25,11 +25,11 @@ def main():
     grouped_by_type = group_by_type(raw_tokens_rows)
     output = []
     for type_group in grouped_by_type.values():
-        universal_tokens = find_common_tokens(type_group, 0.99)
+        common_tokens = find_common_tokens(type_group, 0.75)
         for row in type_group:
             output.append({
                 "id": row["id"],
-                "tokens": clean_tokens(row, universal_tokens)
+                "tokens": clean_tokens(row, common_tokens)
             })
     insert_to_db("bill_tokens", output, OnDuplicate.MERGE, "id")
 
