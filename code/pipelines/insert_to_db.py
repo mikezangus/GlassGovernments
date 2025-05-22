@@ -1,5 +1,5 @@
 import requests
-from db import supabase_headers, supabase_url
+from supabase_config import supabase_headers, supabase_api_url
 from enum import Enum
 
 
@@ -18,7 +18,7 @@ def insert_to_db(
     print(f"\nInserting {len(rows)} rows to {table_name}")
     if on_duplicate == OnDuplicate.MERGE and not conflict_key:
         raise ValueError("conflict_key must be provided when using OnDuplicate.MERGE")
-    url = f"{supabase_url}/rest/v1/{table_name}"
+    url = f"{supabase_api_url}/rest/v1/{table_name}"
     if conflict_key:
         url += f"?on_conflict={conflict_key}"
     headers = {

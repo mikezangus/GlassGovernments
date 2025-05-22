@@ -1,9 +1,9 @@
 import requests
-from db import supabase_headers, supabase_url
+from supabase_config import supabase_headers, supabase_api_url
 
 
 def fetch_from_db(table_name: str, query_params: dict = None) -> list[dict]:
-    url = f"{supabase_url}/rest/v1/{table_name}"
+    url = f"{supabase_api_url}/rest/v1/{table_name}"
     rows = []
     limit = 1000
     offset = 0

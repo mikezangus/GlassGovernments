@@ -13,8 +13,10 @@ from urls import house_rss_url, senate_rss_url
 
 def main():
     feed_entries = []
-    for url in [house_rss_url, senate_rss_url]:
-        feed_entries.extend(fetch_feed_entries(url))
+    if "house_condition":
+        feed_entries.extend(fetch_feed_entries(house_rss_url))
+    if "senate_condition":
+        feed_entries.extend(fetch_feed_entries(senate_rss_url))
     metadata_rows = []
     actions_rows = []
     for entry in feed_entries:
