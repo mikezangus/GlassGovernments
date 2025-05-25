@@ -1,5 +1,3 @@
-from fetch_feed_pubdate import fetch_feed_pubdate
-
 import os
 PA_DIR = os.path.dirname(os.path.abspath(__file__))
 BILL_DATA_DIR = os.path.join(PA_DIR, "bill-data")
@@ -10,6 +8,8 @@ BILL_TOKENS_DIR = os.path.join(BILL_TRACKING_DIR, "bill-tokens")
 PIPELINES_DIR = os.path.dirname(BILL_TRACKING_DIR)
 
 import sys
+sys.path.append(PA_DIR)
+from fetch_feed_pubdate import fetch_feed_pubdate
 sys.path.append(BILL_DATA_DIR)
 from process_bill_data import process_bill_data
 sys.path.append(BILL_TEXTS_SOURCE_DIR)
