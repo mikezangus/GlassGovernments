@@ -81,7 +81,7 @@ async function handleSubmit(
                 console.log("STATE:", state)
                 console.log("KEYWORD:", keyword)
                 await insertToDB(
-                    "subscriptions",
+                    "user_subscriptions",
                     [{
                         user_id: userID,
                         token: keyword,
