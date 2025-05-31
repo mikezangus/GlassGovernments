@@ -5,6 +5,7 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import fetchFromDB from "@/lib/fetchFromDB";
 import insertToDB from "@/lib/insertToDB";
+import { TokenItem } from "./types";
 
 
 async function fetchUserID(phoneNumber: string): Promise<string | null>
@@ -36,7 +37,7 @@ async function getUserID(phoneNumber: string): Promise<string>
 
 
 async function handleSubmit(
-    tokensAndStates: Record<string, string[]>,
+    tokenItems: TokenItem[],
     phoneNumber: string,
     setSubmitStatus: (status: "idle" | "loading" | "success" | "error") => void
 )
@@ -70,13 +71,13 @@ async function handleSubmit(
             throw new Error(`Error: No channel found for:\nuser_id=${userID} | contact_value=${phoneNumber}`);
         }
         const channelID = channel.id;
-        for (const [token, states] of Object.entries(tokensAndStates)) {
-            for (const state of states) {
+        for (const tokenItem of tokenItems) {
+            for (const state of tokenItem.states) {
                 await insertToDB(
                     "user_subscriptions",
                     [{
                         user_id: userID,
-                        token: token,
+                        token: tokenItem.token,
                         state: state,
                         channel_id: channelID
                     }],
@@ -94,11 +95,11 @@ async function handleSubmit(
 
 export default function SubmitComponent(
     {
-        tokensAndStates,
+        tokenItems,
         phoneNumber,
     }:
     {
-        tokensAndStates: Record<string, string[]>;
+        tokenItems: TokenItem[];
         phoneNumber: string
     }
 )
@@ -109,20 +110,22 @@ export default function SubmitComponent(
     ] = useState<"idle" | "loading" | "success" | "error">("idle");
     return (
         <div>
-            <button onClick={() =>
-                handleSubmit(
-                    tokensAndStates,
-                    phoneNumber,
-                    setSubmitStatus
-                )
-            }>
+            <button onClick={() => handleSubmit(
+                tokenItems,
+                phoneNumber,
+                setSubmitStatus
+            )}>
                 Submit
             </button>
             {submitStatus === "success" && (
-                <p style={{ color: "green" }}>Subscription saved successfully ✅</p>
+                <p style={{ color: "green" }}>
+                    Subscription saved successfully ✅
+                </p>
             )}
             {submitStatus === "error" && (
-                <p style={{ color: "red" }}>Something went wrong. Please try again ❌</p>
+                <p style={{ color: "red" }}>
+                    Something went wrong. Please try again ❌
+                </p>
             )}
         </div>
     );
