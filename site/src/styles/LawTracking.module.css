@@ -44,48 +44,100 @@
 }
 
 
-.tokenEntriesContainer
+.tokenInputContainer
 {
-    /* background-color: blue; */
     display: flex;
-    flex-direction: column;
-    gap: 1rem
+    flex-direction: row;
+    background-color: rgb(235, 235, 235);
+    border-radius: 3rem;
+    width: 150px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    height: 3rem;
+    justify-content: center;
+    align-items: center;
 }
 
-.tokenEntryContainer
+
+.tokenInput
 {
+    background-color: transparent;
+    border: none;
+}
+
+
+.tokenInputAddButtonContainer
+{
+    background-color: transparent;
     display: flex;
-    font-size: 1.5rem;
-    background-color: rgb(230, 230, 230);
-    padding-left: 2rem;
-    height: 4rem;
-    border-radius: 40px;
+    flex-direction: column;
+    height: 100%;
+    border: none;
+    cursor: pointer;
+    color: black;
+    margin-left: auto;
     justify-content: center;
 }
 
 
-.tokenEntryContainer .tokenInput
+.tokensContainer
 {
-    font-size: 1.5rem;
-    border: none;
-    background: transparent;
-    color: rgb(0, 0, 0);
-    outline: none; 
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    gap: 1rem;
+    padding: 1rem;
+
 }
 
 
-.tokenEntryContainer .deleteButton
+.tokenContainer
 {
-    background: transparent;
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(250, 236, 214);
+    border-radius: 3rem;
+    width: 150px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    height: 3rem;
+    justify-content: center;
+}
+
+
+.tokenTextContainer
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.tokenContainerDeleteButton
+{
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     border: none;
-    color: red;
     cursor: pointer;
-    /* margin-left: -2rem; */
-    visibility: hidden;
-    position: absolute;
-    /* right: 0.75rem; */
+    color: black;
+    margin-left: auto;
+    justify-content: center;
 }
 
-.tokenEntryContainer:hover .deleteButton {
-  visibility: visible;
+
+.tokenNameContainer
+{
+    color: black;
+    font-size: medium;
+}
+
+
+.tokenStatesContainer
+{
+    display: flex;
+    flex-direction: row;
+    color: rgb(69, 69, 69);
+    font-size: small;
 }
