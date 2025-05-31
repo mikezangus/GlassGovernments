@@ -1,11 +1,11 @@
 export default function ContactComponent(
     {
-        phoneNumber,
-        setPhoneNumber
+        contact,
+        setContact
     }:
     {
-        phoneNumber: string;
-        setPhoneNumber: (phoneNumber: string) => void;
+        contact: string;
+        setContact: (contact: string) => void;
     }
 )
 {
@@ -14,8 +14,8 @@ export default function ContactComponent(
             <input
                 type="tel"
                 placeholder="enter your phone number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
             />
         </div>
     );
