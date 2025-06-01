@@ -1,7 +1,7 @@
 "use client";
 
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 import ContactComponent from "./Contact";
 import ProgressComponent from "./Progress";
@@ -11,7 +11,7 @@ import TokensComponent from "./TokenInput";
 import { Step, TokenItem } from "./types";
 
 import styles from "@/styles/LawTracking.module.css";
-import TokenComponent from "./Token";
+// import TokenComponent from "./Token";
 import NavComponent from "./Nav";
 
 
@@ -21,7 +21,7 @@ function renderCurrentStep(
     setTokenItems: (tokens: TokenItem[]) => void,
     contact: string,
     setContact: (contact: string) => void
-): JSX.Element | undefined
+): React.JSX.Element | undefined
 {
     switch (currentStep) {
         case Step.Tokens:
