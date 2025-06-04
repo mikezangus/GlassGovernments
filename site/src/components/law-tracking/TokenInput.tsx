@@ -3,7 +3,7 @@
 
 import { ChangeEvent, useState } from "react";
 import styles from "@/styles/LawTracking.module.css";
-import { TokenItem } from "./types";
+import { TokenItem } from "@/lib/types";
 import TokenComponent from "./Token";
 
 
@@ -19,7 +19,6 @@ import TokenComponent from "./Token";
 // ];
 
 
-
 export default function TokenInputComponent(
     {
         tokenItems,
@@ -33,12 +32,12 @@ export default function TokenInputComponent(
 {
     const [inputToken, setInputToken] = useState("");
 
-    function handleInputChange(e: ChangeEvent<HTMLInputElement>)
+    function handleInputChange(e: ChangeEvent<HTMLInputElement>): void
     {
         setInputToken(e.target.value);
     }
 
-    function handleAdd()
+    function handleAdd(): void
     {
         const token = inputToken.trim();
         if (token === "") {
@@ -53,6 +52,7 @@ export default function TokenInputComponent(
         ]);
         setInputToken("");
     }
+
     return (
         <div>
         <div className={styles.headerContainer}>
@@ -88,7 +88,9 @@ export default function TokenInputComponent(
                         key={tokenItem.token}
                         tokenEntry={tokenItem}
                         deleteToken={(tokenToDelete) => {
-                            setTokenItems(tokenItems.filter(t => t.token !== tokenToDelete));
+                            setTokenItems(tokenItems.filter(
+                                tokenItem => tokenItem.token !== tokenToDelete
+                            ));
                         }}
                     />
             ))}

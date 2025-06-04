@@ -1,4 +1,4 @@
-import { Step, TokenItem } from "./types";
+import { Step, TokenItem } from "@/lib/types";
 import styles from "@/styles/LawTracking.module.css";
 
 

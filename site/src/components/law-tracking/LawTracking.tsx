@@ -6,22 +6,34 @@ import React, { useState } from "react";
 import ContactComponent from "./Contact";
 import ProgressComponent from "./Progress";
 import StatesComponent from "./States";
-import SubmitComponent from "./Submit";
+import SubscribeComponent from "./Subscribe";
 import TokensComponent from "./TokenInput";
-import { Step, TokenItem } from "./types";
+import { ContactType, Step, TokenItem } from "@/lib/types";
 
 import styles from "@/styles/LawTracking.module.css";
 // import TokenComponent from "./Token";
 import NavComponent from "./Nav";
 
 
-function renderCurrentStep(
-    currentStep: Step,
-    tokenItems: TokenItem[],
-    setTokenItems: (tokens: TokenItem[]) => void,
-    contact: string,
-    setContact: (contact: string) => void
-): React.JSX.Element | undefined
+function CurrentStepComponent(
+    {
+        currentStep,
+        tokenItems,
+        setTokenItems,
+        contactType,
+        setContactType,
+        contactValue,
+        setContactValue
+    }: {
+        currentStep: Step;
+        tokenItems: TokenItem[];
+        setTokenItems: (tokens: TokenItem[]) => void;
+        contactType: ContactType;
+        setContactType: (contactType: ContactType) => void;
+        contactValue: string;
+        setContactValue: (contactValue: string) => void;
+    }
+)
 {
     switch (currentStep) {
         case Step.Tokens:
@@ -38,12 +50,15 @@ function renderCurrentStep(
             return (
                 <>
                 <ContactComponent
-                    contact={contact}
-                    setContact={setContact}
+                    contactType={contactType}
+                    setContactType={setContactType}
+                    contactValue={contactValue}
+                    setContactValue={setContactValue}
                 />
-                <SubmitComponent
+                <SubscribeComponent
                     tokenItems={tokenItems}
-                    phoneNumber={contact}
+                    contactType={contactType}
+                    contactValue={contactValue}
                 />
                 </>
             );
@@ -56,11 +71,12 @@ function renderCurrentStep(
 export default function LawTrackingComponent()
 {
     const [currentStep, setCurrentStep] = useState<Step>(Step.Tokens);
-    const [tokens, setTokenItems] = useState<TokenItem[]>([{
+    const [tokenItems, setTokenItems] = useState<TokenItem[]>([{
         token: "",
         states: []
     }]);
-    const [contact, setContact] = useState<string>("");
+    const [contactType, setContactType] = useState<ContactType>(ContactType.Telegram);
+    const [contactValue, setContactValue] = useState<string>("");
     return (
         <div className={styles.lawTrackingContainer}>
             <div className={styles.bodyContainer}>
@@ -68,17 +84,19 @@ export default function LawTrackingComponent()
                     i={currentStep + 1}
                     len={Object.keys(Step).length / 2}
                 />
-                {renderCurrentStep(
-                    currentStep,
-                    tokens,
-                    setTokenItems,
-                    contact,
-                    setContact
-                )}
+                <CurrentStepComponent
+                    currentStep={currentStep}
+                    tokenItems={tokenItems}
+                    setTokenItems={setTokenItems}
+                    contactType={contactType}
+                    setContactType={setContactType}
+                    contactValue={contactValue}
+                    setContactValue={setContactValue}
+                />
                 <NavComponent
                     currentStep={currentStep}
                     setCurrentStep={setCurrentStep}
-                    tokenItems={tokens}
+                    tokenItems={tokenItems}
                     setTokenItems={setTokenItems}
                 />
             </div>

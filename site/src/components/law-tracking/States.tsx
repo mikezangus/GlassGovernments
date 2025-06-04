@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import convertStateCodeToName from "@/lib/convertStateCodeToName";
 import fetchFromDB from "@/lib/fetchFromDB";
-import { TokenItem } from "./types";
+import { TokenItem } from "@/lib/types";
 
 
 async function fetchStates(
