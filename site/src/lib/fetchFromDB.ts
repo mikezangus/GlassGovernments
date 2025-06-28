@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { supabase } from "@/lib/supabase";
 
 
 type FilterValue = string | number | boolean | null;
@@ -30,7 +30,9 @@ export default async function fetchFromDB<T>
     }: FetchOptions = {}
 ): Promise<T[] | T | null>
 {
-    let query = db.from(table).select(select);
+    let query = supabase
+        .from(table)
+        .select(select);
     for (const { column, operator, value } of filters) {
         query = query.filter(column, operator, value);
     }
