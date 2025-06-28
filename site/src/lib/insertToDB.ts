@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { supabase } from "./supabase";
 
 
 export default async function insertToDB<T extends Record<string, unknown>>(
@@ -14,8 +14,8 @@ export default async function insertToDB<T extends Record<string, unknown>>(
         conflictColumns = conflictColumns.join(",");
     }
     const query = conflictColumns
-            ? db.from(tableName).upsert(rows, { onConflict: conflictColumns })
-            : db.from(tableName).insert(rows);
+        ? supabase.from(tableName).upsert(rows, { onConflict: conflictColumns })
+        : supabase.from(tableName).insert(rows);
     const { error } = await query;
     if (error) {
         throw new Error(`Error inserting to ${tableName}: ${error.message}`);
