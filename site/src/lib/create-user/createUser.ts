@@ -11,7 +11,7 @@ export default async function createUser(
         .select("user_id")
         .single();
     if (error || !data.user_id) {
-        throw error;
+        throw new Error("Failed to create user");
     }
     return data.user_id;
 }

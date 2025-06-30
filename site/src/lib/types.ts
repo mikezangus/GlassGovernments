@@ -4,7 +4,7 @@ export interface TokenItem {
 };
 
 
-export enum ContactType {
+export enum ContactMethod {
     Text = "text",
     Telegram = "telegram",
 }
@@ -17,7 +17,7 @@ export enum Step {
 }
 
 
-export enum SubscribeStatus {
+export enum SubscriptionStatus {
     Idle,
     Loading,
     Success,

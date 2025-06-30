@@ -2,46 +2,34 @@
 
 
 import { useState } from "react";
-import { ContactType, SubscribeStatus, TokenItem } from "@/lib/types";
-import insertToDB from "@/lib/insertToDB";
-import createUserTelegram from "@/lib/createUserTelegram";
+import { ContactMethod, SubscriptionStatus, TokenItem } from "@/lib/types";
+import createUserTelegram from "@/lib/create-user/telegram/createUserTelegram";
+import { supabase } from "@/lib/supabase";
 
 
 async function handleSubscribe(
-    setSubscribeStatus: (status: SubscribeStatus) => void,
-    contactType: ContactType,
+    setSubscribeStatus: (status: SubscriptionStatus) => void,
+    contactType: ContactMethod,
     contactValue: string,
     tokenItems: TokenItem[],
     setNextStep: (nextStep: string) => void
 ): Promise<void>
 {
-    setSubscribeStatus(SubscribeStatus.Loading);
+    setSubscribeStatus(SubscriptionStatus.Loading);
     let userID = "";
     let userContactID = "";
     try {
-        if (contactType === ContactType.Telegram) {
-            const user = await createUserTelegram(contactValue);
-            userID = user.userID;
-            userContactID = user.userContactID;
-            setNextStep(`https://t.me/glassgovernments_bot?start=${user.telegramToken}`);
+        if (contactType !== ContactMethod.Telegram) {
+            throw new Error("Bad contact method");
         }
-        for (const tokenItem of tokenItems) {
-            for (const state of tokenItem.states) {
-                await insertToDB(
-                    "user_subscriptions",
-                    [{
-                        user_id: userID,
-                        token: tokenItem.token,
-                        state: state,
-                        channel_id: userContactID
-                    }],
-                    ["user_id", "token", "state", "channel_id"]
-                );
-            }
-        }
-        setSubscribeStatus(SubscribeStatus.Success);
+        const user = await createUserTelegram();
+        userID = user.userID;
+        userContactID = user.userContactID;
+        const linkToken = user.linkToken;
+        setNextStep(`https://t.me/glassgovernments_bot?start=${linkToken}`);
+        setSubscribeStatus(SubscriptionStatus.Success);
     } catch (err) {
-        setSubscribeStatus(SubscribeStatus.Fail);
+        setSubscribeStatus(SubscriptionStatus.Fail);
         throw err;
     }
 }
@@ -55,12 +43,12 @@ export default function SubscribeComponent(
     }:
     {
         tokenItems: TokenItem[];
-        contactType: ContactType;
+        contactType: ContactMethod;
         contactValue: string
     }
 )
 {
-    const [subscribeStatus, setSubscribeStatus] = useState<SubscribeStatus>(SubscribeStatus.Idle);
+    const [subscribeStatus, setSubscribeStatus] = useState<SubscriptionStatus>(SubscriptionStatus.Idle);
     const [nextStep, setNextStep] = useState<string>("");
     return (
         <div>
@@ -73,18 +61,21 @@ export default function SubscribeComponent(
             )}>
                 Subscribe
             </button>
-            {subscribeStatus === SubscribeStatus.Success && (
+            {subscribeStatus === SubscriptionStatus.Success && (
+                <>
                 <p style={{ color: "green" }}>
                     Subscription saved successfully ✅
                 </p>
-
+                <button onClick={() => window.open(`${nextStep}`, "_blank")}>
+                    Open Telegram
+                </button>
+                </>
             )}
-            {subscribeStatus === SubscribeStatus.Fail && (
+            {subscribeStatus === SubscriptionStatus.Fail && (
                 <p style={{ color: "red" }}>
                     Something went wrong. Please try again ❌
                 </p>
             )}
-            {nextStep && (nextStep)}
         </div>
     );
 }
