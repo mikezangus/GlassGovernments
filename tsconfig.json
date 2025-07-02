@@ -11,6 +11,6 @@
     },
     "include": [
         "api/**/*",
-        "pipelines/**/*",
+        "pipelines/**/*", "pipelines/supabase/functions/_shared/telegram",
     ]
 }
