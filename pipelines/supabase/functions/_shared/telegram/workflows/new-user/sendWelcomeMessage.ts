@@ -1,5 +1,5 @@
 import { TelegramMessageChat } from "../../../types.ts";
-import sendMessage from "../../sendMessage.ts";
+import sendText from "../../sendText.ts";
 
 
 export default async function sendWelcomeMessage(
@@ -7,5 +7,5 @@ export default async function sendWelcomeMessage(
 ): Promise<void>
 {
     const text = `Welcome to Glass Governments!`;
-    await sendMessage(chat.id, text);
+    await sendText(chat.id, text);
 }
