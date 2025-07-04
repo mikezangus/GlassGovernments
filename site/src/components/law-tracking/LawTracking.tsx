@@ -8,7 +8,7 @@ import ProgressComponent from "./Progress";
 import StatesComponent from "./States";
 import SubscribeComponent from "./Subscribe";
 import TokensComponent from "./TokenInput";
-import { ContactType, Step, TokenItem } from "@/lib/types";
+import { ContactMethod, Step, TokenItem } from "@/lib/types";
 
 import styles from "@/styles/LawTracking.module.css";
 // import TokenComponent from "./Token";
@@ -28,8 +28,8 @@ function CurrentStepComponent(
         currentStep: Step;
         tokenItems: TokenItem[];
         setTokenItems: (tokens: TokenItem[]) => void;
-        contactType: ContactType;
-        setContactType: (contactType: ContactType) => void;
+        contactType: ContactMethod;
+        setContactType: (contactType: ContactMethod) => void;
         contactValue: string;
         setContactValue: (contactValue: string) => void;
     }
@@ -75,7 +75,7 @@ export default function LawTrackingComponent()
         token: "",
         states: []
     }]);
-    const [contactType, setContactType] = useState<ContactType>(ContactType.Telegram);
+    const [contactType, setContactType] = useState<ContactMethod>(ContactMethod.Telegram);
     const [contactValue, setContactValue] = useState<string>("");
     return (
         <div className={styles.lawTrackingContainer}>

@@ -1,4 +1,4 @@
-import { ContactType } from "@/lib/types";
+import { ContactMethod } from "@/lib/types";
 
 
 function ChooseContactTypeComponent(
@@ -7,8 +7,8 @@ function ChooseContactTypeComponent(
         setContactType
     }:
     {
-        contactType: ContactType;
-        setContactType: (contactType: ContactType) => void;
+        contactType: ContactMethod;
+        setContactType: (contactType: ContactMethod) => void;
     }
 )
 {
@@ -18,10 +18,10 @@ function ChooseContactTypeComponent(
             <select
                 id="contact-type-select"
                 value={contactType}
-                onChange={(e) => setContactType(e.target.value as ContactType)}
+                onChange={(e) => setContactType(e.target.value as ContactMethod)}
             >
-                <option value={ContactType.Telegram}>Telegram</option>
-                <option value={ContactType.Text}>Text</option>
+                <option value={ContactMethod.Telegram}>Telegram</option>
+                <option value={ContactMethod.Text}>Text</option>
             </select>
         </div>
     );
@@ -60,8 +60,8 @@ export default function ContactComponent(
         setContactValue
     }:
     {
-        contactType: ContactType;
-        setContactType: (contactType: ContactType) => void;
+        contactType: ContactMethod;
+        setContactType: (contactType: ContactMethod) => void;
         contactValue: string;
         setContactValue: (contactValue: string) => void;
     }
@@ -73,10 +73,10 @@ export default function ContactComponent(
                 contactType={contactType}
                 setContactType={setContactType}
             />
-            {contactType === ContactType.Telegram && (
+            {contactType === ContactMethod.Telegram && (
                 <div>Telegram</div>
             )}
-            {contactType === ContactType.Text && (
+            {contactType === ContactMethod.Text && (
                 <InputPhoneNumberComponent
                     contactValue={contactValue}
                     setContactValue={setContactValue}

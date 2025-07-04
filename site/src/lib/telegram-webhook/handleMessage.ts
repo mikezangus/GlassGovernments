@@ -1,7 +1,8 @@
-import { TelegramMessage } from "../types.ts";
-import sendText from "./sendText.ts";
-import insertNewUser from "./workflows/new-user/insertNewUser.ts";
-import sendWelcomeMessage from "./workflows/new-user/sendWelcomeMessage.ts";
+import { TelegramMessage } from "../types";
+import sendText from "./sendText";
+import insertNewUser from "./insertNewUser";
+import sendBillsText from "./sendBillsText";
+import sendWelcomeMessage from "./sendWelcomeMessage";
 
 
 export default async function handleMessage(message: TelegramMessage)
@@ -15,4 +16,10 @@ export default async function handleMessage(message: TelegramMessage)
     } else if (command === "/start") {
         await sendText(chat.id, "Start button pressed");
     }
+    try {
+        await sendBillsText(chat);
+    } catch (error) {
+        throw error;
+    }
+    
 }

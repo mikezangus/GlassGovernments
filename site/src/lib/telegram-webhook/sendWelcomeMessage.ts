@@ -1,5 +1,5 @@
-import { TelegramMessageChat } from "../../../types.ts";
-import sendText from "../../sendText.ts";
+import { TelegramMessageChat } from "../types";
+import sendText from "./sendText";
 
 
 export default async function sendWelcomeMessage(

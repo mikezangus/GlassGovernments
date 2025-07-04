@@ -1,5 +1,5 @@
-import { supabase } from "../../../supabase.ts";
-import { TelegramMessageChat } from "../../../types.ts";
+import { supabase } from "../supabase";
+import { TelegramMessageChat } from "../types";
 
 
 const TABLE_NAME = "users_telegram";
@@ -11,7 +11,7 @@ async function fetchUser(
 {
     const { data, error } = await supabase
         .from(TABLE_NAME)
-        .select('*')
+        .select("user_id, user_contact_id")
         .eq("link_token", linkToken)
         .single();
     if (error) {

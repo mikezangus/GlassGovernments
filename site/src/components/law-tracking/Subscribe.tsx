@@ -4,27 +4,26 @@
 import { useState } from "react";
 import { ContactMethod, SubscriptionStatus, TokenItem } from "@/lib/types";
 import createUserTelegram from "@/lib/create-user/telegram/createUserTelegram";
-import { supabase } from "@/lib/supabase";
 
 
 async function handleSubscribe(
     setSubscribeStatus: (status: SubscriptionStatus) => void,
     contactType: ContactMethod,
-    contactValue: string,
-    tokenItems: TokenItem[],
+    // contactValue: string,
+    // tokenItems: TokenItem[],
     setNextStep: (nextStep: string) => void
 ): Promise<void>
 {
     setSubscribeStatus(SubscriptionStatus.Loading);
-    let userID = "";
-    let userContactID = "";
+    // let userID = "";
+    // let userContactID = "";
     try {
         if (contactType !== ContactMethod.Telegram) {
             throw new Error("Bad contact method");
         }
         const user = await createUserTelegram();
-        userID = user.userID;
-        userContactID = user.userContactID;
+        // userID = user.userID;
+        // userContactID = user.userContactID;
         const linkToken = user.linkToken;
         setNextStep(`https://t.me/glassgovernments_bot?start=${linkToken}`);
         setSubscribeStatus(SubscriptionStatus.Success);
@@ -55,8 +54,8 @@ export default function SubscribeComponent(
             <button onClick={() => handleSubscribe(
                 setSubscribeStatus,
                 contactType,
-                contactValue,
-                tokenItems,
+                // contactValue,
+                // tokenItems,
                 setNextStep
             )}>
                 Subscribe
