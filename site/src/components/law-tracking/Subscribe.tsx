@@ -47,6 +47,7 @@ export default function SubscribeComponent(
     }
 )
 {
+    console.log(tokenItems, contactValue)
     const [subscribeStatus, setSubscribeStatus] = useState<SubscriptionStatus>(SubscriptionStatus.Idle);
     const [nextStep, setNextStep] = useState<string>("");
     return (
