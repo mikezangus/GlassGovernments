@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import convertStateCodeToName from "@/lib/convertStateCodeToName";
-import fetchFromDB from "@/lib/fetchFromDB";
+import { supabase } from "@/lib/supabase/client";
 import { TokenItem } from "@/lib/types";
 
 
@@ -11,11 +11,16 @@ async function fetchStates(
     }[]>>
 )
 {
-    const rows = await fetchFromDB<{ state: string }>(
-        "bill_metadata",
-        { select: "state" }
-    ) as { state: string }[];
-    const states = Array.from(new Set(rows.map(row => row.state)));
+    const { data, error } = await supabase
+        .from("bill_metadata")
+        .select("state");
+    if (error) {
+        throw new Error(`Failed to fetch states from table bill_metadata. Error: ${error.message}`);
+    }
+    if (!data) {
+        throw new Error(`Failed to fetch states from table bill_metadata, no data`);
+    }
+    const states = Array.from(new Set(data.map(row => row.state)));
     setStates(states.map(code => ({
         code: code,
         name: convertStateCodeToName(code)
