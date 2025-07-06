@@ -15,13 +15,13 @@ async function fetchUser(
         .eq("link_token", linkToken)
         .single();
     if (error) {
-        throw new Error(`Error fetching from table ${TABLE_NAME} via link_token=${linkToken}. Error message: ${error.message}`);
+        throw new Error(`Failed to fetch from table ${TABLE_NAME} via link_token=${linkToken}. Error: ${error.message}`);
     }
     if (!data.user_id) {
-        throw new Error(`Failed to fetch user_id from table ${TABLE_NAME} via link_token=${linkToken}.`)
+        throw new Error(`Failed to fetch user_id from table ${TABLE_NAME} via link_token=${linkToken}. No data returned`);
     }
     if (!data.user_contact_id) {
-        throw new Error(`Failed to fetch user_contact_id from table ${TABLE_NAME} via link_token=${linkToken}.`)
+        throw new Error(`Failed to fetch user_contact_id from table ${TABLE_NAME} via link_token=${linkToken}. No data returned`);
     }
     return { userID: data.user_id, userContactID: data.user_contact_id };
 }
@@ -45,6 +45,6 @@ export default async function insertNewUser(
         .eq("user_id", userID)
         .eq("user_contact_id", userContactID);
     if (error) {
-        throw new Error(`Error inserting new user to table ${TABLE_NAME} via link_token=${linkToken}, user_id=${userID}, user_contact_id=${userContactID}. Error message: ${error.message}`);
+        throw new Error(`Failed to insert new user to table ${TABLE_NAME} via link_token=${linkToken}, user_id=${userID}, user_contact_id=${userContactID}. Error: ${error.message}`);
     }
 }

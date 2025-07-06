@@ -14,6 +14,6 @@ export default async function sendText(
             }
         );
     } catch (err) {
-        throw new Error(`Error sending message to ${chatID}: ${err}`);
+        throw new Error(`Failed to send message to ${chatID}. Error: ${err}`);
     }
 }
