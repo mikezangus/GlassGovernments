@@ -3,10 +3,7 @@ export default async function sendText(
     text: string
 ): Promise<void>
 {
-    console.log("Sending text to: ", chatID)
-    console.log("Text to send: ", text)
-    const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
-    const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+    const url = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
     try {
         await fetch(
             url,

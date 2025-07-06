@@ -5,5 +5,5 @@ export default function LawTrackingPage()
 {
     return (
         <LawTrackingComponent />
-    )
+    );
 }
