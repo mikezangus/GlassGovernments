@@ -1,7 +1,7 @@
 import createLinkToken from "@/lib/create-user/telegram/createLinkToken";
 import createUser from "@/lib/create-user/createUser";
 import createUserContact from "@/lib/create-user/createUserContact";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase/server";
 
 
 export default async function createUserTelegram(): Promise<{

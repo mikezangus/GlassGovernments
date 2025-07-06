@@ -1,5 +1,5 @@
-import { supabase } from "../supabase";
-import { TelegramMessageChat } from "../types";
+import { supabase } from "@/lib/supabase/server";
+import { TelegramMessageChat } from "@/lib/types";
 
 
 const TABLE_NAME = "users_telegram";

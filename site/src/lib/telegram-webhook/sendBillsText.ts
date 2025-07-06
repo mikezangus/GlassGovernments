@@ -1,5 +1,5 @@
 import { TelegramMessageChat } from "../types";
-import { supabase } from "../supabase";
+import { supabase } from "@/lib/supabase/server";
 import sendText from "./sendText";
 
 
