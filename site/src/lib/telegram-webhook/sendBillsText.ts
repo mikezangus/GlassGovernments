@@ -30,7 +30,7 @@ async function fetchUser(
         .eq("chat_id", chatID)
         .single();
      if (error) {
-        throw new Error(`Error fetching user_id from table users_telegram via username=${username}, chat_id=${chatID}. Error message: ${error.message}`);
+        throw new Error(`Failed to fetch user_id from table users_telegram via username=${username}, chat_id=${chatID}. Error: ${error.message}`);
     }
     return { userID: data.user_id, userContactID: data.user_contact_id };
 }
@@ -63,7 +63,7 @@ async function fetchSubscriptions(
         .select("last_sent, token, state")
         .eq("user_id", userID)
     if (error) {
-        throw new Error(`Error fetching last_sent from table subscriptions via user_id=${userID}. Error message: ${error.message}`);
+        throw new Error(`Failed to fetch last_sent from table subscriptions via user_id=${userID}. Error: ${error.message}`);
     }
     return data;
 }
@@ -81,7 +81,7 @@ async function fetchBillIDs(
             .eq("token", subscription.token)
             .eq("state", subscription.state)
         if (error) {
-            throw new Error(`Error fetching bill_ids from table subscribed_bills for token=${subscription.token}, state=${subscription.state}. Message: ${error.message}`);
+            throw new Error(`Failed to fetch bill_ids from table subscribed_bills for token=${subscription.token}, state=${subscription.state}. Error: ${error.message}`);
         }
         if (data) {
             for (const row of data) {
