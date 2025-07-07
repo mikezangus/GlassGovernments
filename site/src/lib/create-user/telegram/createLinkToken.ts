@@ -16,7 +16,7 @@ export default async function createLinkToken(
         .select("link_token")
         .single();
     if (error || !data.link_token) {
-        throw new Error(`Failed to create Telegram link token.\nError: ${error?.message}\nData: ${data}`);
+        throw new Error(`Failed to create Telegram link token. Error: ${error?.message}\nData: ${data}`);
     }
     return data.link_token;
 }

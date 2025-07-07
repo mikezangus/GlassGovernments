@@ -15,7 +15,7 @@ async function fetchUser(
         .eq("link_token", linkToken)
         .single();
     if (error) {
-        throw new Error(`Failed to fetch from table ${TABLE_NAME} via link_token=${linkToken}. Error: ${error.message}`);
+        throw new Error(`Error fetching from table ${TABLE_NAME} via link_token=${linkToken}. Error: ${error.message}`);
     }
     if (!data.user_id) {
         throw new Error(`Failed to fetch user_id from table ${TABLE_NAME} via link_token=${linkToken}. No data returned`);
@@ -32,6 +32,7 @@ export default async function insertNewUser(
     chat: TelegramMessageChat
 ): Promise<void>
 {
+    console.log(`insertNewUser | linkToken=${linkToken}`)
     const { userID, userContactID} = await fetchUser(linkToken);
     const { error } = await supabase
         .from(TABLE_NAME)

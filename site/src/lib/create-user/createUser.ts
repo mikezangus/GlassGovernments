@@ -10,8 +10,11 @@ export default async function createUser(
         .insert({})
         .select("user_id")
         .single();
-    if (error || !data.user_id) {
-        throw new Error("Failed to create user");
+    if (error) {
+        throw new Error(`Failed to insert new row to table users. Error: ${error.message}`);
+    }
+    if (!data.user_id) {
+        throw new Error(`Failed to select user_id from new row inserted to table users.`);
     }
     return data.user_id;
 }
