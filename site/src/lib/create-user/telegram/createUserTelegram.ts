@@ -11,7 +11,10 @@ export default async function createUserTelegram(): Promise<{
 }>
 {
     const userID = await createUser(supabase);
+    console.log(`createUserTelegram | userID=${userID}`);
     const userContactID = await createUserContact(supabase, userID);
+    console.log(`createUserTelegram | userContactID=${userContactID}`);
     const linkToken = await createLinkToken(supabase, userID, userContactID);
+    console.log(`createUserTelegram | linkToken=${linkToken}`);
     return { userID, userContactID, linkToken };
 }

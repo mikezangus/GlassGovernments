@@ -7,10 +7,13 @@ import sendWelcomeMessage from "./sendWelcomeMessage";
 
 export default async function handleMessage(message: TelegramMessage)
 {
+    console.log(`handleMessage | message=${message}`)
     const chat = message.chat;
     const text = message.text;
+    console.log(`handleMessage | text=${text}`);
     const [command, linkToken] = text?.split(' ') ?? [];
     if (command === "/start" && linkToken) {
+        console.log(`handleMessage | linkToken=${linkToken}`)
         await sendWelcomeMessage(chat);
         await insertNewUser(linkToken, chat);
     } else if (command === "/start") {
@@ -21,5 +24,4 @@ export default async function handleMessage(message: TelegramMessage)
     } catch (error) {
         throw error;
     }
-    
 }
