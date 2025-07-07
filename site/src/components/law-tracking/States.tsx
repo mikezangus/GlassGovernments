@@ -18,12 +18,12 @@ async function fetchStates(
         throw new Error(`Failed to fetch states from table bill_metadata. Error: ${error.message}`);
     }
     if (!data) {
-        throw new Error(`Failed to fetch states from table bill_metadata, no data`);
+        throw new Error(`No data for states fetched from table bill_metadata`);
     }
     const states = Array.from(new Set(data.map(row => row.state)));
-    setStates(states.map(code => ({
-        code: code,
-        name: convertStateCodeToName(code)
+    setStates(states.map(stateCode => ({
+        code: stateCode,
+        name: convertStateCodeToName(stateCode)
     })));
 }
 

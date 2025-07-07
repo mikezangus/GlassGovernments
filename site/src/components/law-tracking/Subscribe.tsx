@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 import { ContactMethod, SubscriptionStatus, TokenItem } from "@/lib/types";
-import createUserTelegram from "@/lib/create-user/telegram/createUserTelegram";
 
 
 async function handleSubscribe(
@@ -21,10 +20,19 @@ async function handleSubscribe(
         if (contactType !== ContactMethod.Telegram) {
             throw new Error("Bad contact method");
         }
-        const user = await createUserTelegram();
-        // userID = user.userID;
-        // userContactID = user.userContactID;
-        const linkToken = user.linkToken;
+        const res = await fetch(
+            "/api/create-user/telegram",
+            { method: "POST" }
+        );
+        if (!res.ok) {
+            throw new Error("Failed to create user");
+        }
+        const {
+            userID,
+            userContactID,
+            linkToken
+        } = await res.json();
+        console.log(`handleSubscribe | userID=${userID}, userContactID=${userContactID}, linkToken=${linkToken}`);
         setNextStep(`https://t.me/glassgovernments_bot?start=${linkToken}`);
         setSubscribeStatus(SubscriptionStatus.Success);
     } catch (err) {
