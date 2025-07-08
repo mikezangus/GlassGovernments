@@ -5,34 +5,57 @@ import { useState } from "react";
 import { ContactMethod, SubscriptionStatus, TokenItem } from "@/lib/types";
 
 
+async function createUser(): Promise<{
+    userID: string,
+    linkToken: string
+}>
+{
+    const res = await fetch(
+        "/api/create-user/telegram",
+        { method: "POST" }
+    );
+    if (!res.ok) {
+        throw new Error("Failed to create user");
+    }
+    const { userID, linkToken } = await res.json(); 
+    return { userID, linkToken };
+}
+
+
+async function createSubscription(
+    userID: string,
+    tokenItems: TokenItem[]
+): Promise<void>
+{
+    const res = await fetch(
+        "/api/create-subscription",
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userID, tokenItems })
+        }
+    );
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(`Failed to create subscription for user_id=${userID}. Error: ${error.message}`);
+    }
+}
+
+
 async function handleSubscribe(
     setSubscribeStatus: (status: SubscriptionStatus) => void,
-    contactType: ContactMethod,
-    // contactValue: string,
-    // tokenItems: TokenItem[],
+    contactMethod: ContactMethod,
+    tokenItems: TokenItem[],
     setNextStep: (nextStep: string) => void
 ): Promise<void>
 {
     setSubscribeStatus(SubscriptionStatus.Loading);
-    // let userID = "";
-    // let userContactID = "";
     try {
-        if (contactType !== ContactMethod.Telegram) {
+        if (contactMethod !== ContactMethod.Telegram) {
             throw new Error("Bad contact method");
         }
-        const res = await fetch(
-            "/api/create-user/telegram",
-            { method: "POST" }
-        );
-        if (!res.ok) {
-            throw new Error("Failed to create user");
-        }
-        const {
-            userID,
-            userContactID,
-            linkToken
-        } = await res.json();
-        console.log(`handleSubscribe | userID=${userID}, userContactID=${userContactID}, linkToken=${linkToken}`);
+        const { userID, linkToken } = await createUser();
+        await createSubscription(userID, tokenItems)
         setNextStep(`https://t.me/glassgovernments_bot?start=${linkToken}`);
         setSubscribeStatus(SubscriptionStatus.Success);
     } catch (err) {
@@ -45,26 +68,22 @@ async function handleSubscribe(
 export default function SubscribeComponent(
     {
         tokenItems,
-        contactType,
-        contactValue
+        contactMethod,
     }:
     {
         tokenItems: TokenItem[];
-        contactType: ContactMethod;
-        contactValue: string
+        contactMethod: ContactMethod;
     }
 )
 {
-    console.log(tokenItems, contactValue)
     const [subscribeStatus, setSubscribeStatus] = useState<SubscriptionStatus>(SubscriptionStatus.Idle);
     const [nextStep, setNextStep] = useState<string>("");
     return (
         <div>
             <button onClick={() => handleSubscribe(
                 setSubscribeStatus,
-                contactType,
-                // contactValue,
-                // tokenItems,
+                contactMethod,
+                tokenItems,
                 setNextStep
             )}>
                 Subscribe
