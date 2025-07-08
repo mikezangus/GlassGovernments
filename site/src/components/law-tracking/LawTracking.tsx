@@ -20,7 +20,7 @@ function CurrentStepComponent(
         currentStep,
         tokenItems,
         setTokenItems,
-        contactType,
+        contactMethod,
         setContactType,
         contactValue,
         setContactValue
@@ -28,8 +28,8 @@ function CurrentStepComponent(
         currentStep: Step;
         tokenItems: TokenItem[];
         setTokenItems: (tokens: TokenItem[]) => void;
-        contactType: ContactMethod;
-        setContactType: (contactType: ContactMethod) => void;
+        contactMethod: ContactMethod;
+        setContactType: (contactMethod: ContactMethod) => void;
         contactValue: string;
         setContactValue: (contactValue: string) => void;
     }
@@ -50,15 +50,14 @@ function CurrentStepComponent(
             return (
                 <>
                 <ContactComponent
-                    contactType={contactType}
+                    contactType={contactMethod}
                     setContactType={setContactType}
                     contactValue={contactValue}
                     setContactValue={setContactValue}
                 />
                 <SubscribeComponent
                     tokenItems={tokenItems}
-                    contactType={contactType}
-                    contactValue={contactValue}
+                    contactMethod={contactMethod}
                 />
                 </>
             );
@@ -88,7 +87,7 @@ export default function LawTrackingComponent()
                     currentStep={currentStep}
                     tokenItems={tokenItems}
                     setTokenItems={setTokenItems}
-                    contactType={contactType}
+                    contactMethod={contactType}
                     setContactType={setContactType}
                     contactValue={contactValue}
                     setContactValue={setContactValue}
