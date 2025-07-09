@@ -10,7 +10,7 @@ PIPELINES_DIR = os.path.dirname(BILL_TRACKING_DIR)
 
 import sys
 sys.path.append(PIPELINES_DIR)
-from chamber_type import Chamber
+from enums import Chamber
 from insert_to_db import insert_to_db, OnDuplicate
 from urls import lower_feed_url, upper_feed_url
 

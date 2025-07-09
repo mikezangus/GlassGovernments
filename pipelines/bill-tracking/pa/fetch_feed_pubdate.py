@@ -8,7 +8,7 @@ BILL_TRACKING_DIR = os.path.dirname(PA_DIR)
 
 import sys
 sys.path.append(BILL_TRACKING_DIR)
-from chamber_type import Chamber
+from enums import Chamber
 
 
 def fetch_feed_pubdate(chamber: Chamber) -> datetime:
