@@ -23,9 +23,9 @@ def fetch_db_pubdate(state: str, chamber: Chamber) -> datetime | None:
             .execute()
     except Exception as e:
         raise RuntimeError(f"Error fetching pubdate for {state} {chamber.value}: {e}")
-    if not response.data:
-        raise ValueError(f"Failed to fetch pubdate from DB for {state} {chamber.value}")
-    return response.data["pubdate"] or None
+    if not response or response.data or not response.data["pubdate"]:
+        return None
+    return response.data["pubdate"]
 
 
 def trigger(
@@ -38,7 +38,7 @@ def trigger(
     print("DB pubdate:", db_pubdate)
     feed_pubdate = fetch_state_feed_pubdate(chamber)
     print("Feed pubdate:", feed_pubdate)
-    if feed_pubdate > db_pubdate:
+    if db_pubdate is None or feed_pubdate > db_pubdate:
         print("updating")
         update_db_pubdate(state, chamber, feed_pubdate)
         return True
