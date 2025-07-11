@@ -14,19 +14,13 @@ def process_bill_texts_clean(state: str) -> None:
     print("\n\nProcessing bill texts clean")
     source_rows = fetch_from_db(
         "bill_texts_source",
-        {
-            "select": '*',
-            "state": f"eq.{state.upper()}"
-        }
+        { "state": state.upper() }
     )
     if not source_rows:
         raise ValueError("❌ Failed to fetch from bill_texts_source")
     existing_clean_rows = fetch_from_db(
         "bill_texts_clean",
-        {
-            "select": "bill_id",
-            "state": f"eq.{state.upper()}"
-        }
+        { "state": state.upper() }
     )
     input_rows = filter_rows(source_rows, existing_clean_rows, "bill_id")
     output_rows = []

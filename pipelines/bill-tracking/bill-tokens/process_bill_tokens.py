@@ -17,10 +17,7 @@ def process_bill_tokens(state: str) -> None:
     print("\n\nProcessing bill tokens")
     input_rows = fetch_from_db(
         "bill_texts_clean",
-        {
-            "select": '*',
-            "state": f"eq.{state.upper()}",
-        }
+        { "state": state.upper() }
     )
     if not input_rows:
         raise ValueError("❌ Failed to fetch from bill_texts_clean")
