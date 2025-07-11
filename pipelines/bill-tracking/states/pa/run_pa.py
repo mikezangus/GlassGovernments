@@ -34,10 +34,8 @@ def run_pa():
         print(f"{STATE} has no updates")
         return
     if trigger_lower:
-        print("lower trigger hit")
         run_bill_data(Chamber.LOWER)
     if trigger_upper:
-        print("upper trigger hit")
         run_bill_data(Chamber.UPPER)
     run_bill_texts_source()
     run_bill_texts_clean(STATE)
