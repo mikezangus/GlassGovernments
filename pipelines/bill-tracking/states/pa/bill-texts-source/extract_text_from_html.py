@@ -2,8 +2,8 @@ from bs4 import BeautifulSoup
 
 
 def extract_text_from_html(html: str) -> str:
-    soup = BeautifulSoup(html, "html.parser")
-    text_divs = soup.find_all("div", class_=lambda c: c and c.startswith("t "))
+    bs = BeautifulSoup(html, "html.parser")
+    text_divs = bs.find_all("div", class_=lambda c: c and c.startswith("t "))
     line_numbers = {}
     for div in text_divs:
         if div.has_attr("data-islnnbr") and div["data-islnnbr"] == "true":

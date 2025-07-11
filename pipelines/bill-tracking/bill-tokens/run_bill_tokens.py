@@ -13,7 +13,7 @@ from fetch_from_db import fetch_from_db
 from insert_to_db import insert_to_db, OnDuplicate
 
 
-def process_bill_tokens(state: str) -> None:
+def run_bill_tokens(state: str) -> None:
     print("\n\nProcessing bill tokens")
     input_rows = fetch_from_db(
         "bill_texts_clean",

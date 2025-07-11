@@ -15,7 +15,7 @@ from insert_to_db import insert_to_db, OnDuplicate
 from urls import lower_feed_url, upper_feed_url
 
 
-def process_bill_data(chamber: Chamber) -> None:
+def run_bill_data(chamber: Chamber) -> None:
     print("\n\nProcessing bill data")
     feed_entries = []
     if chamber == Chamber.LOWER:
