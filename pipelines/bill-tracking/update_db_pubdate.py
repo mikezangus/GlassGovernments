@@ -15,14 +15,18 @@ def update_db_pubdate(
     chamber: Chamber,
     pubdate: datetime
 ) -> None:
-    print("state:", state)
-    print("chamber value:", chamber.value)
-    print("pubdate:", pubdate)
+    print(f"Updating feed pubdate for {state} {chamber.value}")
     try:
         supabase \
             .table("feed_pubdates") \
-            .update({ "pubdate": pubdate }) \
-            .match({ "state": state, "chamber": chamber.value }) \
+            .upsert(
+                {
+                    "state": state,
+                    "chamber": chamber.value,
+                    "pubdate": pubdate
+                },
+                on_conflict="state, chamber"
+            ) \
             .execute()
     except Exception as e:
         raise RuntimeError(f"Error updating feed update for {state} {chamber.value}: {e}")
