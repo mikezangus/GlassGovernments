@@ -1,18 +1,9 @@
-from fetch_feed_entries import fetch_feed_entries
-from parse_actions import parse_actions
-from parse_metadata import parse_metadata
-
-import os
-BILL_DATA_DIR = os.path.dirname(os.path.abspath(__file__))
-PA_DIR = os.path.dirname(BILL_DATA_DIR)
-BILL_TRACKING_DIR = os.path.dirname(PA_DIR)
-PIPELINES_DIR = os.path.dirname(BILL_TRACKING_DIR)
-
-import sys
-sys.path.append(PIPELINES_DIR)
+from states.pa.bill_data.fetch_feed_entries import fetch_feed_entries
+from states.pa.bill_data.parse_actions import parse_actions
+from states.pa.bill_data.parse_metadata import parse_metadata
+from states.pa.urls import lower_feed_url, upper_feed_url
 from enums import Chamber
 from insert_to_db import insert_to_db, OnDuplicate
-from urls import lower_feed_url, upper_feed_url
 
 
 def run_bill_data(chamber: Chamber) -> None:

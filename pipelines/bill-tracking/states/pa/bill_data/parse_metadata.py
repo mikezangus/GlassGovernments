@@ -1,4 +1,4 @@
-from convert_guid_to_id import convert_guid_to_id
+from states.pa.bill_data.convert_guid_to_id import convert_guid_to_id
 
 
 def parse_metadata(entry: dict[str, any]) -> dict[str, any]:

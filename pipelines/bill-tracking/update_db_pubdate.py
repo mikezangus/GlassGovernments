@@ -1,12 +1,5 @@
 from datetime import datetime
 from enums import Chamber, StateCode
-
-import os
-BILL_TRACKING_DIR = os.path.dirname(os.path.abspath(__file__))
-PIPELINES_DIR = os.path.dirname(BILL_TRACKING_DIR)
-
-import sys
-sys.path.append(PIPELINES_DIR)
 from supabase_client import supabase
 
 

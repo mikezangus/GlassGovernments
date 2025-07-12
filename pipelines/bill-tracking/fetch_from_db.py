@@ -5,7 +5,7 @@ def fetch_from_db(
     table_name: str,
     query_params: dict = None,
     select: str = '*',
-    batch_size: int = 1000
+    batch_size: int = 500
 ) -> list[dict]:
     rows = []
     offset = 0

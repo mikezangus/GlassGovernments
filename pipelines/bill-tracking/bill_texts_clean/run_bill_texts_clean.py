@@ -1,10 +1,5 @@
-from flatten_text import flatten_text
-from remove_heading import remove_heading
-import os
-import sys
-BILL_TEXTS_CLEAN_DIR = os.path.dirname(os.path.abspath(__file__))
-PIPELINES_DIR = os.path.dirname(os.path.dirname(BILL_TEXTS_CLEAN_DIR))
-sys.path.append(PIPELINES_DIR)
+from bill_texts_clean.flatten_text import flatten_text
+from bill_texts_clean.remove_heading import remove_heading
 from fetch_from_db import fetch_from_db
 from filter_rows import filter_rows
 from insert_to_db import insert_to_db, OnDuplicate

@@ -1,13 +1,5 @@
-from fetch_html_from_web import fetch_html_from_web
-from extract_text_from_html import extract_text_from_html
-
-import os
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATE_DIR = os.path.dirname(CURRENT_DIR)
-PIPELINES_DIR = os.path.dirname(STATE_DIR)
-
-import sys
-sys.path.append(PIPELINES_DIR)
+from states.pa.bill_texts_source.fetch_html_from_web import fetch_html_from_web
+from states.pa.bill_texts_source.extract_text_from_html import extract_text_from_html
 from fetch_from_db import fetch_from_db
 from filter_rows import filter_rows
 from insert_to_db import insert_to_db, OnDuplicate

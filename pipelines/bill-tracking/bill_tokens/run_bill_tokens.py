@@ -1,14 +1,7 @@
-from clean_tokens import clean_tokens
-from find_common_tokens import find_common_tokens
-from group_by_type import group_by_type
-from tokenize_rows import tokenize_rows
-
-import os
-BILL_TOKENS_DIR = os.path.dirname(os.path.abspath(__file__))
-PIPELINES_DIR = os.path.dirname(os.path.dirname(BILL_TOKENS_DIR))
-
-import sys
-sys.path.append(PIPELINES_DIR)
+from bill_tokens.clean_tokens import clean_tokens
+from bill_tokens.find_common_tokens import find_common_tokens
+from bill_tokens.group_by_type import group_by_type
+from bill_tokens.tokenize_rows import tokenize_rows
 from fetch_from_db import fetch_from_db
 from insert_to_db import insert_to_db, OnDuplicate
 

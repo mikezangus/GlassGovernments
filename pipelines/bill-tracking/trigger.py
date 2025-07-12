@@ -1,15 +1,8 @@
 from datetime import datetime
 from typing import Callable
 from enums import Chamber
-from update_db_pubdate import update_db_pubdate
-
-import os
-BILL_TRACKING_DIR = os.path.dirname(os.path.abspath(__file__))
-PIPELINES_DIR = os.path.dirname(BILL_TRACKING_DIR)
-
-import sys
-sys.path.append(PIPELINES_DIR)
 from supabase_client import supabase
+from update_db_pubdate import update_db_pubdate
 
 
 def fetch_db_pubdate(state: str, chamber: Chamber) -> datetime | None:
