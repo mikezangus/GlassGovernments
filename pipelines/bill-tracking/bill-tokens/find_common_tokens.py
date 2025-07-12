@@ -18,5 +18,5 @@ def find_common_tokens(
     for token, count in token_counts.items():
         if count >= min_count:
             common_tokens.append(token)
-    print(f"\nCommon tokens for {group_name} group at thresdhold={threshold}\n", common_tokens)
+    print(f"\nCommon tokens for {group_name} group at threshold={threshold}\n", common_tokens)
     return common_tokens

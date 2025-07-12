@@ -27,9 +27,7 @@ def run_bill_texts_source() -> None:
         table_name="bill_texts_source",
         select="bill_id"
     ) or []
-    print("len existing:", len(existing_text_rows))
     input_rows = filter_rows(metadata_rows, existing_text_rows, "bill_id")
-    print("len input rows:", len(input_rows))
     output_rows = []
     for (i, input_row) in enumerate(input_rows):
         print(f"[{i + 1}/{len(input_rows)}]", input_row["bill_id"])
