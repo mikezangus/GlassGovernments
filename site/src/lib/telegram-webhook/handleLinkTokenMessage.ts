@@ -133,6 +133,7 @@ async function insertSubscriptions(
 {
     const tableName = "subscriptions";
     if (tokenItems.length === 0) {
+        console.log("insert subs no token items")
         return
     };
     const rows = tokenItems.flatMap(({ token, states }) =>
@@ -142,13 +143,14 @@ async function insertSubscriptions(
             state,
         }))
     );
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from(tableName)
         .upsert(
             rows,
             { onConflict: "user_id,token,state" }
-        );
-
+        )
+        .select('*')
+    console.log("inserted to subscriptions", data)
     if (error)
         throw new Error(`insertSubscriptions: ${error.message} (user_id=${userID})`);
 }
@@ -163,9 +165,11 @@ export default async function handleLinkTokenMessage(
     let userID: string;
     let userContactID: string;
     if (!(await doesTelegramUserExist(telegramID))) {
+        console.log('new user');
         userID = await insertNewUser();
         userContactID = await insertNewUserContact(userID);
     } else {
+        console.log("user already exists");
         ({ userID, userContactID } = await fetchExistingTelegramUser(telegramID));
     }
     await upsertTelegramUser(userID, userContactID, chat);
