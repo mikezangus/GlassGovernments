@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<NextResponse>
     console.log("hit telegram handshake")
     try {
         const body = await req.json();
-        if (!body.telegramLinkToken) {
+        if (!body.linkToken) {
             console.log("telegram handshake | no telegram link token")
             throw new Error(`Request body missing Telegram link token`);
         }
@@ -19,9 +19,9 @@ export async function POST(req: NextRequest): Promise<NextResponse>
             console.log("telegram handshake | no token items")
             throw new Error(`Request body missing token items`);
         }
-        const telegramLinkToken: string = body.telegramLinkToken;
+        const linkToken: string = body.telegramLinkToken;
         const tokenItemsRaw: TokenItem[] = body.tokenItems;
-        console.log(`telegram handshake | linkToken=${telegramLinkToken}`);
+        console.log(`telegram handshake | linkToken=${linkToken}`);
         console.log(`telegram handshake | tokenItems=${tokenItemsRaw}`);
         const tokenItems = tokenItemsRaw.flatMap(
             ({ token, states }) =>
@@ -32,11 +32,11 @@ export async function POST(req: NextRequest): Promise<NextResponse>
         const { error } = await supabase
             .from("telegram_handshakes")
             .insert([
-                { link_token: telegramLinkToken },
+                { link_token: linkToken },
                 { token_items: tokenItems }
             ]);
         if (error) {
-            throw new Error(`Error inserting to table telegram_handshakes for link_token=${telegramLinkToken}. Error: ${error.message}`);
+            throw new Error(`Error inserting to table telegram_handshakes for link_token=${linkToken}. Error: ${error.message}`);
         }
         return NextResponse.json({ status: "ok" });
     } catch (err) {
