@@ -8,22 +8,17 @@ import { TokenItem } from "@/lib/types";
 
 export async function POST(req: NextRequest): Promise<NextResponse>
 {
-    console.log("hit telegram handshake")
     try {
         const body = await req.json();
         if (!body.linkToken) {
-            console.log("telegram handshake | no telegram link token")
             throw new Error(`Request body missing Telegram link token`);
         }
         if (!body.tokenItems) {
-            console.log("telegram handshake | no token items")
             throw new Error(`Request body missing token items`);
         }
         const linkToken: string = body.linkToken;
-        const tokenItemsRaw: TokenItem[] = body.tokenItems;
-        console.log(`telegram handshake | linkToken=${linkToken}`);
-        console.log(`telegram handshake | tokenItems=${tokenItemsRaw}`);
-        const tokenItems = tokenItemsRaw.flatMap(
+        const tokenItemsInput: TokenItem[] = body.tokenItems;
+        const tokenItemsOutput = tokenItemsInput.flatMap(
             ({ token, states }) =>
                 states.map((state) =>
                     ({ token, state })
@@ -33,7 +28,7 @@ export async function POST(req: NextRequest): Promise<NextResponse>
             .from("telegram_handshakes")
             .insert({
                 link_token: linkToken,
-                token_items: tokenItems
+                token_items: tokenItemsOutput
             });
         if (error) {
             throw new Error(`Error inserting to table telegram_handshakes for link_token=${linkToken}. Error: ${error.message}`);
