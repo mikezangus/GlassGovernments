@@ -7,20 +7,20 @@ async function createSubscriptionTelegram(
     tokenItems: TokenItem[]
 ): Promise<void>
 {
-    const linkToken = uuid();
+    const telegramLinkToken = uuid();
     const res = await fetch(
         "api/telegram-handshake",
         {
             method: "POST",
             headers: { "Content-Type": "applicatoin/json" },
-            body: JSON.stringify({ linkToken, tokenItems })
+            body: JSON.stringify({ linkToken: telegramLinkToken, tokenItems })
         }
     );
     if (!res.ok) {
         const error = await res.json();
-        throw new Error(`Error creating telegram subscription for linkToken=${linkToken}: ${error.message}`);
+        throw new Error(`Error creating telegram subscription for linkToken=${telegramLinkToken}: ${error.message}`);
     }
-    setNextStep(`https://t.me/glassgovernments_bot?start=${linkToken}`);
+    setNextStep(`https://t.me/glassgovernments_bot?start=${telegramLinkToken}`);
 }
 
 
@@ -41,5 +41,6 @@ export default async function createSubscription(
         setSubscriptionStatus(SubscriptionStatus.Success);
     } catch (err) {
         setSubscriptionStatus(SubscriptionStatus.Fail);
+        throw new Error(`Error: ${err}`)
     }
 }
