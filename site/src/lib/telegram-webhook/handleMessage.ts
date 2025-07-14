@@ -1,8 +1,9 @@
 import { TelegramMessage } from "../types";
 import sendText from "./sendText";
-import insertNewUser from "./insertNewUser";
+// import insertNewUser from "./insertNewUser";
 import sendBillsText from "./sendBillsText";
-import sendWelcomeMessage from "./sendWelcomeMessage";
+// import sendWelcomeMessage from "./sendWelcomeMessage";
+import handleLinkTokenMessage from "./handleLinkTokenMessage";
 
 
 export default async function handleMessage(message: TelegramMessage)
@@ -14,8 +15,8 @@ export default async function handleMessage(message: TelegramMessage)
     const [command, linkToken] = text?.split(' ') ?? [];
     if (command === "/start" && linkToken) {
         console.log(`handleMessage | linkToken=${linkToken}`)
-        await sendWelcomeMessage(chat);
-        await insertNewUser(linkToken, chat);
+        await sendText(chat.id, `Your link token is ${linkToken}`)
+        await handleLinkTokenMessage(chat, linkToken);
     } else if (command === "/start") {
         await sendText(chat.id, "Start button pressed");
     }
