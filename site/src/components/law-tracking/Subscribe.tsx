@@ -3,43 +3,44 @@
 
 import { useState } from "react";
 import { ContactMethod, SubscriptionStatus, TokenItem } from "@/lib/types";
+import createSubscription from "@/lib/create-subscription/createSubscription";
 
 
-async function createUser(): Promise<{
-    userID: string,
-    linkToken: string
-}>
-{
-    const res = await fetch(
-        "/api/create-user/telegram",
-        { method: "POST" }
-    );
-    if (!res.ok) {
-        throw new Error("Failed to create user");
-    }
-    const { userID, linkToken } = await res.json(); 
-    return { userID, linkToken };
-}
+// async function createUser(): Promise<{
+//     userID: string,
+//     linkToken: string
+// }>
+// {
+//     const res = await fetch(
+//         "/api/create-user/telegram",
+//         { method: "POST" }
+//     );
+//     if (!res.ok) {
+//         throw new Error("Failed to create user");
+//     }
+//     const { userID, linkToken } = await res.json(); 
+//     return { userID, linkToken };
+// }
 
 
-async function createSubscription(
-    userID: string,
-    tokenItems: TokenItem[]
-): Promise<void>
-{
-    const res = await fetch(
-        "/api/create-subscription",
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userID, tokenItems })
-        }
-    );
-    if (!res.ok) {
-        const error = await res.json();
-        throw new Error(`Failed to create subscription for user_id=${userID}. Error: ${error.message}`);
-    }
-}
+// async function createSubscription(
+//     userID: string,
+//     tokenItems: TokenItem[]
+// ): Promise<void>
+// {
+//     const res = await fetch(
+//         "/api/create-subscription",
+//         {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({ userID, tokenItems })
+//         }
+//     );
+//     if (!res.ok) {
+//         const error = await res.json();
+//         throw new Error(`Failed to create subscription for user_id=${userID}. Error: ${error.message}`);
+//     }
+// }
 
 
 async function handleSubscribe(
@@ -51,12 +52,8 @@ async function handleSubscribe(
 {
     setSubscribeStatus(SubscriptionStatus.Loading);
     try {
-        if (contactMethod !== ContactMethod.Telegram) {
-            throw new Error("Bad contact method");
-        }
-        const { userID, linkToken } = await createUser();
-        await createSubscription(userID, tokenItems)
-        setNextStep(`https://t.me/glassgovernments_bot?start=${linkToken}`);
+        // const { userID, linkToken } = await createUser();
+        await createSubscription(contactMethod, tokenItems, setNextStep, setSubscribeStatus)
         setSubscribeStatus(SubscriptionStatus.Success);
     } catch (err) {
         setSubscribeStatus(SubscriptionStatus.Fail);
