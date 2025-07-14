@@ -19,7 +19,7 @@ export async function POST(req: NextRequest): Promise<NextResponse>
             console.log("telegram handshake | no token items")
             throw new Error(`Request body missing token items`);
         }
-        const linkToken: string = body.telegramLinkToken;
+        const linkToken: string = body.linkToken;
         const tokenItemsRaw: TokenItem[] = body.tokenItems;
         console.log(`telegram handshake | linkToken=${linkToken}`);
         console.log(`telegram handshake | tokenItems=${tokenItemsRaw}`);
