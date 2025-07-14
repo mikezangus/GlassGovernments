@@ -12,9 +12,11 @@ export async function POST(req: NextRequest): Promise<NextResponse>
     try {
         const body = await req.json();
         if (!body.telegramLinkToken) {
+            console.log("telegram handshake | no telegram link token")
             throw new Error(`Request body missing Telegram link token`);
         }
         if (!body.tokenItems) {
+            console.log("telegram handshake | no token items")
             throw new Error(`Request body missing token items`);
         }
         const telegramLinkToken: string = body.telegramLinkToken;
