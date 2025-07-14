@@ -31,10 +31,10 @@ export async function POST(req: NextRequest): Promise<NextResponse>
         );
         const { error } = await supabase
             .from("telegram_handshakes")
-            .insert([
-                { link_token: linkToken },
-                { token_items: tokenItems }
-            ]);
+            .insert({
+                link_token: linkToken,
+                token_items: tokenItems
+            });
         if (error) {
             throw new Error(`Error inserting to table telegram_handshakes for link_token=${linkToken}. Error: ${error.message}`);
         }
