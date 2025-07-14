@@ -1,10 +1,5 @@
 from supabase_client import supabase
-from enum import Enum
-
-
-class OnDuplicate(Enum):
-    IGNORE = "ignore"
-    MERGE = "merge"
+from enums import OnDuplicate
 
 
 def insert_to_db(
@@ -22,8 +17,8 @@ def insert_to_db(
         batch = rows[i:i + batch_size]
         print(f"Inserting batch [{i + 1} - {min(i + batch_size, len(rows))}]")
         try:
-            table = supabase.table(table_name)
-            response = table \
+            response = supabase \
+                .table(table_name) \
                 .upsert(
                     batch,
                     on_conflict=conflict_key,

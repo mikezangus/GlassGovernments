@@ -57,3 +57,8 @@ class StateCode(Enum):
 class Chamber(Enum):
     LOWER = "lower"
     UPPER = "upper"
+
+
+class OnDuplicate(Enum):
+    IGNORE = "ignore"
+    MERGE = "merge"

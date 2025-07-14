@@ -8,7 +8,7 @@ def update_db_pubdate(
     chamber: Chamber,
     pubdate: datetime
 ) -> None:
-    print(f"Updating feed pubdate for {state} {chamber.value}")
+    print(f"\nUpdating feed pubdate for {state} {chamber.value}")
     try:
         supabase \
             .table("feed_pubdates") \

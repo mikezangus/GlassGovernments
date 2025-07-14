@@ -5,7 +5,7 @@ from supabase_client import supabase
 from update_db_pubdate import update_db_pubdate
 
 
-def fetch_db_pubdate(state: str, chamber: Chamber) -> datetime | None:
+def _fetch_db_pubdate(state: str, chamber: Chamber) -> datetime | None:
     try:
         response = supabase \
             .table("feed_pubdates") \
@@ -26,7 +26,7 @@ def trigger(
     chamber: Chamber,
     fetch_state_feed_pubdate: Callable[[Chamber], datetime]
 ) -> bool:
-    db_pubdate = fetch_db_pubdate(state, chamber)
+    db_pubdate = _fetch_db_pubdate(state, chamber)
     feed_pubdate = fetch_state_feed_pubdate(chamber)
     if db_pubdate is None or feed_pubdate > db_pubdate:
         update_db_pubdate(state, chamber, feed_pubdate)
