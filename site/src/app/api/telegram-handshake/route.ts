@@ -8,6 +8,7 @@ import { TokenItem } from "@/lib/types";
 
 export async function POST(req: NextRequest): Promise<NextResponse>
 {
+    console.log("hit telegram handshake")
     try {
         const body = await req.json();
         if (!body.telegramLinkToken) {
@@ -18,6 +19,8 @@ export async function POST(req: NextRequest): Promise<NextResponse>
         }
         const telegramLinkToken: string = body.telegramLinkToken;
         const tokenItemsRaw: TokenItem[] = body.tokenItems;
+        console.log(`telegram handshake | linkToken=${telegramLinkToken}`);
+        console.log(`telegram handshake | tokenItems=${tokenItemsRaw}`);
         const tokenItems = tokenItemsRaw.flatMap(
             ({ token, states }) =>
                 states.map((state) =>
