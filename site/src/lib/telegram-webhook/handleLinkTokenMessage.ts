@@ -1,5 +1,6 @@
 import { TelegramMessageChat, TokenItemTelegramHandshake } from "@/lib/types";
 import { supabase } from "@/lib/supabase/server";
+import sendText from "./sendText";
 
 
 async function doesTelegramUserExist(telegramID: number): Promise<boolean>
@@ -127,7 +128,8 @@ async function fetchTokenItems(
 
 async function insertSubscriptions(
     userID: string,
-    tokenItems: TokenItemTelegramHandshake[]
+    tokenItems: TokenItemTelegramHandshake[],
+    chatID: number
 ): Promise<void>
 {
     const tableName = "subscriptions";
@@ -141,6 +143,9 @@ async function insertSubscriptions(
             token: tokenItem.token,
             state: tokenItem.state
         });
+    }
+    for (const row in rows) {
+        await sendText(chatID, `row=${row}`)
     }
     const { error } = await supabase
         .from(tableName)
@@ -169,5 +174,5 @@ export default async function handleLinkTokenMessage(
     }
     await upsertTelegramUser(userID, userContactID, chat);
     const tokenItems = await fetchTokenItems(linkToken);
-    await insertSubscriptions(userID, tokenItems);
+    await insertSubscriptions(userID, tokenItems, chat.id);
 }
