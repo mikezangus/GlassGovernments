@@ -110,7 +110,7 @@ async function upsertTelegramUser(
 async function fetchTokenItems(
     linkToken: string,
     chatID: number
-): Promise<TokenItem[]>
+): Promise< { token: string, state: string }[]>
 {
     const tableName = "telegram_handshakes";
     await sendText(chatID, "entering fetchTokenItems")
@@ -127,7 +127,7 @@ async function fetchTokenItems(
         throw new Error(`fetchTokenItems: no token_items for ${linkToken}`);
     }
     await sendText(chatID, "successfully fetched tokens")
-    return data.token_items as TokenItem[];
+    return data.token_items;
 }
 
 
@@ -181,14 +181,11 @@ export default async function handleLinkTokenMessage(
     const tokenItems = await fetchTokenItems(linkToken, chat.id);
     for (const item of tokenItems) {
         try {
-            await sendText(chat.id, `${item.token}`);
-            for (const state of item.states) {
-                await sendText(chat.id, `${state}`)
-            }
+            await sendText(chat.id, `token: ${item.token}, state: ${item.state}`);
         } catch (error) {
             await sendText(chat.id, `${error}`)
         }
         
     }
-    await insertSubscriptions(userID, tokenItems);
+    // await insertSubscriptions(userID, tokenItems);
 }
