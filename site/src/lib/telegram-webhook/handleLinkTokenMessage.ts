@@ -1,5 +1,6 @@
 import { TelegramMessageChat, TokenItem } from "@/lib/types";
 import { supabase } from "@/lib/supabase/server";
+import sendText from "./sendText";
 
 
 async function doesTelegramUserExist(telegramID: number): Promise<boolean>
@@ -107,12 +108,13 @@ async function upsertTelegramUser(
 
 
 async function fetchTokenItems(
-    linkToken: string
+    linkToken: string,
+    chatID: number
 ): Promise<TokenItem[]>
 {
     const tableName = "telegram_handshakes";
-    console.log("entering fetchTokenItems")
-    console.log("fetching for link token:", linkToken)
+    await sendText(chatID, "entering fetchTokenItems")
+    await sendText(chatID, `fetching for link token: ${linkToken}`)
     const { data, error } = await supabase
         .from(tableName)
         .select("token_items")
@@ -124,7 +126,7 @@ async function fetchTokenItems(
     if (!data?.token_items) {
         throw new Error(`fetchTokenItems: no token_items for ${linkToken}`);
     }
-    console.log("successfully fetched tokens")
+    await sendText(chatID, "successfully fetched tokens")
     return data.token_items as TokenItem[];
 }
 
@@ -176,10 +178,9 @@ export default async function handleLinkTokenMessage(
         ({ userID, userContactID } = await fetchExistingTelegramUser(telegramID));
     }
     await upsertTelegramUser(userID, userContactID, chat);
-    const tokenItems = await fetchTokenItems(linkToken);
-    console.log("token items:");
+    const tokenItems = await fetchTokenItems(linkToken, chat.id);
     for (const item in tokenItems) {
-        console.log("item:", item);
+        await sendText(chat.id, `item: ${item}`);
     }
     await insertSubscriptions(userID, tokenItems);
 }
