@@ -12,7 +12,7 @@ async function createSubscriptionTelegram(
         "api/telegram-handshake",
         {
             method: "POST",
-            headers: { "Content-Type": "applicatoin/json" },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ linkToken, tokenItems })
         }
     );
