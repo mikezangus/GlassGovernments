@@ -1,6 +1,5 @@
-import { TelegramMessageChat } from "@/lib/types";
+import { TelegramMessageChat, TokenItemTelegramHandshake } from "@/lib/types";
 import { supabase } from "@/lib/supabase/server";
-import sendText from "./sendText";
 
 
 async function doesTelegramUserExist(telegramID: number): Promise<boolean>
@@ -109,56 +108,59 @@ async function upsertTelegramUser(
 
 async function fetchTokenItems(
     linkToken: string,
-    chatID: number
-): Promise< { token: string, state: string }[]>
+): Promise<TokenItemTelegramHandshake[]>
 {
     const tableName = "telegram_handshakes";
-    await sendText(chatID, "entering fetchTokenItems")
-    await sendText(chatID, `fetching for link token: ${linkToken}`)
     const { data, error } = await supabase
         .from(tableName)
         .select("token_items")
         .eq("link_token", linkToken)
-        .maybeSingle();
     if (error) {
         throw new Error(`fetchTokenItems: ${error.message} (link_token=${linkToken})`);
     }
-    if (!data?.token_items) {
+    if (!data || data.length === 0) {
         throw new Error(`fetchTokenItems: no token_items for ${linkToken}`);
     }
-    await sendText(chatID, "successfully fetched tokens")
-    return data.token_items;
+    const tokenItems: TokenItemTelegramHandshake[] = [];
+    for (const row of data) {
+        const rowTokenItems = row.token_items as TokenItemTelegramHandshake[] | null;
+        if (!rowTokenItems) {
+            continue;
+        }
+        for (const tokenItem of rowTokenItems) {
+            tokenItems.push(tokenItem);
+        }
+    }
+    return tokenItems;
 }
 
 
-// async function insertSubscriptions(
-//     userID: string,
-//     tokenItems: TokenItem[]
-// ): Promise<void>
-// {
-//     const tableName = "subscriptions";
-//     if (tokenItems.length === 0) {
-//         console.log("insert subs no token items")
-//         return
-//     };
-//     const rows: { user_id: string, token: string, state: string }[] = [];
-//     for (const tokenItem of tokenItems) {
-//         const { token, states } = tokenItem;
-//         for (const state of states) {
-//             rows.push({ user_id: userID, token, state });
-//         }
-//     }
-//     const { data, error } = await supabase
-//         .from(tableName)
-//         .upsert(
-//             rows,
-//             { onConflict: "user_id,token,state" }
-//         )
-//         .select('*')
-//     console.log("inserted to subscriptions", data)
-//     if (error)
-//         throw new Error(`insertSubscriptions: ${error.message} (user_id=${userID})`);
-// }
+async function insertSubscriptions(
+    userID: string,
+    tokenItems: TokenItemTelegramHandshake[]
+): Promise<void>
+{
+    const tableName = "subscriptions";
+    if (tokenItems.length === 0) {
+        return
+    };
+    const rows: { user_id: string, token: string, state: string }[] = [];
+    for (const tokenItem of tokenItems) {
+        rows.push({
+            user_id: userID,
+            token: tokenItem.token,
+            state: tokenItem.state
+        });
+    }
+    const { error } = await supabase
+        .from(tableName)
+        .upsert(
+            rows,
+            { onConflict: "user_id,token,state" }
+        )
+    if (error)
+        throw new Error(`insertSubscriptions: ${error.message} (user_id=${userID})`);
+}
 
 
 export default async function handleLinkTokenMessage(
@@ -170,22 +172,12 @@ export default async function handleLinkTokenMessage(
     let userID: string;
     let userContactID: string;
     if (!(await doesTelegramUserExist(telegramID))) {
-        console.log('new user');
         userID = await insertNewUser();
         userContactID = await insertNewUserContact(userID);
     } else {
-        console.log("user already exists");
         ({ userID, userContactID } = await fetchExistingTelegramUser(telegramID));
     }
     await upsertTelegramUser(userID, userContactID, chat);
-    const tokenItems = await fetchTokenItems(linkToken, chat.id);
-    for (const item of tokenItems) {
-        try {
-            await sendText(chat.id, `token: ${item.token}, state: ${item.state}`);
-        } catch (error) {
-            await sendText(chat.id, `${error}`)
-        }
-        
-    }
-    // await insertSubscriptions(userID, tokenItems);
+    const tokenItems = await fetchTokenItems(linkToken);
+    await insertSubscriptions(userID, tokenItems);
 }

@@ -4,6 +4,12 @@ export interface TokenItem {
 };
 
 
+export interface TokenItemTelegramHandshake {
+    token: string;
+    state: string;
+};
+
+
 export enum ContactMethod {
     Text = "text",
     Telegram = "telegram",
