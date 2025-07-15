@@ -2,7 +2,7 @@ export const runtime = "edge";
 
 
 import { NextRequest, NextResponse } from "next/server";
-import handleMessage from "@/lib/telegram-webhook/handleMessage";
+import handleMessage from "@/lib/telegram/handleMessage";
 
 
 export async function POST(req: NextRequest): Promise<NextResponse>

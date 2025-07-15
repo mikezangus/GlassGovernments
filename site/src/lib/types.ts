@@ -4,7 +4,7 @@ export interface TokenItem {
 };
 
 
-export interface TokenItemTelegramHandshake {
+export interface TokenItemRow {
     token: string;
     state: string;
 };
