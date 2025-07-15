@@ -180,7 +180,10 @@ export default async function handleLinkTokenMessage(
     await upsertTelegramUser(userID, userContactID, chat);
     const tokenItems = await fetchTokenItems(linkToken, chat.id);
     for (const item of tokenItems) {
-        await sendText(chat.id, `item: ${item.token} | ${item.states}`);
+        await sendText(
+            chat.id,
+            `item: ${item.token} | ${item.states.join(", ")}`
+        );
     }
     await insertSubscriptions(userID, tokenItems);
 }
