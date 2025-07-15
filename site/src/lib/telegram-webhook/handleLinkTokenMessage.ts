@@ -145,10 +145,7 @@ async function insertSubscriptions(
     }
     const { error } = await supabase
         .from(tableName)
-        .upsert(
-            rows,
-            { onConflict: "user_id,token,state" }
-        )
+        .upsert(rows, { ignoreDuplicates: true });
     if (error)
         throw new Error(`insertSubscriptions: ${error.message} (user_id=${userID})`);
 }
