@@ -137,15 +137,11 @@ async function insertSubscriptions(
         return
     };
     const rows: { user_id: string, token: string, state: string }[] = [];
-    for (const tokenItem of tokenItems) {
-        rows.push({
-            user_id: userID,
-            token: tokenItem.token,
-            state: tokenItem.state
-        });
+    for (const { token, state } of tokenItems) {
+        rows.push({ user_id: userID, token, state});
     }
-    for (const row in rows) {
-        await sendText(chatID, `row=${row}`)
+    for (const row of rows) {
+        await sendText(chatID, `token: ${row.token} | state: ${row.state}`);
     }
     const { error } = await supabase
         .from(tableName)
