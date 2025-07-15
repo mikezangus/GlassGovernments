@@ -179,8 +179,8 @@ export default async function handleLinkTokenMessage(
     }
     await upsertTelegramUser(userID, userContactID, chat);
     const tokenItems = await fetchTokenItems(linkToken, chat.id);
-    for (const item in tokenItems) {
-        await sendText(chat.id, `item: ${item}`);
+    for (const item of tokenItems) {
+        await sendText(chat.id, `item: ${item.token} | ${item.states}`);
     }
     await insertSubscriptions(userID, tokenItems);
 }
