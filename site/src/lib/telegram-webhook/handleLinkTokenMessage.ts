@@ -1,5 +1,5 @@
-import { TelegramMessageChat, TokenItem } from "../types";
-import { supabase } from "../supabase/server";
+import { TelegramMessageChat, TokenItem } from "@/lib/types";
+import { supabase } from "@/lib/supabase/server";
 
 
 async function doesTelegramUserExist(telegramID: number): Promise<boolean>
@@ -111,17 +111,20 @@ async function fetchTokenItems(
 ): Promise<TokenItem[]>
 {
     const tableName = "telegram_handshakes";
+    console.log("entering fetchTokenItems")
+    console.log("fetching for link token:", linkToken)
     const { data, error } = await supabase
         .from(tableName)
         .select("token_items")
         .eq("link_token", linkToken)
         .maybeSingle();
-    if (error)
-    throw new Error(
-      `fetchTokenItems: ${error.message} (link_token=${linkToken})`
-    );
-    if (!data?.token_items)
+    if (error) {
+        throw new Error(`fetchTokenItems: ${error.message} (link_token=${linkToken})`);
+    }
+    if (!data?.token_items) {
         throw new Error(`fetchTokenItems: no token_items for ${linkToken}`);
+    }
+    console.log("successfully fetched tokens")
     return data.token_items as TokenItem[];
 }
 
