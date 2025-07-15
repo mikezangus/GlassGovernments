@@ -136,13 +136,13 @@ async function insertSubscriptions(
         console.log("insert subs no token items")
         return
     };
-    const rows = tokenItems.flatMap(({ token, states }) =>
-        states.map((state) => ({
-            user_id: userID,
-            token,
-            state,
-        }))
-    );
+    const rows: { user_id: string, token: string, state: string }[] = [];
+    for (const tokenItem of tokenItems) {
+        const { token, states } = tokenItem;
+        for (const state of states) {
+            rows.push({ user_id: userID, token, state });
+        }
+    }
     const { data, error } = await supabase
         .from(tableName)
         .upsert(
@@ -174,5 +174,9 @@ export default async function handleLinkTokenMessage(
     }
     await upsertTelegramUser(userID, userContactID, chat);
     const tokenItems = await fetchTokenItems(linkToken);
+    console.log("token items:");
+    for (const item in tokenItems) {
+        console.log("item:", item);
+    }
     await insertSubscriptions(userID, tokenItems);
 }
