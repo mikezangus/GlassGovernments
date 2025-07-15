@@ -131,34 +131,34 @@ async function fetchTokenItems(
 }
 
 
-async function insertSubscriptions(
-    userID: string,
-    tokenItems: TokenItem[]
-): Promise<void>
-{
-    const tableName = "subscriptions";
-    if (tokenItems.length === 0) {
-        console.log("insert subs no token items")
-        return
-    };
-    const rows: { user_id: string, token: string, state: string }[] = [];
-    for (const tokenItem of tokenItems) {
-        const { token, states } = tokenItem;
-        for (const state of states) {
-            rows.push({ user_id: userID, token, state });
-        }
-    }
-    const { data, error } = await supabase
-        .from(tableName)
-        .upsert(
-            rows,
-            { onConflict: "user_id,token,state" }
-        )
-        .select('*')
-    console.log("inserted to subscriptions", data)
-    if (error)
-        throw new Error(`insertSubscriptions: ${error.message} (user_id=${userID})`);
-}
+// async function insertSubscriptions(
+//     userID: string,
+//     tokenItems: TokenItem[]
+// ): Promise<void>
+// {
+//     const tableName = "subscriptions";
+//     if (tokenItems.length === 0) {
+//         console.log("insert subs no token items")
+//         return
+//     };
+//     const rows: { user_id: string, token: string, state: string }[] = [];
+//     for (const tokenItem of tokenItems) {
+//         const { token, states } = tokenItem;
+//         for (const state of states) {
+//             rows.push({ user_id: userID, token, state });
+//         }
+//     }
+//     const { data, error } = await supabase
+//         .from(tableName)
+//         .upsert(
+//             rows,
+//             { onConflict: "user_id,token,state" }
+//         )
+//         .select('*')
+//     console.log("inserted to subscriptions", data)
+//     if (error)
+//         throw new Error(`insertSubscriptions: ${error.message} (user_id=${userID})`);
+// }
 
 
 export default async function handleLinkTokenMessage(
