@@ -1,4 +1,4 @@
-import { TelegramMessageChat, TokenItem } from "@/lib/types";
+import { TelegramMessageChat } from "@/lib/types";
 import { supabase } from "@/lib/supabase/server";
 import sendText from "./sendText";
 
