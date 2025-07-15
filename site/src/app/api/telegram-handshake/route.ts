@@ -8,6 +8,7 @@ import { TokenItem } from "@/lib/types";
 
 export async function POST(req: NextRequest): Promise<NextResponse>
 {
+    const tableName = "telegram_handshakes"
     try {
         const body = await req.json();
         if (!body.linkToken) {
@@ -29,10 +30,10 @@ export async function POST(req: NextRequest): Promise<NextResponse>
             }
         }
         const { error } = await supabase
-            .from("telegram_handshakes")
+            .from(tableName)
             .insert(rows);
         if (error) {
-            throw new Error(`Error inserting to table telegram_handshakes for link_token=${linkToken}. Error: ${error.message}`);
+            throw new Error(`Error inserting to table ${tableName} for link_token=${linkToken}. Error: ${error.message}`);
         }
         return NextResponse.json({ status: "ok" });
     } catch (err) {
