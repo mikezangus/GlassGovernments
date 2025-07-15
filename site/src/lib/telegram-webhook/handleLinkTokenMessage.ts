@@ -113,7 +113,7 @@ async function fetchTokenItems(
     const tableName = "telegram_handshakes";
     const { data, error } = await supabase
         .from(tableName)
-        .select("token_items")
+        .select("token, state")
         .eq("link_token", linkToken)
     if (error) {
         throw new Error(`fetchTokenItems: ${error.message} (link_token=${linkToken})`);
@@ -121,17 +121,7 @@ async function fetchTokenItems(
     if (!data || data.length === 0) {
         throw new Error(`fetchTokenItems: no token_items for ${linkToken}`);
     }
-    const tokenItems: TokenItemTelegramHandshake[] = [];
-    for (const row of data) {
-        const rowTokenItems = row.token_items as TokenItemTelegramHandshake[] | null;
-        if (!rowTokenItems) {
-            continue;
-        }
-        for (const tokenItem of rowTokenItems) {
-            tokenItems.push(tokenItem);
-        }
-    }
-    return tokenItems;
+    return data as TokenItemTelegramHandshake[];
 }
 
 
