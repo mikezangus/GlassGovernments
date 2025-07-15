@@ -17,19 +17,20 @@ export async function POST(req: NextRequest): Promise<NextResponse>
             throw new Error(`Request body missing token items`);
         }
         const linkToken: string = body.linkToken;
-        const tokenItemsInput: TokenItem[] = body.tokenItems;
-        const tokenItemsOutput = tokenItemsInput.flatMap(
-            ({ token, states }) =>
-                states.map((state) =>
-                    ({ token, state })
-                )
-        );
+        const tokenItems: TokenItem[] = body.tokenItems;
+        const rows: { link_token: string, token: string, state: string }[] = [];
+        for (const tokenItem of tokenItems) {
+            for (const state of tokenItem.states) {
+                rows.push({
+                    link_token: linkToken,
+                    token: tokenItem.token,
+                    state
+                });
+            }
+        }
         const { error } = await supabase
             .from("telegram_handshakes")
-            .insert({
-                link_token: linkToken,
-                token_items: tokenItemsOutput
-            });
+            .insert(rows);
         if (error) {
             throw new Error(`Error inserting to table telegram_handshakes for link_token=${linkToken}. Error: ${error.message}`);
         }
