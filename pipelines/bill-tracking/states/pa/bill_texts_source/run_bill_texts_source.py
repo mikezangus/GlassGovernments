@@ -12,7 +12,6 @@ def run_bill_texts_source() -> None:
         { "state": "PA" },
         "bill_id,text_url"
     )
-    print("len metadata rows:", len(metadata_rows))
     if not metadata_rows:
         raise ValueError("❌ Failed to fetch from bill_metadata")
     existing_text_rows  = fetch_from_db(
