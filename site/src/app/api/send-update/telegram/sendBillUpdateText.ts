@@ -27,18 +27,18 @@ type NotificationsQueueRow = {
 }
 
 
-async function fetchBillMetadata(billID: string): Promise<Bill>
+async function fetchBillMetadata(bill: Bill): Promise<Bill>
 {
     const { data, error } = await supabase
         .from("bill_metadata")
         .select("state, bill_type, bill_num, summary")
-        .eq("bill_id", billID)
+        .eq("bill_id", bill.billID)
         .maybeSingle()
     if (error || !data) {
         throw new Error(`${error?.message}`);
     }
     return {
-        billID: billID,
+        ...bill,
         state: data.state,
         billType: data.bill_type,
         billNum: data.bill_num,
@@ -89,8 +89,8 @@ export default async function sendBillUpdateText(
     notification: NotificationsQueueRow
 ): Promise<void>
 {
-    const billID = notification.bill_id;
-    let bill = await fetchBillMetadata(billID);
+    let bill = { billID: notification.bill_id }
+    bill = await fetchBillMetadata(bill);
     bill = await fetchBillActions(bill);
     await sendText(chatID, writeBillText(bill, notification));
 }
