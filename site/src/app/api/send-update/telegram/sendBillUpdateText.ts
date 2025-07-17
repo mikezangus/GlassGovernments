@@ -73,7 +73,7 @@ async function fetchBillActions(bill: Bill): Promise<Bill>
 function writeBillText(bill: Bill, notification: NotificationsQueueRow): string
 {
     return [
-        `🚨 Update for ${notification.token} for ${notification.state}:`,
+        `🚨 Update for ${notification.token.toUpperCase()} in ${notification.state}:`,
         `${bill.state} ${bill.billType} ${bill.billNum}`,
         bill.summary,
         `Passed House: ${bill.passedLower ? '✅' : '❌'}`,
