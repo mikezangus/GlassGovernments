@@ -8,6 +8,8 @@ export const runtime = "edge";
 type NotificationsQueueRow = {
     user_id: string;
     bill_id: string;
+    token: string;
+    state: string;
     last_pubdate: string;
     sent_at: string | null;
 }
@@ -54,7 +56,7 @@ export async function GET(): Promise<Response>
                 console.warn(`No Telegram ID found for ${row.user_id}`);
                 continue;
             }
-            await sendBillUpdateText(telegramID, row.bill_id);
+            await sendBillUpdateText(telegramID, row);
         } catch (err) {
             console.error(`Failed to process notification (user ${row.user_id}, bill ${row.bill_id}):`, err);
         }

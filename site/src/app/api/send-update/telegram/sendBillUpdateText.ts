@@ -17,6 +17,16 @@ interface Bill {
 };
 
 
+type NotificationsQueueRow = {
+    user_id: string;
+    bill_id: string;
+    token: string;
+    state: string;
+    last_pubdate: string;
+    sent_at: string | null;
+}
+
+
 async function fetchBillMetadata(billID: string): Promise<Bill>
 {
     const { data, error } = await supabase
@@ -60,9 +70,10 @@ async function fetchBillActions(bill: Bill): Promise<Bill>
 }
 
 
-function writeBillText(bill: Bill): string
+function writeBillText(bill: Bill, notification: NotificationsQueueRow): string
 {
     return [
+        `🚨 Update for ${notification.token} for ${notification.state}:`,
         `${bill.state} ${bill.billType} ${bill.billNum}`,
         bill.summary,
         `Passed House: ${bill.passedLower ? '✅' : '❌'}`,
@@ -75,10 +86,11 @@ function writeBillText(bill: Bill): string
 
 export default async function sendBillUpdateText(
     chatID: number,
-    billID: string
+    notification: NotificationsQueueRow
 ): Promise<void>
 {
+    const billID = notification.bill_id;
     let bill = await fetchBillMetadata(billID);
     bill = await fetchBillActions(bill);
-    await sendText(chatID, writeBillText(bill));
+    await sendText(chatID, writeBillText(bill, notification));
 }
