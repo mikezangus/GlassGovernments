@@ -67,7 +67,7 @@ function CurrentStepComponent(
 }
 
 
-export default function LawTrackingComponent()
+export default function BillTrackingComponent()
 {
     const [currentStep, setCurrentStep] = useState<Step>(Step.Tokens);
     const [tokenItems, setTokenItems] = useState<TokenItem[]>([{
