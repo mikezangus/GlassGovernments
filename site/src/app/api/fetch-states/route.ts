@@ -2,10 +2,10 @@ export const runtime = "edge";
 
 
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase/client";
+import { supabase } from "@/lib/supabase/server";
 
 
-export async function POST(): Promise<NextResponse>
+export async function GET(): Promise<NextResponse>
 {
     const tableName = "states";
     try {
@@ -14,7 +14,7 @@ export async function POST(): Promise<NextResponse>
             .select("state")
             .order("state");
         if (error) {
-            throw new Error(`Failed to fetch states from table ${tableName}. Error: ${error.message}`);
+            throw new Error(`Error trying to fetch states from table ${tableName}: ${error.message}`);
         }
         if (!data) {
             throw new Error(`No data for states fetched from table ${tableName}`);
