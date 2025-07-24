@@ -1,11 +1,14 @@
-export interface TokenItem {
-    token: string;
+export type Step = 1 | 2 | 3;
+
+
+export type WordAndStates = {
+    word: string;
     states: string[];
 };
 
 
-export interface TokenItemRow {
-    token: string;
+export type WordAndState = {
+    word: string;
     state: string;
 };
 
@@ -13,13 +16,6 @@ export interface TokenItemRow {
 export enum ContactMethod {
     Text = "text",
     Telegram = "telegram",
-}
-
-
-export enum Step {
-    Tokens,
-    States,
-    Contact
 }
 
 
@@ -35,8 +31,8 @@ export type TelegramMessage = {
     message_id: number;
     from: {
         id: number;
-        is_bot: boolean;
-        first_name: string;
+        is_bot?: boolean;
+        first_name?: string;
         last_name?: string;
         username?: string;
         language_code?: string;
@@ -55,8 +51,8 @@ export type TelegramMessage = {
 
 export type TelegramMessageChat = {
     id: number;
-    first_name: string;
+    first_name?: string;
     last_name?: string;
     username?: string;
-    type: "private" | "group" | "supergroup" | "channel";
+    type?: "private" | "group" | "supergroup" | "channel";
 }

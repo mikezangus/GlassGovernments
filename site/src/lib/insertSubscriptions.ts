@@ -1,19 +1,19 @@
 import { supabase } from "@/lib/supabase/server";
-import { TokenItemRow } from "@/lib/types";
+import { WordAndState } from "@/lib/types";
 
 
 export default async function insertSubscriptions(
     userID: string,
-    tokenItems: TokenItemRow[],
+    items: WordAndState[],
 ): Promise<void>
 {
     const tableName = "subscriptions";
-    if (tokenItems.length === 0) {
+    if (items.length === 0) {
         return
     };
-    const rows: { user_id: string, token: string, state: string }[] = [];
-    for (const { token, state } of tokenItems) {
-        rows.push({ user_id: userID, token, state});
+    const rows: { user_id: string, word: string, state: string }[] = [];
+    for (const { word, state } of items) {
+        rows.push({ user_id: userID, word, state});
     }
     const { error } = await supabase
         .from(tableName)

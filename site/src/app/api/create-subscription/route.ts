@@ -3,7 +3,7 @@ export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase/server";
-import { TokenItem } from "@/lib/types";
+import { WordAndStates } from "@/lib/types";
 
 
 export async function POST(req: NextRequest): Promise<NextResponse>
@@ -14,11 +14,11 @@ export async function POST(req: NextRequest): Promise<NextResponse>
             throw new Error(`Request body missing userID or tokenItems. userID=${body?.userID}, tokenItems=${body?.tokenItems}`);
         }
         const userID: string = body.userID;
-        const tokenItems: TokenItem[] = body.tokenItems;
-        const rows = tokenItems.flatMap(tokenItem =>
-            tokenItem.states.map(state => ({
+        const items: WordAndStates[] = body.tokenItems;
+        const rows = items.flatMap(item =>
+            item.states.map(state => ({
                 user_id: userID,
-                token: tokenItem.token,
+                token: item.word,
                 state
             }))
         );

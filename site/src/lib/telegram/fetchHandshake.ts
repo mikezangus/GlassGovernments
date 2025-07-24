@@ -1,15 +1,15 @@
 import { supabase } from "@/lib/supabase/server";
-import { TokenItemRow } from "@/lib/types";
+import { WordAndState } from "@/lib/types";
 
 
 export default async function fetchHandshake(
     linkToken: string,
-): Promise<TokenItemRow[]>
+): Promise<WordAndState[]>
 {
     const tableName = "telegram_handshakes";
     const { data, error } = await supabase
         .from(tableName)
-        .select("token, state")
+        .select("word, state")
         .eq("link_token", linkToken)
     if (error) {
         throw new Error(`Error on table ${tableName}: ${error.message}`);
@@ -17,5 +17,5 @@ export default async function fetchHandshake(
     if (!data || data.length === 0) {
         throw new Error(`No rows on table ${tableName} for ${linkToken}`);
     }
-    return data as TokenItemRow[];
+    return data as WordAndState[];
 }
