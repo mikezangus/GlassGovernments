@@ -1,0 +1,52 @@
+.container
+{
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    margin-top: auto;             
+    box-sizing: border-box;
+    padding: 0 1rem;
+}
+
+
+.button
+{
+    color: rgb(255, 255, 255);
+    background-color: black;
+    border-radius: 2rem;
+    padding: 1rem;
+    width: 150px;
+    border: none;
+}
+
+
+.button:hover
+{
+    cursor: pointer;
+}
+
+
+.back
+{
+    margin-right: auto;
+}
+
+
+.next
+{
+    margin-left: auto;
+}
+
+
+@media (max-width: 639.98px)
+{
+    .container
+    {
+        padding: 0;
+    }
+    .button
+    {
+        width: 110px;
+    }
+}
