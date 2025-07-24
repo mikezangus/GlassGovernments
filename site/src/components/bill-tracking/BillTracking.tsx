@@ -2,103 +2,82 @@
 
 
 import React, { useState } from "react";
-
-import ContactComponent from "./Contact";
-import ProgressComponent from "./Progress";
-import StatesComponent from "./States";
-import SubscribeComponent from "./Subscribe";
-import TokensComponent from "./TokenInput";
-import { ContactMethod, Step, TokenItem } from "@/lib/types";
-
-import styles from "@/styles/LawTracking.module.css";
-// import TokenComponent from "./Token";
 import NavComponent from "./Nav";
+import StatesComponent from "./States";
+import SubmitComponent from "./Submit";
+import WordsComponent from "./Words";
+import { Step, WordAndStates } from "@/lib/types";
+import styles from "@/styles/bill-tracking/BillTracking.module.css";
 
 
-function CurrentStepComponent(
+function Renderer(
     {
         currentStep,
-        tokenItems,
-        setTokenItems,
-        contactMethod,
-        setContactType,
-        contactValue,
-        setContactValue
-    }: {
+        wordsAndStates,
+        setWordsAndStates,
+        states
+    }:
+    {
         currentStep: Step;
-        tokenItems: TokenItem[];
-        setTokenItems: (tokens: TokenItem[]) => void;
-        contactMethod: ContactMethod;
-        setContactType: (contactMethod: ContactMethod) => void;
-        contactValue: string;
-        setContactValue: (contactValue: string) => void;
+        wordsAndStates: WordAndStates[];
+        setWordsAndStates: React.Dispatch<React.SetStateAction<WordAndStates[]>>;
+        states: string[]
     }
 )
 {
     switch (currentStep) {
-        case Step.Tokens:
-            return <TokensComponent
-                tokenItems={tokenItems}
-                setTokenItems={setTokenItems}
-            />;
-        case Step.States:
-            return <StatesComponent
-                tokenItems={tokenItems}
-                setTokenItems={setTokenItems}
-            />;
-        case Step.Contact:
-            return (
-                <>
-                <ContactComponent
-                    contactType={contactMethod}
-                    setContactType={setContactType}
-                    contactValue={contactValue}
-                    setContactValue={setContactValue}
-                />
-                <SubscribeComponent
-                    tokenItems={tokenItems}
-                    contactMethod={contactMethod}
-                />
-                </>
-            );
-        default:
-            return;
-    }
+        case 1: return (<>
+            <div className={styles.cardHeader}>
+                What kinds of bills do you want to track?
+            </div>
+            <WordsComponent
+                items={wordsAndStates}
+                setItems={setWordsAndStates}
+            />
+        </>);
+        case 2: return(<>
+            <div className={styles.cardHeader}>
+                In which states do you want to track these bills?
+            </div>
+            <StatesComponent
+                items={wordsAndStates}
+                setItems={setWordsAndStates}
+                states={states}
+            />
+        </>);
+        case 3: return(<>
+            <div className={styles.cardHeader}>
+                Your bills are ready to track ✅
+            </div>
+            <SubmitComponent items={wordsAndStates} />
+        </>);
+        default: return(<div>whoopsies uwu</div>);
+    };
 }
 
 
-export default function BillTrackingComponent()
+export default function BillTrackingComponent(
+    { states }:
+    { states: string[] }
+)
 {
-    const [currentStep, setCurrentStep] = useState<Step>(Step.Tokens);
-    const [tokenItems, setTokenItems] = useState<TokenItem[]>([{
-        token: "",
-        states: []
-    }]);
-    const [contactType, setContactType] = useState<ContactMethod>(ContactMethod.Telegram);
-    const [contactValue, setContactValue] = useState<string>("");
+    const [currentStep, setCurrentStep] = useState<Step>(1);
+    const [wordsAndStates, setWordsAndStates] = useState<WordAndStates[]>([]);
     return (
-        <div className={styles.lawTrackingContainer}>
-            <div className={styles.bodyContainer}>
-                <ProgressComponent
-                    i={currentStep + 1}
-                    len={Object.keys(Step).length / 2}
-                />
-                <CurrentStepComponent
-                    currentStep={currentStep}
-                    tokenItems={tokenItems}
-                    setTokenItems={setTokenItems}
-                    contactMethod={contactType}
-                    setContactType={setContactType}
-                    contactValue={contactValue}
-                    setContactValue={setContactValue}
-                />
+        <div className={styles.card}>
+            <Renderer
+                currentStep={currentStep}
+                wordsAndStates={wordsAndStates}
+                setWordsAndStates={setWordsAndStates}
+                states={states}
+            />
+            {
+                wordsAndStates.length > 0 && 
                 <NavComponent
                     currentStep={currentStep}
-                    setCurrentStep={setCurrentStep}
-                    tokenItems={tokenItems}
-                    setTokenItems={setTokenItems}
+                    setCurrentStep={setCurrentStep} 
                 />
-            </div>
+            }
         </div>
     );
 }

@@ -1,73 +1,69 @@
-import { Step, TokenItem } from "@/lib/types";
-import styles from "@/styles/LawTracking.module.css";
+import { Step } from "@/lib/types";
+import styles from "@/styles/bill-tracking/Nav.module.css";
 
 
-function handleForward(
-    currentStep: Step,
-    setCurrentStep: (step: Step) => void,
-    tokenItems: TokenItem[],
-    setTokenItems: (tokenItems: TokenItem[]) => void,
-): void
+function BackButton(
+    { setCurrentStep }:
+    { setCurrentStep: React.Dispatch<React.SetStateAction<Step>> }
+)
 {
-    if (currentStep === Step.Tokens) {
-        const filteredTokens = tokenItems.filter(t => t.token.trim() !== "");
-        setTokenItems(filteredTokens);
+    function getPreviousStep(prev: Step): Step
+    {
+        return prev === 1 ? 1 : (prev - 1) as Step;
     }
-    if (currentStep < Step.Contact) {
-        setCurrentStep(currentStep + 1);
-    }
+    return (
+        <button
+            className={`${styles.button} ${styles.back}`}
+            onClick={() => setCurrentStep(getPreviousStep)}
+        >
+            Back
+        </button>
+    );
 }
 
 
-function handleBackward(
-    currentStep: Step,
-    setCurrentStep: (step: Step) => void
-): void
+function NextButton(
+    { setCurrentStep }:
+    { setCurrentStep: React.Dispatch<React.SetStateAction<Step>> }
+)
 {
-    if (currentStep > Step.Tokens) {
-        setCurrentStep(currentStep - 1);
-    } 
+    function getNextStep(prev: Step): Step
+    {
+        return prev === 3 ? 3 : ((prev + 1) as Step);
+    }
+    return (
+        <button
+            className={`${styles.button} ${styles.next}`}
+            onClick={() => setCurrentStep(getNextStep)}
+        >
+            Next
+        </button>
+    );
 }
+
 
 export default function NavComponent(
     {
         currentStep,
-        setCurrentStep,
-        tokenItems,
-        setTokenItems
+        setCurrentStep
     }:
     {
         currentStep: Step;
-        setCurrentStep: (step: Step) => void;
-        tokenItems: TokenItem[];
-        setTokenItems: (tokenItems: TokenItem[]) => void;
+        setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
     }
 )
 {
     return (
-        <div className={styles.navigationButtons}>
-            <button
-                onClick={() => handleBackward(
-                    currentStep,
-                    setCurrentStep
-                )}
-                disabled={currentStep === Step.Tokens}
-                className={styles.navButton}
-            >
-                {"<-"}
-            </button>
-            <button
-                onClick={() => handleForward(
-                    currentStep,
-                    setCurrentStep,
-                    tokenItems,
-                    setTokenItems
-                )}
-                disabled={currentStep === Step.Contact}
-                className={styles.navButton}
-            >
-                {"->"}
-            </button>
+        <div className={styles.container}>
+            {
+                currentStep > 1 &&
+                <BackButton setCurrentStep={setCurrentStep} />
+            }
+            {
+                currentStep > 0 &&
+                currentStep < 3 &&
+                <NextButton setCurrentStep={setCurrentStep} />
+            }
         </div>
     );
 }

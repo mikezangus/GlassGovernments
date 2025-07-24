@@ -1,99 +1,78 @@
-import { useEffect, useState } from "react";
+import { WordAndStates } from "@/lib/types";
 import convertStateCodeToName from "@/lib/convertStateCodeToName";
-import { supabase } from "@/lib/supabase/client";
-import { TokenItem } from "@/lib/types";
 
 
-async function fetchStates(
-    setStates: React.Dispatch<React.SetStateAction<{ 
-        code: string;
-        name: string;
-    }[]>>
+function DisplayItem(
+    {
+        item,
+        setItem,
+        states
+    }:
+    {
+        item: WordAndStates,
+        setItem: (item: WordAndStates) => void;
+        states: string[]
+    }
 )
 {
-    const { data, error } = await supabase
-        .from("bill_metadata")
-        .select("state");
-    if (error) {
-        throw new Error(`Failed to fetch states from table bill_metadata. Error: ${error.message}`);
+    function toggleStates(state: string): void
+    {
+        const inList = item.states?.includes(state);
+        const newList = inList
+            ? item.states!.filter((s) => s !== state)
+            : [...(item.states ?? []), state];
+        setItem({ ...item, states: newList });
     }
-    if (!data) {
-        throw new Error(`No data for states fetched from table bill_metadata`);
-    }
-    const states = Array.from(new Set(data.map(row => row.state)));
-    setStates(states.map(stateCode => ({
-        code: stateCode,
-        name: convertStateCodeToName(stateCode)
-    })));
-}
+    return (
+        <div style={{ marginBottom: "1.5rem" }}>
+            <h4 style={{ margin: "0 0 .5rem" }}>{item.word}</h4>
 
-
-function handleChange(
-    token: string,
-    stateCode: string,
-    tokenItems: TokenItem[],
-    setTokenItems: (tokenItems: TokenItem[]) => void
-)
-{
-    const changedTokenItems = tokenItems.map(tokenItem => {
-        if (tokenItem.token !== token) {
-            return tokenItem;
-        }
-        const selectedStates = tokenItem.states.includes(stateCode);
-        const changedStates = selectedStates
-            ? tokenItem.states.filter(code => code !== stateCode)
-            : [...tokenItem.states, stateCode];
-        return { ...tokenItem, states: changedStates };
-    });
-    setTokenItems(changedTokenItems);
+             <div style={{ display: "flex", flexDirection: "column", gap: ".25rem" }}>
+                {states.map((state) => (
+                    <label key={state}>
+                    <input
+                        type="checkbox"
+                        checked={item.states?.includes(state) ?? false}
+                        onChange={() => toggleStates(state)}
+                    />
+                    {convertStateCodeToName(state)}
+                    </label>
+                ))}
+            </div>
+        </div>
+    );
 }
 
 
 export default function StatesComponent(
     {
-        tokenItems,
-        setTokenItems
+        items,
+        setItems,
+        states
     }:
     {
-        tokenItems: TokenItem[];
-        setTokenItems: (tokenItems: TokenItem[]) => void;
+        items: WordAndStates[];
+        setItems: (items: WordAndStates[]) => void;
+        states: string[]
     }
 )
 {
-    const [states, setStates] = useState<{
-        code: string,
-        name: string
-    }[]>([]);
-    useEffect(() => {
-        fetchStates(setStates)
-    }, []);
+    function updateItem(word: string, next: WordAndStates): void
+    {
+        const updated = items.map((item) =>
+            item.word === word ? next : item
+        );
+        setItems(updated);
+    }
     return (
         <div>
-            {tokenItems.map((tokenItem) => (
-                <div key={tokenItem.token}>
-                    <div>{tokenItem.token}</div>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                        {states
-                            .slice()
-                            .sort((a, b) => a.name.localeCompare(b.name))
-                            .map(({ code, name }) => (
-                                <label key={code}>
-                                    <input
-                                        type="checkbox"
-                                        checked={tokenItem.states.includes(code)}
-                                        onChange={() => handleChange(
-                                            tokenItem.token,
-                                            code,
-                                            tokenItems,
-                                            setTokenItems
-                                        )}
-                                    />
-                                    {name}
-                                </label>
-                            ))
-                        }
-                    </div>
-                </div>
+            {items.map((item) => (
+                <DisplayItem
+                    key={item.word}
+                    item={item}
+                    setItem={(next) => updateItem(item.word, next)}
+                    states={states}
+                />
             ))}
         </div>
     );
