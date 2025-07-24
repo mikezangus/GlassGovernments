@@ -1,5 +1,7 @@
-.headerContainer
+.container
 {
+    position: relative;
+    box-sizing: border-box;
     width: 100%;
     height: auto;
     display: flex;
@@ -7,11 +9,13 @@
     align-items: center;
     gap: 3rem;
     padding: 2rem;
-    background-color: black;
+    color: black;
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.315);
 }
 
 
-.titleContainer
+.title
 {
     width: auto;
     font-size: large;
@@ -19,11 +23,106 @@
 }
 
 
-.productsContainer
+.routes
 {
     font-size: medium;
     width: auto;
     display: flex;
     flex-direction: row;
     gap: 2rem;
+}
+
+
+.hamburger
+{
+    display: none;
+    margin-left: auto;
+    width: 1.75em;
+    height: 1em;
+    cursor: pointer;
+    border: 0;
+    background: none;
+    position: relative;
+    padding: 0;
+}
+
+
+.hamburger span,
+.hamburger::before,
+.hamburger::after
+{
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: black;
+    transition: transform .25s ease;
+}
+
+
+.hamburger span
+{
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+.hamburger::before
+{
+    top: 0.75rem;
+}
+
+
+.hamburger::after
+{
+    bottom: 0.75rem;
+}
+
+
+.show
+{
+    display: flex;
+}
+
+
+.drawer
+{
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(255,255,255,.95);
+    box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 2rem;
+    box-sizing: border-box;
+}
+
+
+.drawer a
+{
+    text-decoration: none;
+    color: inherit;
+}
+
+
+@media (max-width: 639.98px)
+{
+    .header{
+        padding: 1rem;
+    }
+    .routes
+    {
+        display: none;
+    }
+    .hamburger
+    {
+        display: block;
+    }
+    .drawer.show
+    {
+        display: flex;
+    }
 }
