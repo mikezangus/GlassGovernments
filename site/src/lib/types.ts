@@ -19,7 +19,7 @@ export enum ContactMethod {
 }
 
 
-export enum SubscriptionStatus {
+export enum SubmitStatus {
     Idle,
     Loading,
     Success,
