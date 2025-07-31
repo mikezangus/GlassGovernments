@@ -28,7 +28,7 @@ function Renderer(
     switch (currentStep) {
         case 1: return (<>
             <div className={styles.cardHeader}>
-                What kinds of bills do you want to track?
+                ✏️ What kinds of bills do you want to track?
             </div>
             <WordsComponent
                 items={wordsAndStates}
@@ -37,7 +37,7 @@ function Renderer(
         </>);
         case 2: return(<>
             <div className={styles.cardHeader}>
-                In which states do you want to track these bills?
+                📍 In which states do you want to track these bills?
             </div>
             <StatesComponent
                 items={wordsAndStates}
@@ -47,7 +47,7 @@ function Renderer(
         </>);
         case 3: return(<>
             <div className={styles.cardHeader}>
-                Your bills are ready to track ✅
+                ✅ Your bills are ready to track
             </div>
             <SubmitComponent items={wordsAndStates} />
         </>);
