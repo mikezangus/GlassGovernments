@@ -1,4 +1,3 @@
-import "../styles/index.css";
 import { redirect } from "next/navigation";
 
 
