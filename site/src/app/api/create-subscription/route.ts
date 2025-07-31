@@ -3,7 +3,7 @@ export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase/server";
-import { WordAndStates } from "@/lib/types";
+import { WordAndStates } from "@/types";
 
 
 export async function POST(req: NextRequest): Promise<NextResponse>

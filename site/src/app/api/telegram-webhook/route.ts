@@ -1,8 +1,8 @@
 export const runtime = "edge";
 
 
+import handleMessage from "@/utils/bill-tracking/messaging/telegram/handleMessage";
 import { NextRequest, NextResponse } from "next/server";
-import handleMessage from "@/lib/telegram/handleMessage";
 
 
 export async function POST(req: NextRequest): Promise<NextResponse>

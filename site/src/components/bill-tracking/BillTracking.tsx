@@ -6,7 +6,7 @@ import NavComponent from "./Nav";
 import StatesComponent from "./States";
 import SubmitComponent from "./Submit";
 import WordsComponent from "./Words";
-import { Step, WordAndStates } from "@/lib/types";
+import { Step, WordAndStates } from "@/types";
 import styles from "@/styles/bill-tracking/BillTracking.module.css";
 
 

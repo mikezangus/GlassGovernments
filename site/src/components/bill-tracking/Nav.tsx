@@ -1,4 +1,4 @@
-import { Step } from "@/lib/types";
+import { Step } from "@/types";
 import styles from "@/styles/bill-tracking/Nav.module.css";
 
 

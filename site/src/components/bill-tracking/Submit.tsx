@@ -2,44 +2,24 @@
 
 
 import { useState } from "react";
-import { ContactMethod, SubscriptionStatus, WordAndStates } from "@/lib/types";
-import createSubscription from "@/lib/create-subscription/createSubscription";
+import { ContactMethod, SubmitStatus, WordAndStates } from "@/types";
+import createHandshake from "@/utils/bill-tracking/db/telegram/createHandshake";
 import styles from "@/styles/bill-tracking/Submit.module.css";
-
-
-
-async function handleSubmit(
-    contactMethod: ContactMethod,
-    userInputItems: WordAndStates[],
-    setURL: (url: string) => void,
-    setSubmitStatus: (status: SubscriptionStatus) => void
-): Promise<void>
-{
-    setSubmitStatus(SubscriptionStatus.Loading);
-    try {
-        await createSubscription(contactMethod, userInputItems, setURL, setSubmitStatus);
-        setSubmitStatus(SubscriptionStatus.Success);
-    } catch (err) {
-        setSubmitStatus(SubscriptionStatus.Fail);
-        throw err;
-    }
-}
-
 
 
 function TelegramButton(
     {
-        userInputItems,
+        items,
         url,
         setURL,
-        submitStatus,
-        setSubmitStatus
+        status,
+        setStatus
     }: {
-        userInputItems: WordAndStates[];
+        items: WordAndStates[];
         url: string;
         setURL: (url: string) => void;
-        submitStatus: SubscriptionStatus;
-        setSubmitStatus: (status: SubscriptionStatus) => void
+        status: SubmitStatus;
+        setStatus: (status: SubmitStatus) => void
     }
 )
 {
@@ -47,11 +27,13 @@ function TelegramButton(
         <div>
             <button
                 className={styles.button}
-                onClick={() => handleSubmit(ContactMethod.Telegram, userInputItems, setURL, setSubmitStatus)}
+                onClick={() =>
+                    createHandshake(ContactMethod.Telegram, items, setURL, setStatus)
+                }
             >
                 Track on Telegram
             </button>
-            {submitStatus === SubscriptionStatus.Success && (
+            {status === SubmitStatus.Success && (
                 <>
                 <p style={{ color: "green" }}>
                     Subscription saved successfully ✅
@@ -61,7 +43,7 @@ function TelegramButton(
                 </button>
                 </>
             )}
-            {submitStatus === SubscriptionStatus.Fail && (
+            {status === SubmitStatus.Fail && (
                 <p style={{ color: "red" }}>
                     Something went wrong. Please try again ❌
                 </p>
@@ -83,7 +65,7 @@ function TelegramButton(
 
 export default function SubmitComponent({ items }: { items: WordAndStates[] })
 {
-    const [submitStatus, setSubmitStatus] = useState<SubscriptionStatus>(SubscriptionStatus.Idle);
+    const [status, setStatus] = useState<SubmitStatus>(SubmitStatus.Idle);
     const [url, setURL] = useState<string>("");
     return (
         <div>
@@ -97,11 +79,11 @@ export default function SubmitComponent({ items }: { items: WordAndStates[] })
 
             ))}
             <TelegramButton
-                userInputItems={items}
+                items={items}
                 url={url}
                 setURL={setURL}
-                submitStatus={submitStatus}
-                setSubmitStatus={setSubmitStatus}
+                status={status}
+                setStatus={setStatus}
             />
             {/* <SMSButton /> */}
         </div>

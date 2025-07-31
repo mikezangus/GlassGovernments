@@ -3,7 +3,7 @@ export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase/server";
-import { WordAndStates } from "@/lib/types";
+import { WordAndStates } from "@/types";
 
 
 export async function POST(req: NextRequest): Promise<NextResponse>
@@ -14,18 +14,21 @@ export async function POST(req: NextRequest): Promise<NextResponse>
         if (!body.linkToken) {
             throw new Error(`Request body missing Telegram link token`);
         }
-        if (!body.userInputItems) {
+        if (!body.items) {
             throw new Error(`Request body missing token items`);
         }
         const linkToken: string = body.linkToken;
-        const tokenItems: WordAndStates[] = body.userInputItems;
-        const rows: { link_token: string, token: string, state: string }[] = [];
-        for (const tokenItem of tokenItems) {
-            for (const state of tokenItem.states!) {
-                console.log("item:", tokenItem, " | state:", state)
+        const items: WordAndStates[] = body.items;
+        const rows: {
+            link_token: string,
+            word: string,
+            state: string
+        }[] = [];
+        for (const item of items) {
+            for (const state of item.states) {
                 rows.push({
                     link_token: linkToken,
-                    token: tokenItem.word,
+                    word: item.word,
                     state
                 });
             }

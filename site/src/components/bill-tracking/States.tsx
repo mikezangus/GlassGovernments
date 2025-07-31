@@ -1,5 +1,5 @@
-import { WordAndStates } from "@/lib/types";
-import convertStateCodeToName from "@/lib/convertStateCodeToName";
+import { WordAndStates } from "@/types";
+import convertStateCodeToName from "@/utils/convertStateCodeToName";
 
 
 function DisplayItem(

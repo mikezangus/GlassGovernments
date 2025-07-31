@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { WordAndStates } from "@/lib/types";
+import { WordAndStates } from "@/types";
 import styles from "@/styles/bill-tracking/Words.module.css";
 
 

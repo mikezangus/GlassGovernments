@@ -1,46 +1,10 @@
-import { supabase } from "@/lib/supabase/server";
-import sendBillUpdateText from "./sendBillUpdateText";
-
-
 export const runtime = "edge";
 
 
-type NotificationsQueueRow = {
-    user_id: string;
-    bill_id: string;
-    token: string;
-    state: string;
-    last_pubdate: string;
-    sent_at: string | null;
-}
+import fetchQueuedNotifications from "@/utils/bill-tracking/db/telegram/fetchQueuedNotifications";
+import fetchTelegramID from "@/utils/bill-tracking/db/telegram/fetchTelegramID";
+import sendBillUpdateText from "@/utils/bill-tracking/messaging/telegram/sendBillUpdateText";
 
-
-async function fetchQueuedNotifications(): Promise<NotificationsQueueRow[]>
-{
-    const { data, error } = await supabase
-        .from("notifications_queue")
-        .select('*')
-        .is("sent_at", null)
-        .order("last_pubdate", { ascending: true });
-    if (error) {
-        throw new Error(error.message);
-    }
-    return data ?? [];
-}
-
-
-async function fetchTelegramID(userID: string): Promise<number | null>
-{
-    const { data, error } = await supabase
-        .from("users_telegram")
-        .select("telegram_id")
-        .eq("user_id", userID)
-        .maybeSingle();
-    if (error) {
-        throw new Error(`fetchTelegramChatId: ${error.message}`);
-    }
-    return data?.telegram_id ?? null;
-}
 
 
 export async function GET(): Promise<Response>
@@ -62,4 +26,4 @@ export async function GET(): Promise<Response>
         }
     }
     return new Response(`Processed ${queue.length} queued notifications`);
-}   
+}
