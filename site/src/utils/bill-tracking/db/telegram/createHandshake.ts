@@ -1,4 +1,4 @@
-import { ContactMethod, SubmitStatus, WordAndStates } from "@/lib/types";
+import { ContactMethod, SubmitStatus, WordAndStates } from "@/types";
 import { v4 as uuid } from "uuid";
 
 

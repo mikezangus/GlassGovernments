@@ -1,12 +1,12 @@
-import { ContactMethod, TelegramMessageChat } from "@/lib/types";
-import doesUserExist from "./doesUserExist";
-import insertNewUser from "../insertNewUser";
-import insertNewUserContact from "../insertNewUserContact";
-import fetchUser from "./fetchUser";
-import upsertUser from "./upsertUser";
-import fetchHandshake from "./fetchHandshake";
-import insertSubscriptions from "../insertSubscriptions";
-import verifyHandshake from "./verify_handshake";
+import { ContactMethod, TelegramMessageChat } from "@/types";
+import doesUserExist from "@/utils/bill-tracking/db/telegram/doesUserExist";
+import insertNewUser from "@/utils/bill-tracking/db/insertNewUser";
+import insertNewUserContact from "@/utils/bill-tracking/db/insertNewUserContact";
+import insertSubscriptions from "@/utils/bill-tracking/db/insertSubscriptions";
+import fetchHandshake from "@/utils/bill-tracking/db/telegram/fetchHandshake";
+import fetchUser from "@/utils/bill-tracking/db/telegram/fetchUser";
+import upsertUser from "@/utils/bill-tracking/db/telegram/upsertUser";
+import verifyHandshake from "@/utils/bill-tracking/db/telegram/verifyHandshake";
 
 
 export default async function handleLinkTokenMessage(

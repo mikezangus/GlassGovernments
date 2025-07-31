@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/server";
-import { TelegramMessageChat } from "@/lib/types";
+import { TelegramMessageChat } from "@/types";
 
 
 export default async function upsertUser(

@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/server";
-import { WordAndState } from "@/lib/types";
+import { WordAndState } from "@/types";
 
 
 export default async function insertSubscriptions(

@@ -1,9 +1,7 @@
-import { TelegramMessage } from "../types";
-import sendText from "./sendText";
-// import insertNewUser from "./insertNewUser";
-import sendBillsText from "./sendBillsText";
-// import sendWelcomeMessage from "./sendWelcomeMessage";
-import handleLinkTokenMessage from "./handleLinkTokenMessage";
+import handleLinkTokenMessage from "@/utils/bill-tracking/messaging/telegram/handleLinkTokenMessage";
+import sendText from "@/utils/bill-tracking/messaging/telegram/sendText";
+import sendBillsText from "@/utils/bill-tracking/messaging/telegram/sendBillsText";
+import { TelegramMessage } from "@/types";
 
 
 export default async function handleMessage(message: TelegramMessage)

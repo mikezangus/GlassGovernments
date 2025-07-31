@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase/server";
-import sendText from "@/lib/telegram/sendText";
+import sendText from "@/utils/bill-tracking/messaging/telegram/sendText";
+import { NotificationsQueueRow } from "@/types";
 
 
 interface Bill {
@@ -15,16 +16,6 @@ interface Bill {
     lastActionDate?: string,
     summary?: string
 };
-
-
-type NotificationsQueueRow = {
-    user_id: string;
-    bill_id: string;
-    token: string;
-    state: string;
-    last_pubdate: string;
-    sent_at: string | null;
-}
 
 
 async function fetchBillMetadata(bill: Bill): Promise<Bill>

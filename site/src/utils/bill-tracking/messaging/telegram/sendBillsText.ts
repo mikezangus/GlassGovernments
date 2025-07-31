@@ -1,6 +1,6 @@
-import { TelegramMessageChat } from "../types";
+import sendText from "@/utils/bill-tracking/messaging/telegram/sendText";
 import { supabase } from "@/lib/supabase/server";
-import sendText from "./sendText";
+import { TelegramMessageChat } from "@/types";
 
 
 interface Bill {

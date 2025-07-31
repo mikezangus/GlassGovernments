@@ -1,4 +1,4 @@
-import { supabase } from "../supabase/server";
+import { supabase } from "@/lib/supabase/server";
 
 
 export default async function verifyHandshake(

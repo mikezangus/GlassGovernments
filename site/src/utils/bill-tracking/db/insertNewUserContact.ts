@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/server";
-import { ContactMethod } from "@/lib/types";
+import { ContactMethod } from "@/types";
 
 
 export default async function insertNewUserContact(
