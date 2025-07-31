@@ -1,0 +1,12 @@
+.container
+{
+    width: 85%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0em;
+    max-height: 400px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
