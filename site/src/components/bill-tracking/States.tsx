@@ -1,5 +1,6 @@
 import { WordAndStates } from "@/types";
 import convertStateCodeToName from "@/utils/convertStateCodeToName";
+import styles from "@/styles/bill-tracking/States.module.css";
 
 
 function DisplayItem(
@@ -65,7 +66,7 @@ export default function StatesComponent(
         setItems(updated);
     }
     return (
-        <div>
+        <div className={styles.container}>
             {items.map((item) => (
                 <DisplayItem
                     key={item.word}
