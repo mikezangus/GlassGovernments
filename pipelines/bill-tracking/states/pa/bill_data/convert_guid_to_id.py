@@ -2,18 +2,18 @@ def convert_guid_to_id(state: str, guid: str) -> str:
     guid_len = len(guid)
     guid_idx = 0    
 
-    year = ""
-    while guid_idx < 4 and guid[guid_idx].isdigit():
-        year += guid[guid_idx]
-        guid_idx += 1
-    if len(year) == 0:
-        raise ValueError
-
     session = ""
-    while guid_idx < guid_len and guid[guid_idx].isdigit():
+    while guid_idx < 4 and guid[guid_idx].isdigit():
         session += guid[guid_idx]
         guid_idx += 1
     if len(session) == 0:
+        raise ValueError
+
+    special_session = ""
+    while guid_idx < guid_len and guid[guid_idx].isdigit():
+        special_session += guid[guid_idx]
+        guid_idx += 1
+    if len(special_session) == 0:
         raise ValueError
 
     bill_type = ""
@@ -39,4 +39,4 @@ def convert_guid_to_id(state: str, guid: str) -> str:
     if len(print_num) == 0:
         raise ValueError
 
-    return f"{state}_{year}_{session}_{bill_type}_{bill_num}_{print_num}"
+    return f"{state}_{session}_{special_session}_{bill_type}_{bill_num}_{print_num}"
