@@ -2,47 +2,41 @@
 
 
 import { useState } from "react";
-import { ContactMethod, SubmitStatus, WordAndStates } from "@/types";
+import { SubmitStatus, WordAndStates } from "@/types";
 import createHandshake from "@/utils/bill-tracking/db/telegram/createHandshake";
 import styles from "@/styles/bill-tracking/Submit.module.css";
 
 
-function TelegramButton(
-    {
-        items,
-        url,
-        setURL,
-        status,
-        setStatus
-    }: {
-        items: WordAndStates[];
-        url: string;
-        setURL: (url: string) => void;
-        status: SubmitStatus;
-        setStatus: (status: SubmitStatus) => void
-    }
-)
+function Telegram({ items }: { items: WordAndStates[] })
 {
+    const [status, setStatus] = useState<SubmitStatus>(SubmitStatus.Idle);
+    const [url, setURL] = useState<string>("");
+    async function handleClick(): Promise<void>
+    {
+        if (status === SubmitStatus.Success && url) {
+            window.open(url, "_blank");
+            return;
+        }
+        try {
+            setStatus(SubmitStatus.Loading);
+            const newURL = await createHandshake(items);
+            setURL(newURL);
+            setStatus(SubmitStatus.Success);
+            window.open(newURL, "_blank");
+        } catch (err) {
+            console.error(err);
+            setStatus(SubmitStatus.Fail)
+        } 
+    }
     return (
         <div>
             <button
-                className={styles.button}
-                onClick={() =>
-                    createHandshake(ContactMethod.Telegram, items, setURL, setStatus)
-                }
+                className={`${styles.button} ${styles.telegram}`}
+                disabled={status === SubmitStatus.Loading}
+                onClick={() => handleClick()}
             >
-                Track on Telegram
+                {status === SubmitStatus.Loading ? "Loading..." : "Track on Telegram"}
             </button>
-            {status === SubmitStatus.Success && (
-                <>
-                <p style={{ color: "green" }}>
-                    Subscription saved successfully ✅
-                </p>
-                <button onClick={() => window.open(`${url}`, "_blank")}>
-                    Open Telegram
-                </button>
-                </>
-            )}
             {status === SubmitStatus.Fail && (
                 <p style={{ color: "red" }}>
                     Something went wrong. Please try again ❌
@@ -65,26 +59,14 @@ function TelegramButton(
 
 export default function SubmitComponent({ items }: { items: WordAndStates[] })
 {
-    const [status, setStatus] = useState<SubmitStatus>(SubmitStatus.Idle);
-    const [url, setURL] = useState<string>("");
     return (
         <div>
-            {items.map((item) => (
-                <div key={item.word}>
-                    <div>{item.word}</div>
-                    {item.states!.map((state) => (
-                        <div key={state}>{state}</div>
-                    ))}
+            {items.map(({ word, states }) => (
+                <div key={word}>
+                    {`${word} — ${states.join(", ")}`}
                 </div>
-
             ))}
-            <TelegramButton
-                items={items}
-                url={url}
-                setURL={setURL}
-                status={status}
-                setStatus={setStatus}
-            />
+            <Telegram items={items} />
             {/* <SMSButton /> */}
         </div>
     );
