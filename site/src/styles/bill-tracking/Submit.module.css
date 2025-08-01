@@ -1,11 +1,20 @@
-
-
-
 .button
 {
-    height: 100px;
+    height: 4rem;
     width: 200px;
-    background-color: green;
     color: white;
     border-radius: 4rem;
+    border: none;
+}
+
+
+.button:hover
+{
+    cursor: pointer;
+}
+
+
+.telegram
+{
+    background-color: #2596be;
 }
