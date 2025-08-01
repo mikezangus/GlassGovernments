@@ -1,11 +1,11 @@
-from enums import LegislationType
+from states.oh.enums import LegislationType
 from bs4 import BeautifulSoup
-from construct_search_url import construct_search_url
+from states.oh.construct_search_url import construct_search_url
 import requests
 
 
-def get_bill_count(general_assembly: int) -> int:
-    url = construct_search_url(general_assembly, 1, 10, list(LegislationType))
+def get_bill_count(session: int) -> int:
+    url = construct_search_url(session, 1, 10, list(LegislationType))
     response = requests.get(url)
     bs = BeautifulSoup(response.text, "html.parser")
     css_selector = "div.search-results-info strong span"

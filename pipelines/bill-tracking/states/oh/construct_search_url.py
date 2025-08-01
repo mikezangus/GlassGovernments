@@ -1,9 +1,9 @@
 from urllib.parse import quote
-from enums import LegislationType
+from states.oh.enums import LegislationType
 
 
 def construct_search_url(
-    general_assembly: int,
+    session: int,
     page_start: int,
     page_size: int,
     legislation_types: list[LegislationType]
@@ -12,7 +12,7 @@ def construct_search_url(
         return ""
     legislation_types_str = ",".join(quote(type.value) for type in legislation_types)
     params = {
-        "generalAssembly": general_assembly,
+        "generalAssembly": session,
         "start": page_start,
         "pageSize": page_size,
         "sort": "Number",
