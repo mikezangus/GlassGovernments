@@ -1,5 +1,5 @@
+from lib.supabase_client import supabase
 from schemas.enums import OnDuplicate
-from supabase_client import supabase
 
 
 def insert_to_db(

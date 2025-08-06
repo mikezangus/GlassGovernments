@@ -4,8 +4,8 @@ from supabase import create_client, Client
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-EXECUTION_DIR = os.path.dirname(CURRENT_DIR)
-ENV_PATH = os.path.join(EXECUTION_DIR, ".env.local")
+METADATA_DIR = os.path.dirname(CURRENT_DIR)
+ENV_PATH = os.path.join(METADATA_DIR, ".env.local")
 
 
 load_dotenv(dotenv_path=ENV_PATH)

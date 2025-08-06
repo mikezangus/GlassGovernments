@@ -1,6 +1,6 @@
 from datetime import datetime
+from lib.supabase_client import supabase
 from schemas.enums import Chamber
-from supabase_client import supabase
 
 
 def fetch_db_pubdate(state: str, chamber: Chamber) -> datetime | None:

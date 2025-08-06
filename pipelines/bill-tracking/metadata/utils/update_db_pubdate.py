@@ -1,6 +1,6 @@
 from datetime import datetime
+from lib.supabase_client import supabase
 from schemas.enums import Chamber, StateCode
-from supabase_client import supabase
 
 
 def update_db_pubdate(
