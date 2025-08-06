@@ -8,13 +8,13 @@ def update_db_pubdate(
     chamber: Chamber,
     pubdate: datetime
 ) -> None:
-    print(f"\nUpdating feed pubdate for {state} {chamber.value}")
+    print(f"\nUpdating feed pubdate for {state.value} {chamber.value}")
     try:
         supabase \
             .table("feed_pubdates") \
             .upsert(
                 {
-                    "state": state,
+                    "state": state.value,
                     "chamber": chamber.value,
                     "pubdate": pubdate
                 },
@@ -22,4 +22,4 @@ def update_db_pubdate(
             ) \
             .execute()
     except Exception as e:
-        raise RuntimeError(f"Error updating feed update for {state} {chamber.value}: {e}")
+        raise RuntimeError(f"Error updating feed update for {state.value} {chamber.value}: {e}")
