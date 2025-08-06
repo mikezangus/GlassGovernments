@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 
 
@@ -10,3 +11,12 @@ class LegislationType(str, Enum):
     SENATE_CONCURRENT_RESOLUTION = "Senate Concurrent Resolution"
     HOUSE_JOINT_RESOLUTION = "House Joint Resolution"
     SENATE_JOINT_RESOLUTION = "Senate Joint Resolution"
+
+
+@dataclass
+class BillMetadata:
+    state: str
+    session: str
+    type: str
+    bill_num: str
+    bill_url: str
