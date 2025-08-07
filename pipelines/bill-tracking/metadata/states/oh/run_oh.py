@@ -1,5 +1,5 @@
 from schemas.enums import OnDuplicate, StateCode
-from schemas.rows import BillMetadataRow
+from schemas.rows import BillMetadata
 from states.oh.construct_search_url import construct_search_url
 from states.oh.enums import LegislationType
 from states.oh.extract_metadata import extract_metadata
@@ -24,7 +24,7 @@ def run_oh() -> None:
     bill_urls = []
     for search_url in search_urls:
         bill_urls.extend(get_bill_urls(search_url))
-    rows: list[BillMetadataRow] = []
+    rows: list[BillMetadata] = []
     for bill_url in bill_urls:
-        rows.append(extract_metadata(bill_url))
+        rows.append(extract_metadata(bill_url, state))
     insert_to_db("bill_metadata", rows, OnDuplicate.MERGE, "id")

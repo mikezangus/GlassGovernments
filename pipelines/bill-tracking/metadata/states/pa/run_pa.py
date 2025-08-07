@@ -1,5 +1,5 @@
 from schemas.enums import Chamber, StateCode, OnDuplicate
-from schemas.rows import BillMetadataRow
+from schemas.rows import BillMetadata
 from states.pa.extract_metadata import extract_metadata
 from states.pa.fetch_feed_pubdate import fetch_feed_pubdate
 from states.pa.urls import lower_feed_url, upper_feed_url
@@ -21,7 +21,7 @@ def run_pa() -> None:
         feed_entries.extend(fetch_feed_entries(lower_feed_url))
     if trigger_upper:
         feed_entries.extend(fetch_feed_entries(upper_feed_url))
-    rows: list[BillMetadataRow] = []
+    rows: list[BillMetadata] = []
     for feed_entry in feed_entries:
-        rows.append(extract_metadata(feed_entry))
+        rows.append(extract_metadata(feed_entry, state))
     insert_to_db("bill_metadata", rows, OnDuplicate.MERGE, "id")
