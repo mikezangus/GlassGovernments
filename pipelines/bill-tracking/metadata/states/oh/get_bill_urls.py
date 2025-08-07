@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from states.oh.urls import bill_url_base
 
 
 def get_bill_urls(search_url: str) -> list[str]:
@@ -11,5 +12,5 @@ def get_bill_urls(search_url: str) -> list[str]:
     for i in range(len(number_cells)):
         a_tag = number_cells[i].find("a")
         if a_tag and a_tag.has_attr("href"):
-            bill_urls.append(f"https://legislature.ohio.gov/legislation/{a_tag["href"]}")
+            bill_urls.append(f"{bill_url_base}{a_tag["href"]}")
     return bill_urls
