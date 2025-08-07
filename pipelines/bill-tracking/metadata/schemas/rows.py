@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -6,9 +7,9 @@ class BillMetadataRow:
     id: str
     state: str
     session: int
-    special_session: str | None
     type: str
     bill_num: int
-    print_num: int | None
     bill_url: str
-    text_url: str | None
+    special_session: Optional[str] = None
+    print_num: Optional[int] = None
+    text_url: Optional[str] = None
