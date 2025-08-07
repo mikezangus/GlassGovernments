@@ -1,10 +1,31 @@
+from dataclasses import asdict, is_dataclass
 from lib.supabase_client import supabase
 from schemas.enums import OnDuplicate
 
 
+def _serialize_rows(input_rows: list[any]) -> list[dict]:
+    output_rows = []
+    for input_row in input_rows:
+        if is_dataclass(input_row):
+            output_row = asdict(input_row)
+        elif isinstance(input_row, dict):
+            output_row = input_row
+        else:
+            raise TypeError(f"Unsupported row type: {type(input_row)}")
+        output_rows.append(output_row)
+    return output_rows
+
+
+def _deduplicate_rows(rows: list[dict], conflict_key: str) -> list[dict]:
+    seen = {}
+    for row in rows:
+        seen[row[conflict_key]] = row
+    return list(seen.values())
+
+
 def insert_to_db(
     table_name: str,
-    rows: list[dict],
+    rows: list[any],
     on_duplicate: OnDuplicate,
     conflict_key: str | None = None,
     batch_size: int = 500
@@ -12,6 +33,8 @@ def insert_to_db(
     print(f"\nInserting {len(rows)} rows to {table_name}")
     if on_duplicate == OnDuplicate.MERGE and not conflict_key:
         raise ValueError("conflict_key must be provided when using OnDuplicate.MERGE")
+    rows = _serialize_rows(rows)
+    rows = _deduplicate_rows(rows, "id")
     inserted_count = 0
     for i in range(0, len(rows), batch_size):
         batch = rows[i:i + batch_size]
