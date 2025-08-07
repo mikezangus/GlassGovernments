@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class BillMetadataRow:
     id: str
     state: str
-    session: str
+    session: int
     special_session: str | None
     type: str
     bill_num: int
