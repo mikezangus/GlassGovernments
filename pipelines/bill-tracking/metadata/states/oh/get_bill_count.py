@@ -1,7 +1,7 @@
-from states.oh.enums import LegislationType
+import requests
 from bs4 import BeautifulSoup
 from states.oh.construct_search_url import construct_search_url
-import requests
+from states.oh.enums import LegislationType
 
 
 def get_bill_count(session: int) -> int:
