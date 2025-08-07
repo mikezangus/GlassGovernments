@@ -1,0 +1,1 @@
+bill_url_base = "https://legislature.ohio.gov/legislation/"
