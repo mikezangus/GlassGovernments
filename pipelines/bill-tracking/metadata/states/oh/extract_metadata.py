@@ -1,20 +1,24 @@
 import re
-from schemas.rows import BillMetadataRow
+from lib.regexes import regex_split_text_and_nums
+from schemas.rows import BillMetadata
+from utils.create_id import create_id
 
 
-def extract_metadata(bill_url: str) -> BillMetadataRow:
-    regex_split_text_and_nums = r"([a-zA-Z]+)(\d+)"
-    parts = bill_url.strip('/').split('/')
-    match = re.match(regex_split_text_and_nums, parts[-1])
-    if not match:
-        raise RuntimeError()
-    session = parts[-2]
-    type = match.group(1).upper()
-    bill_num = match.group(2)
-    return BillMetadataRow(
-        state="OH",
+def extract_metadata(bill_url: str, state: str) -> BillMetadata:
+    bill_url_parts = bill_url.strip('/').split('/')
+    session = bill_url_parts[-2]
+    regex_match = re.match(regex_split_text_and_nums, bill_url_parts[-1])
+    if not regex_match:
+        raise ValueError(f"Failed to split text and nums for {bill_url_parts[-1]}")
+    type = regex_match.group(1).upper()
+    bill_num = regex_match.group(2)
+    metadata = BillMetadata(
+        id="",
+        state=state,
         session=session,
         type=type,
         bill_num=bill_num,
         bill_url=bill_url
     )
+    metadata.id = create_id(metadata)
+    return metadata
