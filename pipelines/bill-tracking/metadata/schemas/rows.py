@@ -3,13 +3,13 @@ from typing import Optional
 
 
 @dataclass
-class BillMetadataRow:
+class BillMetadata:
     id: str
     state: str
-    session: int
+    session: str
     type: str
-    bill_num: int
+    bill_num: str
     bill_url: str
     special_session: Optional[str] = None
-    print_num: Optional[int] = None
+    print_num: Optional[str] = None
     text_url: Optional[str] = None
