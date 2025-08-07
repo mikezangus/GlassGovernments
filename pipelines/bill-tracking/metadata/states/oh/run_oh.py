@@ -1,4 +1,3 @@
-from lib.insert_to_db import insert_to_db
 from schemas.enums import OnDuplicate, StateCode
 from schemas.rows import BillMetadataRow
 from states.oh.construct_search_url import construct_search_url
@@ -6,6 +5,7 @@ from states.oh.enums import LegislationType
 from states.oh.extract_metadata import extract_metadata
 from states.oh.get_bill_count import get_bill_count
 from states.oh.get_bill_urls import get_bill_urls
+from utils.insert_to_db import insert_to_db
 
 
 SESSION = 136
