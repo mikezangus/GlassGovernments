@@ -1,4 +1,4 @@
-from supabase_client import supabase
+from shared.lib.supabase_client import supabase
 
 
 def fetch_from_db(

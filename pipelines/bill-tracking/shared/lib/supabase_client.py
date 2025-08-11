@@ -1,10 +1,12 @@
-import os
 from dotenv import load_dotenv
+import os
 from supabase import create_client, Client
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-ENV_PATH = os.path.join(CURRENT_DIR, ".env.local")
+METADATA_DIR = os.path.dirname(CURRENT_DIR)
+BILL_TRACKING_DIR = os.path.dirname(METADATA_DIR)
+ENV_PATH = os.path.join(BILL_TRACKING_DIR, ".env.local")
 
 
 load_dotenv(dotenv_path=ENV_PATH)
