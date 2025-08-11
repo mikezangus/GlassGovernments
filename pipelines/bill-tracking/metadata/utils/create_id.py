@@ -1,12 +1,10 @@
-from schemas.rows import BillMetadata
+from shared.rows import BillMetadataRow
 
 
-def create_id(metadata: BillMetadata) -> str:
+def create_id(metadata: BillMetadataRow) -> str:
     parts = [metadata.state, metadata.session]
     if metadata.special_session:
         parts.append(metadata.special_session)
     parts.append(metadata.type)
-    parts.append(metadata.bill_num)
-    if metadata.print_num:
-        parts.append(metadata.print_num)
-    return "_".join(parts)
+    parts.append(metadata.num)
+    return '_'.join(parts)

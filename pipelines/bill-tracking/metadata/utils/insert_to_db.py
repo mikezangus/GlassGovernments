@@ -1,6 +1,6 @@
 from dataclasses import asdict, is_dataclass
-from lib.supabase_client import supabase
-from schemas.enums import OnDuplicate
+from shared.lib.supabase_client import supabase
+from shared.enums import OnDuplicate
 
 
 def _serialize_rows(input_rows: list[any]) -> list[dict]:

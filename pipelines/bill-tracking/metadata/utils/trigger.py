@@ -1,8 +1,8 @@
 from datetime import datetime
-from schemas.enums import Chamber
+from shared.enums import Chamber
 from typing import Callable
-from utils.fetch_db_pubdate import fetch_db_pubdate
-from utils.update_db_pubdate import update_db_pubdate
+from metadata.utils.fetch_db_pubdate import fetch_db_pubdate
+from metadata.utils.update_db_pubdate import update_db_pubdate
 
 
 def trigger(

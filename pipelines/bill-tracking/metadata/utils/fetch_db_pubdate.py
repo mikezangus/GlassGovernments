@@ -1,5 +1,5 @@
 from datetime import datetime
-from lib.supabase_client import supabase
+from shared.lib.supabase_client import supabase
 
 
 def fetch_db_pubdate(state: str, chamber: str) -> datetime | None:
