@@ -4,8 +4,8 @@ from supabase import create_client, Client
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-METADATA_DIR = os.path.dirname(CURRENT_DIR)
-BILL_TRACKING_DIR = os.path.dirname(METADATA_DIR)
+SHARED_DIR = os.path.dirname(CURRENT_DIR)
+BILL_TRACKING_DIR = os.path.dirname(SHARED_DIR)
 ENV_PATH = os.path.join(BILL_TRACKING_DIR, ".env.local")
 
 
