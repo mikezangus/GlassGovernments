@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from states.oh.urls import bill_url_base
+from metadata.states.oh.urls import bill_url_base
 
 
 def get_bill_urls(search_url: str) -> list[str]:

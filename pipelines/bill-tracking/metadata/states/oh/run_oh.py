@@ -1,11 +1,11 @@
-from schemas.enums import OnDuplicate, StateCode
-from schemas.rows import BillMetadata
-from states.oh.construct_search_url import construct_search_url
-from states.oh.enums import LegislationType
-from states.oh.extract_metadata import extract_metadata
-from states.oh.get_bill_count import get_bill_count
-from states.oh.get_bill_urls import get_bill_urls
-from utils.insert_to_db import insert_to_db
+from shared.enums import OnDuplicate, StateCode
+from shared.rows import BillMetadataRow
+from metadata.states.oh.construct_search_url import construct_search_url
+from metadata.states.oh.enums import LegislationType
+from metadata.states.oh.extract_metadata import extract_metadata
+from metadata.states.oh.get_bill_count import get_bill_count
+from metadata.states.oh.get_bill_urls import get_bill_urls
+from shared.utils.insert_to_db import insert_to_db
 
 
 SESSION = 136
@@ -24,7 +24,7 @@ def run_oh() -> None:
     bill_urls = []
     for search_url in search_urls:
         bill_urls.extend(get_bill_urls(search_url))
-    rows: list[BillMetadata] = []
+    rows: list[BillMetadataRow] = []
     for bill_url in bill_urls:
         rows.append(extract_metadata(bill_url, state))
-    insert_to_db("bill_metadata", rows, OnDuplicate.MERGE, "id")
+    insert_to_db("bill_metadata", rows, OnDuplicate.MERGE, ["id"])

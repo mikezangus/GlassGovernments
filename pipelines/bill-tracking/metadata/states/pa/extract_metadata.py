@@ -1,8 +1,8 @@
-from schemas.rows import BillMetadata
-from states.pa.create_id import create_id
-from states.pa.urls import bill_base_url
+from shared.rows import BillMetadataRow
+from metadata.states.pa.create_id import create_id
+from metadata.states.pa.urls import bill_base_url
 from typing import Callable
-from utils.create_id import create_id
+from metadata.utils.create_id import create_id
 
 
 def _extract_from_guid(
@@ -20,26 +20,22 @@ def _extract_from_guid(
     return guid[start:idx], idx
 
 
-def extract_metadata(feed_entry: dict[str, any], state: str) -> BillMetadata:
+def extract_metadata(feed_entry: dict[str, any], state: str) -> BillMetadataRow:
     idx = 0
     guid = feed_entry["id"]
     guid_len = len(guid)
     session, idx = _extract_from_guid(guid, idx, 4, str.isdigit, "session")
     special_session, idx = _extract_from_guid(guid, idx, guid_len, str.isdigit, "special_session")
-    bill_type, idx = _extract_from_guid(guid, idx, guid_len, str.isalpha, "type")
-    bill_num, idx = _extract_from_guid(guid, idx, guid_len, str.isdigit, "bill_num")
-    _, idx = _extract_from_guid(guid, idx, guid_len, str.isalpha, "skipping 'PN'")
-    print_num, _ = _extract_from_guid(guid, idx, guid_len, str.isdigit, "print_num")
-    metadata = BillMetadata(
+    type, idx = _extract_from_guid(guid, idx, guid_len, str.isalpha, "type")
+    num, idx = _extract_from_guid(guid, idx, guid_len, str.isdigit, "bill_num")
+    metadata = BillMetadataRow(
         id="",
         state=state,
         session=session,
         special_session=special_session,
-        type=bill_type,
-        bill_num=bill_num,
-        print_num=print_num,
-        bill_url=f"{bill_base_url}{session}/{bill_type}{bill_num}",
-        text_url=feed_entry.get("link"),
+        type=type,
+        num=num,
+        bill_url=f"{bill_base_url}{session}/{type}{num}"
     )
     metadata.id = create_id(metadata)
     return metadata

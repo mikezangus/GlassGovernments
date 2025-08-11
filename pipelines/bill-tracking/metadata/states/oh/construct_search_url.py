@@ -1,5 +1,5 @@
 from urllib.parse import quote
-from states.oh.enums import LegislationType
+from metadata.states.oh.enums import LegislationType
 
 
 def construct_search_url(
