@@ -1,7 +1,6 @@
 from dataclasses import asdict, is_dataclass
 from shared.enums import OnDuplicate
 from shared.lib.supabase_client import supabase
-from typing import Optional
 
 
 def _serialize_rows(rows: list[any]) -> list[dict]:
@@ -16,11 +15,21 @@ def _serialize_rows(rows: list[any]) -> list[dict]:
     return output_rows
 
 
-def _normalize_empty_to_none(rows: list[dict]) -> None:
+def _normalize_none_to_empty(rows: list[dict], conflict_keys: list[str] | None = None) -> None:
     for row in rows:
-        for key, value in row.items():
-            if isinstance(value, str) and value.strip() == "":
-                row[key] = None
+        if conflict_keys is None:
+            for key, value in row.items():
+                if value is None:
+                    row[key] = ''
+                elif isinstance(value, str) and value.strip() == '':
+                    row[key] = ''
+        else:
+            for conflict_key in conflict_keys:
+                value = row.get(conflict_key)
+                if value is None:
+                    row[conflict_key] = ''
+                elif isinstance(value, str) and value.strip() == '':
+                    row[conflict_key] = ''
 
 
 def _deduplicate_rows(rows: list[dict], conflict_keys: list[str]) -> list[dict]:
@@ -38,13 +47,13 @@ def insert_to_db(
     table_name: str,
     rows: list[any],
     on_duplicate: OnDuplicate,
-    conflict_keys: Optional[list[str]] = None,
+    conflict_keys: list[str] | None = None,
     batch_size: int = 500
 ) -> None:
     print(f"\nInserting {len(rows)} rows to {table_name}")
 
     rows = _serialize_rows(rows)
-    _normalize_empty_to_none(rows)
+    _normalize_none_to_empty(rows, conflict_keys)
 
     if on_duplicate == OnDuplicate.MERGE or on_duplicate == OnDuplicate.IGNORE:
         if not conflict_keys:
