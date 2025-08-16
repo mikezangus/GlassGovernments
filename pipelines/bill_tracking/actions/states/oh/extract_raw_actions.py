@@ -3,7 +3,7 @@ from lxml.html import HtmlElement
 from shared.utils.normalize_null import normalize_null
 
 
-def _get_chamber_node(doc: HtmlElement, header_text: str) -> HtmlElement | None:
+def _get_stage_node(doc: HtmlElement, header_text: str) -> HtmlElement | None:
     nodes = doc.xpath(f"//div[@class='group-header'][normalize-space()='{header_text}']/following-sibling::div[1]")
     return nodes[0] if nodes else None
 
@@ -22,21 +22,21 @@ def _extract_fields(section_div: HtmlElement) -> dict[str, str]:
         contents = normalize_null(' '.join(contents_div[0].itertext())) \
             if contents_div \
             else None
-        if contents:
-            output_fields[label] = contents
+        output_fields[label] = contents
     return output_fields
 
 
 def extract_raw_actions(html: str) -> list[dict[str, str]]:
     doc: HtmlElement = lxml.fromstring(html)
     nodes = [
-        ("lower", _get_chamber_node(doc, "House")),
-        ("upper", _get_chamber_node(doc, "Senate")),
-        ("executive", _get_chamber_node(doc, "Governor")),
-        ("veto", _get_chamber_node(doc, "Veto")),
-        ("enacted", _get_chamber_node(doc, "Effective Date"))
+        ("lower", _get_stage_node(doc, "House")),
+        ("upper", _get_stage_node(doc, "Senate")),
+        ("executive", _get_stage_node(doc, "Governor")),
+        ("conference & concurrence", _get_stage_node(doc, "Conference & Concurrence")),
+        ("veto", _get_stage_node(doc, "Veto")),
+        ("enacted", _get_stage_node(doc, "Effective Date"))
     ]
     raw_actions = {}
-    for chamber, node in nodes:
-        raw_actions[chamber] = _extract_fields(node) if node is not None else {}
+    for stage, node in nodes:
+        raw_actions[stage] = _extract_fields(node) if node is not None else {}
     return raw_actions

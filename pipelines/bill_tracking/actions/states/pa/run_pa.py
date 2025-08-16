@@ -1,4 +1,4 @@
-from actions.states.pa.get_action import get_action
+from actions.utils.get_action import get_action
 from actions.states.pa.parse_events import parse_actions
 from shared.enums import OnDuplicate
 from shared.rows import BillActionsRow

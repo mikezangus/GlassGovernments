@@ -4,7 +4,7 @@ import re
 from metadata.utils.create_id import create_id
 
 
-def extract_metadata(feed_entry: dict[str, any], state: str) -> BillMetadataRow:
+def parse_metadata_row(feed_entry: dict[str, any], state: str) -> BillMetadataRow:
     bill_url = str(feed_entry["link"])
     bill_url_parts = bill_url.strip('/').split('/')
     session = bill_url_parts[-3]
