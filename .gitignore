@@ -6,6 +6,7 @@ old/
 .DS_Store
 .env*
 .venv
+.ruff*
 
 *.csv
 *.log
