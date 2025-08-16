@@ -1,30 +1,28 @@
 from shared.enums import OnDuplicate, StateCode
 from shared.rows import BillMetadataRow
-from metadata.states.oh.construct_search_url import construct_search_url
-from metadata.states.oh.enums import LegislationType
-from metadata.states.oh.extract_metadata import extract_metadata
-from metadata.states.oh.get_bill_count import get_bill_count
-from metadata.states.oh.get_bill_urls import get_bill_urls
 from shared.utils.insert_to_db import insert_to_db
+from shared.utils.get_html import get_html
+from metadata.states.oh.fetch_raw_metadata import fetch_raw_metadata
+from metadata.states.oh.parse_metadata_row import parse_metadata_row
 
 
 SESSION = 136
 
 
 def run_oh() -> None:
-    state = StateCode.OH.value
-    print(f"\n\nRunning bill metadata for {state}")
-    bill_count = get_bill_count(SESSION)
-    if bill_count < 1:
-        print("No bills found")
-        return
-    search_urls = []
-    for i in range(1, bill_count + 1, 1000):
-        search_urls.append(construct_search_url(SESSION, i, 1000, list(LegislationType)))
-    bill_urls = []
-    for search_url in search_urls:
-        bill_urls.extend(get_bill_urls(search_url))
-    rows: list[BillMetadataRow] = []
-    for bill_url in bill_urls:
-        rows.append(extract_metadata(bill_url, state))
-    insert_to_db("bill_metadata", rows, OnDuplicate.MERGE, ["id"])
+    state = StateCode.OH
+    print(f"\n\nRunning bill metadata for {state.value}")
+
+    url = f"https://statusreport.lsc.ohio.gov/legislation/{SESSION}?type=All&sort=Name"
+    html = get_html(url)
+    raw_metadata_rows = fetch_raw_metadata(html)
+
+    metadata_rows: list[BillMetadataRow] = []
+    for raw_metadata_row in raw_metadata_rows:
+        metadata_rows.append(parse_metadata_row(
+            raw_metadata_row,
+            SESSION,
+            state.value
+        ))
+
+    insert_to_db("bill_metadata", metadata_rows, OnDuplicate.MERGE, ["id"])
