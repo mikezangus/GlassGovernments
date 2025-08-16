@@ -14,7 +14,8 @@ def generate() -> dict[int, list[int]]:
     year = START_YEAR
     congress = START_CONGRESS
     for year in range(START_YEAR, END_YEAR + 1):
-        if year % 2 == 1 and year > START_YEAR: congress += 1
+        if year % 2 == 1 and year > START_YEAR:
+            congress += 1
         years_congresses[year] = congress
     return years_congresses
 

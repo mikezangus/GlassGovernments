@@ -5,7 +5,7 @@ from alembic import context
 
 from alchemy.base import Base
 import alchemy.models
-from supabase_config import SUPABASE_URL_POOL
+from supabase_config import supabase_pool_url
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -35,10 +35,10 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    if not SUPABASE_URL_POOL:
+    if not supabase_pool_url:
         raise RuntimeError("Failed to load SUPABASE_URL_POOL from environment file")
     context.configure(
-        url=SUPABASE_URL_POOL,
+        url=supabase_pool_url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -57,9 +57,9 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    if not SUPABASE_URL_POOL:
-        raise RuntimeError("Failed to load SUPABASE_URL_POOL from environment file")
-    engine = create_engine(SUPABASE_URL_POOL, poolclass=pool.NullPool, future=True)
+    if not supabase_pool_url:
+        raise RuntimeError("Failed to load supabase_pool_url from supabase_config.py")
+    engine = create_engine(supabase_pool_url, poolclass=pool.NullPool, future=True)
     with engine.connect() as connection:
         context.configure(
             connection=connection,

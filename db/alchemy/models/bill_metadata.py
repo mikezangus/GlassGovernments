@@ -1,6 +1,6 @@
+from alchemy.base import Base
 from sqlalchemy import String, Integer
 from sqlalchemy.orm import Mapped, mapped_column
-from db.base import Base
 
 
 class BillMetadataRow(Base):

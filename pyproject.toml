@@ -1,5 +1,5 @@
 [project]
-name = "glassgovernments"
+name = "src"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,11 +8,8 @@ dependencies = [
     "alembic>=1.16.4",
     "bs4>=0.0.2",
     "dotenv>=0.9.9",
-    "feedparser>=6.0.11",
     "lxml>=6.0.0",
-    "psycopg2-binary>=2.9.10",
     "requests>=2.32.4",
-    "ruff>=0.12.9",
     "sqlalchemy>=2.0.43",
     "supabase>=2.18.1",
 ]

@@ -15,24 +15,24 @@ def _print_error(str: str) -> str:
     return f"Failed to load {str} from environment file"
 
 
-SUPABASE_URL_API = os.getenv("SUPABASE_URL_API")
-if not SUPABASE_URL_API:
+supabase_api_url = os.getenv("SUPABASE_URL_API")
+if not supabase_api_url:
     raise RuntimeError(_print_error("SUPABASE_URL_API"))
 
 
-SUPABASE_URL_DIRECT = os.getenv("SUPABASE_URL_DIRECT")
-if not SUPABASE_URL_DIRECT:
+supabase_direct_url = os.getenv("SUPABASE_URL_DIRECT")
+if not supabase_direct_url:
     raise RuntimeError(_print_error("SUPABASE_URL_DIRECT"))
 
 
-SUPABASE_URL_POOL = os.getenv("SUPABASE_URL_POOL")
-if not SUPABASE_URL_POOL:
+supabase_pool_url = os.getenv("SUPABASE_URL_POOL")
+if not supabase_pool_url:
     raise RuntimeError(_print_error("SUPABASE_URL_POOL"))
 
 
-SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-if not SUPABASE_SERVICE_ROLE_KEY:
+supabase_service_role_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+if not supabase_service_role_key:
     raise RuntimeError(_print_error)
 
 
-supabase: Client = create_client(SUPABASE_URL_API, SUPABASE_SERVICE_ROLE_KEY)
+supabase: Client = create_client(supabase_api_url, supabase_service_role_key)
