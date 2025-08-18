@@ -1,5 +1,5 @@
 from datetime import datetime
-from db.supabase_config import supabase
+from ....db.supabase_config import supabase
 
 
 def update_db_pubdate(

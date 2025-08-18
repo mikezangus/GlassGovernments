@@ -2,6 +2,7 @@ __pycache__/
 .vscode/
 node_modules/
 old/
+*.egg-info/
 
 .DS_Store
 .env*

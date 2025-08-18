@@ -1,5 +1,5 @@
-from metadata.utils.create_id import create_id
-from shared.rows import BillMetadataRow
+from ...utils.create_id import create_id
+from ....shared.rows import BillMetadataRow
 
 
 def _extract_type(row: str) -> str:

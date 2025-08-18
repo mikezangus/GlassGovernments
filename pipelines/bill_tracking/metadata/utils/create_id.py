@@ -1,4 +1,4 @@
-from shared.rows import BillMetadataRow
+from ...shared.rows import BillMetadataRow
 
 
 def create_id(metadata: BillMetadataRow) -> str:

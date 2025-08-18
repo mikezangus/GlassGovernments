@@ -1,6 +1,6 @@
-from shared.rows import BillMetadataRow
-from metadata.states.pa.urls import bill_base_url
-from metadata.utils.create_id import create_id
+from ....shared.rows import BillMetadataRow
+from .urls import bill_base_url
+from ...utils.create_id import create_id
 from typing import Callable
 
 

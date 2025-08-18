@@ -1,7 +1,7 @@
-from shared.rows import BillMetadataRow
-from shared.lib.regexes import regex_split_text_and_nums
+from ....shared.rows import BillMetadataRow
+from ....shared.lib.regexes import regex_split_text_and_nums
 import re
-from metadata.utils.create_id import create_id
+from ...utils.create_id import create_id
 
 
 def parse_metadata_row(feed_entry: dict[str, any], state: str) -> BillMetadataRow:

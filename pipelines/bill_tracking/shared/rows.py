@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from shared.enums import BillAction
 from typing import Optional
 
 
@@ -18,7 +17,7 @@ class BillMetadataRow:
 class BillActionsRow:
     bill_id: str
     state: str
-    action: BillAction
+    action: str
     date: str
     text_url: str
 

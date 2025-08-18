@@ -1,6 +1,6 @@
 from dataclasses import asdict, is_dataclass
-from db.supabase_config import supabase
 from typing import Any, Literal, Sequence
+from ..supabase_config import supabase
 
 
 def _serialize_rows(rows: Sequence[any]) -> list[dict]:

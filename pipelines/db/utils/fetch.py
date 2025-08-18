@@ -1,4 +1,4 @@
-from db.supabase_config import supabase
+from ..supabase_config import supabase
 
 
 def fetch(

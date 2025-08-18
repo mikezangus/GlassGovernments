@@ -1,9 +1,9 @@
-from shared.enums import OnDuplicate, StateCode
-from shared.rows import BillMetadataRow
-from shared.utils.insert_to_db import insert_to_db
-from shared.utils.get_html import get_html
-from metadata.states.oh.fetch_raw_metadata import fetch_raw_metadata
-from metadata.states.oh.parse_metadata_row import parse_metadata_row
+from ....shared.enums import OnDuplicate, StateCode
+from ....shared.rows import BillMetadataRow
+from .....db.utils.insert import insert
+from ....shared.utils.get_html import get_html
+from .fetch_raw_metadata import fetch_raw_metadata
+from .parse_metadata_row import parse_metadata_row
 
 
 SESSION = 136
@@ -25,4 +25,4 @@ def run_oh() -> None:
             state.value
         ))
 
-    insert_to_db("bill_metadata", metadata_rows, OnDuplicate.MERGE, ["id"])
+    insert("bill_metadata", metadata_rows, OnDuplicate.MERGE, ["id"])

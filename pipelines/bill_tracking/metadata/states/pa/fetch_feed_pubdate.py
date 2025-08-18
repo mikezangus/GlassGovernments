@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import feedparser
-from shared.enums import Chamber
-from metadata.states.pa.urls import lower_feed_url, upper_feed_url
+from ....shared.enums import Chamber
+from .urls import lower_feed_url, upper_feed_url
 
 
 def fetch_feed_pubdate(chamber: Chamber) -> datetime:
