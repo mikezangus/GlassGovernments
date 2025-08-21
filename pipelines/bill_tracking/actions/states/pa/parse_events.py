@@ -2,8 +2,8 @@ from datetime import datetime
 from html import unescape as html_unescape
 from lxml import html as lxml
 from lxml.html import HtmlElement
-from shared.lib.regexes import committee_regex
-from shared.utils.normalize_space import normalize_space
+from ....shared.lib.regexes import committee_regex
+from ....shared.utils.normalize_space import normalize_space
 
 
 def _get_fa_token(icon_classes: str) -> str | None:

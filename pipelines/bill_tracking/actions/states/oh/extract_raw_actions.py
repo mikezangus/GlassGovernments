@@ -1,6 +1,6 @@
 from lxml import html as lxml
 from lxml.html import HtmlElement
-from shared.utils.normalize_null import normalize_null
+from ....shared.utils.normalize_null import normalize_null
 
 
 def _get_stage_node(doc: HtmlElement, header_text: str) -> HtmlElement | None:

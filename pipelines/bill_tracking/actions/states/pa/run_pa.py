@@ -1,10 +1,10 @@
-from actions.utils.get_action import get_action
-from actions.states.pa.parse_events import parse_actions
-from shared.enums import OnDuplicate
-from shared.rows import BillActionsRow
-from shared.utils.fetch_from_db import fetch_from_db
-from shared.utils.get_html import get_html
-from shared.utils.insert_to_db import insert_to_db
+from .parse_events import parse_actions
+from ...utils.get_action import get_action
+from ....shared.enums import OnDuplicate
+from ....shared.rows import BillActionsRow
+from ....shared.utils.get_html import get_html
+from .....db.utils.fetch import fetch
+from .....db.utils.insert import insert
 
 
 INSERT_BATCH_SIZE = 100
@@ -12,7 +12,7 @@ INSERT_BATCH_SIZE = 100
 
 def run_pa() -> None:
     actions_rows: BillActionsRow = []
-    bill_rows = fetch_from_db(
+    bill_rows = fetch(
         "bill_metadata",
         { "state": "PA" },
         "id, state, bill_url"
@@ -38,7 +38,7 @@ def run_pa() -> None:
                 "chamber": action["chamber"]
             })
         if (i + 1) % INSERT_BATCH_SIZE == 0:
-            insert_to_db(
+            insert(
                 "bill_actions",
                 actions_rows,
                 OnDuplicate.MERGE,
@@ -46,7 +46,7 @@ def run_pa() -> None:
             )
             actions_rows = []
             print('\n')
-    insert_to_db(
+    insert(
         "bill_actions",
         actions_rows,
         OnDuplicate.MERGE,

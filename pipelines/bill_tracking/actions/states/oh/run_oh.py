@@ -1,16 +1,17 @@
-from shared.enums import OnDuplicate
-from shared.rows import BillActionsRow
-from shared.utils.fetch_from_db import fetch_from_db
-from shared.utils.get_html import get_html
-from shared.utils.insert_to_db import insert_to_db
-from actions.states.oh.extract_raw_actions import extract_raw_actions
+from .extract_raw_actions import extract_raw_actions
+from ....shared.enums import OnDuplicate
+from ....shared.rows import BillActionsRow
+from ....shared.utils.get_html import get_html
+from .....db.utils.fetch import fetch
+from .....db.utils.insert import insert
+
 
 
 INSERT_BATCH_SIZE = 100
 
 
 def run_oh() -> None:
-    metadata_rows =  fetch_from_db(
+    metadata_rows =  fetch(
         "bill_metadata",
         { "state": "OH" },
         "id, state, bill_url"
