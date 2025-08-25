@@ -6,8 +6,7 @@ import os
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PIPELINES_DIR = os.path.dirname(CURRENT_DIR)
 SRC_DIR = os.path.dirname(PIPELINES_DIR)
-ROOT_DIR = os.path.dirname(SRC_DIR)
-ENV_PATH = os.path.join(ROOT_DIR, ".env.local")
+ENV_PATH = os.path.join(SRC_DIR, ".env.local")
 
 
 load_dotenv(dotenv_path=ENV_PATH)

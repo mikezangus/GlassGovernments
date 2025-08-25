@@ -1,13 +1,11 @@
-from shared.rows import BillAction
+from .....db.alchemy.models.bill_actions import BillActionType
 
 
 def populate_null_chamber(key: str) -> str | None:
-    print("attempting to populate:", key)
     executive_actions = (
-        BillAction.AT_EXECUTIVE.value,
-        BillAction.LINE_ITEM_VETO.value,
-        BillAction.SIGNED_BY_GOVERNOR.value,
-        BillAction.VETOED.value
+        BillActionType.INTRODUCED_EXECUTIVE.value,
+        BillActionType.PASSED_EXECUTIVE.value,
+        BillActionType.REJECTED_EXECUTIVE.value
     )
     if key in executive_actions:
         return "executive"
